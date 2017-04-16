@@ -9,7 +9,7 @@
       "cookie-parser": "latest",
       "express-session": "latest",
       "multer": "latest",
-      "socket.io": "latest"
-
+      "socket.io": "latest",
+      "nodemailer": "latest"
   }
 }
