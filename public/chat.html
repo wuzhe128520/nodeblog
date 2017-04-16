@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>即时通讯</title>
+</head>
+<body>
+在线人数：<span class="user-num"></span>
+用户名：<input type="text" class="name" />
+
+<button class="jinru">进入聊天室</button>
+<div class="user-list"></div>
+<div class="chat-wrap">
+
+</div>
+<input type="text" id="content">
+<button id="send">发送</button>
+<button class="chat">聊天房间</button>
+<button class="xq">相亲房间</button>
+<button class="leave">离开房间</button>
+<script src="/js/socket.io.min.js"></script>
+<script>
+    //当引入socket的时候会在window下添加一个 io 全局变量
+    const jinru = document.querySelector('.jinru'),
+           usernum = document.querySelector('.user-num'),
+           userlist = document.querySelector('.user-list'),
+           div = document.querySelector('.chat-wrap'),
+           chat = document.querySelector('.chat'),
+           leave = document.querySelector('.leave'),
+            xq = document.querySelector('.xq');
+        ;
+    let socket,
+        name,
+        userid;
+    send.onclick = submit;
+    function submit(){
+        let txt = document.getElementById('content').value;
+        socket.emit('msg',{content: txt});
+    }
+    jinru.onclick = function(){
+         let name = document.querySelector('.name').value;
+         init(name);
+        // socket.emit('login',{name: name, userid: new Date().getTime()});
+    };
+    chat.onclick = function(){
+       socket.emit('joinchat',{});
+       socket.on('chathello',data=>{
+           console.log(data);
+       });
+    };
+    leave.onclick = function(){
+        socket.emit('exitchat',{});
+    };
+    xq.onclick = function(){
+        socket.emit('joinxq',{});
+    };
+    function init(name) {
+        userid = Date.now();
+        name = name;
+        socket = io.connect('/');
+        socket.emit('login',{name: name, userid: userid});
+        //加入聊天
+        socket.on('login', (data)=>{
+            div.innerHTML+=`${data.data.name}加入聊天室!<br>`;
+            usernum.innerHTML = data.data.num;
+            userlist.innerHTML = '';
+            //显示用户列表
+            console.log('data.userlist',data.userlist);
+            for(var i in data.userlist){
+                userlist.innerHTML += `当前用户${data.userlist[i]}<br>`
+            }
+        });
+        //聊天
+        socket.on('liaotian', (data)=>{
+            div.innerHTML += `${data.content}<br>`;
+        });
+        //退出聊天
+        socket.on('logout',(data)=>{
+            div.innerHTML+=`${data.name}退出聊天室!<br>`;
+            usernum.innerHTML = data.num;
+            userlist.innerHTML = '';
+            //显示用户列表
+            for(var i in data.userlist){
+                userlist.innerHTML += `当前用户${data.userlist[i]}<br>`
+            }
+        });
+    }
+
+
+    /*
+     1、http 连接方式进行连接 并且告诉服务器要创建一个websocket连接
+     2、服务器  没问题
+     3、正式建立  websocket 连接
+    */
+
+</script>
+</body>
+</html>

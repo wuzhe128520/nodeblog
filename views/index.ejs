@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--引入其他模板页面-->
+<% include header.ejs %>
+<!--
+get方式提交
+<form action="/reg" method="get">
+    <input type="text" name="name" />
+    <input type="text" name="pass" />
+    <input type="submit" />
+</form>
+-->
+<!--<img src="image/public.jpg"  alt="" />-->
+<h1>博客首页</h1>
+<% if(locals.login) {%>
+欢迎：
+<% if(locals.admin){%>
+       管理员
+    <%}%>
+    <%=locals.login%>
+    <a href="/logout">退出</a>
+<%}else {%>
+    <a href="/login">登录</a>
+    <a href="/register">注册</a>
+
+<%}%>
+<!-- 接收的方式  <%= %> -->
+<!-- <%= %>这种方式接收的是转义后的 -->
+<!-- <%- %>这种方式接收的是没有转义的  -->
+<!-- <% %> 主要是用来写js代码的 -->
+<%for(var i = 0;i<data.length;i++){%>
+<a href="/article-detail/<%=data[i].id%>.html">
+<div>
+    <%if(data[i].img){%>
+        <img src="<%=data[i].img%>" />
+    <%}%>
+    <h1><%=data[i].title%></h1>
+    <p><%=data[i].author%>   标签：<%=data[i].tag%></p>
+    <p><time><%=data[i].time%></time></p>
+    <div>
+        <%-data[i].content%>
+    </div>
+</div>
+</a>
+<%}%>
+<div>
+    <ul>
+        <%for(var i = 0;i < Math.ceil(counts[0].articlenum/2);i++){%>
+            <li class="active">
+                <a href="/article-detail/list-<%= i+1%>.html">
+                    第<%=i+1%>页
+                </a>
+            </li>
+        <%}%>
+    </ul>
+</div>
+<div style="color:red;">修改后的首页</div>
+<script src="/js/jquery.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文章详情页</title>
+</head>
+<body>
+标题<%=data[0]['title']%>
+标签<%=data[0]['tag']%>
+作者<%=data[0]['author']%>
+内容<%=data[0]['content']%>
+发布时间<%=data[0]['time']%><br/>
+<p>评论：</p>
+<% if(comments.length !=0){%>
+    <% for(var i in comments){%>
+        <p><%=comments[i].content%></p>
+   <%}%>
+<%}%>
+<form action="/article-detail/<%=data[0]['id']%>.html" method="post">
+    评论 <textarea name="content"></textarea>
+    <button>发表评论</button>
+</form>
+</body>
+</html>

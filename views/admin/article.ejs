@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加文章</title>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"> </script>
+</head>
+<body>
+<!--<button id="declare">发表文章</button>-->
+<form enctype="multipart/form-data" action="/admin/article" id="form" method="post">
+    文章标题：<input type="text" class="title" name="title" />
+    标签：    <input type="text" class="tag" name="tag"/>
+    作者：    <input type="text" class="author" name="author" />
+    内容：   <textarea class="content" value="" name="content"></textarea>
+    <input type="file" name="uploadfile"/>
+    <button id="declare">发布文章</button>
+</form>
+<script id="editor" type="text/plain" style="width:1024px;height:500px;"></script>
+
+<script src="/js/jquery.min.js"></script>
+<script>
+
+    $(function(){
+        var ue = UE.getEditor('editor');
+        $("#declare").click(function(e){
+            e.preventDefault();
+            var content = ue.getContent();
+            $(".content").val(content);
+            console.log(content);
+            $("#form").submit();
+        });
+    });
+</script>
+<!--<script>
+    $("#declare").bind("click",function(){
+            $.ajax({
+                url: '/admin/article',
+                type: 'post',
+                dataType: 'json',
+                contentType: 'multipart/form-data',
+                data: {
+                    title: $('.title').val(),
+                    tag: $('.tag').val(),
+                    author: $('.author').val(),
+                    content: $('.content').val(),
+                    uploadfile: $().val();
+                },
+                success: function(data){
+                    alert(data.success);
+                },
+                error: function(data){
+
+                }
+            });
+    });
+</script>-->
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>导航管理后台</title>
+</head>
+<body>
+<form method="post" action="/admin/nav">
+        添加一级导航：<input type="text" name="onetitle"/><br/>
+        添加一级网址：<input type="text" name="oneurl"/><br/>
+        添加一级第几个显示：<input type="text" name="oneid" /><br/>
+        <input type="submit" />
+</form>
+
+<form method="post" action="/admin/nav">
+    添加二级导航：<input type="text" name="onetitle"/><br/>
+    添加二级网址：<input type="text" name="oneurl"/><br/>
+    添加二级第几个显示：<input type="text" name="oneid" /><br/>
+    父级： <select class="parentid">
+        <%for(let i =0;i<data.length;i++){%>
+        <option value="<%=data[i].navid%>"><%=data[i].title%></option>
+        <%}%>
+           </select>
+    <input type="submit" />
+</form>
+</body>
+</html>

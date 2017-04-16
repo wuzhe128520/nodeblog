@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<body>
+<h1>登录</h1>
+<% if(locals.login){%>
+    已经登陆
+<%}else{%>
+<form action="/login" method="post">
+    <input type="text" name="user" class="user" />
+    <input type="password" name="pass" class="pass" />
+    <input type="submit" id="loginBtn"/>
+</form>
+<%}%>
+<script src="js/jquery.min.js"></script>
+<script>
+    $(function(){
+        $("#loginBtn").click(function(e){
+            e.preventDefault();
+            $.ajax({
+                url: '/login',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    name: $('.user').val(),
+                    pass: $('.pass').val()
+                },
+                success: function(data){
+                    console.log(data);
+                    if(data == "登录成功"){
+
+                    }
+                },
+                error: function(err){
+                    //返回的值不是规定的 dataType 类型 ,就会执行error回调
+                    console.log(err);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

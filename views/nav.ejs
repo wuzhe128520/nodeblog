@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>导航模拟</title>
+</head>
+<body>
+<ul>
+    <% for(var i in navdata){%>
+        <li>
+              <%=navdata[i]['title']%>
+        </li>
+        <ul>
+            <% for(var j in navdata[i]['child']){%>
+               <li>
+                   <%=navdata[i]['child'][j]['title']%>
+               </li>
+            <%}%>
+        </ul>
+    <%}%>
+</ul>
+</body>
+</html>

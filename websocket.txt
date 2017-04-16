@@ -1,0 +1,5 @@
+websocket
+   传输协议： ws/wss
+   ws对应http，wss对应https
+服务器 和 浏览器 双向通讯  (可以应用在即时通讯)
+   服务器和浏览器需要支持websocket iis8以下不支持
