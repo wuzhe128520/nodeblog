@@ -16,94 +16,134 @@
     <title>吴哲的博客</title>
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="../public/css/reset.css" />
-
+    <link rel="stylesheet" href="../public/css/index.css" />
 </head>
 <body>
 <!--头部begin-->
 <header>
-    <div></div>
+    <div class="head-wrap">
+        <div class="head clearfix">
+            欢迎光临吴哲的个人博客网站!
+            <span class="login-reg-wrap">
+                <button class="login-btn">登录</button>
+                <button class="reg-btn">注册</button>
+            </span>
+        </div>
+    </div>
     <!--导航begin-->
-    <nav></nav>
+    <nav>
+        <div class="site-description">
+            <a class="logo">
+                <img src="../public/image/logo.jpg" alt="吴哲个人博客网站图标" />
+            </a>
+            <div class="type-print">
+                <h1 class="site-title">
+                    <a href="/">
+                        吴哲的个人博客网站
+                    </a>
+                </h1>
+                <p class="site-care">
+                    关注web前端技术，热爱web前端开发！
+                </p>
+            </div>
+        </div>
+        <div class="nav-wrap">
+            <ul class="nav">
+                <li><a href="" title="首页">首页</a></li>
+                <li><a href="" title="web前端">web前端</a></li>
+                <li><a href="" title="我的说说">我的说说</a></li>
+                <li><a href="" title="关于我">关于我</a></li>
+                <li><a href="" title="留言板">留言板</a></li>
+                <li><a href="" title="相册">相册</a></li>
+            </ul>
+        </div>
+    </nav>
     <!--导航end-->
 </header>
 <!--头部end-->
 <!--轮播图begin-->
-<section>
+<!--热门推荐文章(图文)-->
+<!--<section>
     <div class="slide-wrap">
         <ul>
-            <li><a href=""><img src="../public/image/" alt=""></a></li>
-            <li><a href=""><img src="../public/image/" alt=""></a></li>
-            <li><a href=""><img src="../public/image/" alt=""></a></li>
-            <li><a href=""><img src="../public/image/" alt=""></a></li>
-            <li><a href=""><img src="../public/image/" alt=""></a></li>
+            <li><a href=""><img src="" alt=""></a></li>
+            <li><a href=""><img src="" alt=""></a></li>
+            <li><a href=""><img src="" alt=""></a></li>
+            <li><a href=""><img src="" alt=""></a></li>
+            <li><a href=""><img src="" alt=""></a></li>
         </ul>
     </div>
-</section>
+</section>-->
 <!--轮播图end-->
 <main>
-    <div class="article-list-wrap">
-        <!--文章列表begin-->
-        <section>
-            <div class="article">
-                <h2 class="article-title">
-                    <a href="/" title="文章标题">文章标题</a>
-                </h2>
-                <article>
-                    <div class="article-summary-wrap">
-                        <img src="../public/image/public.jpg">
-                        <p>
-                            自从工作以来，工作繁忙，很少来打理博客，索引量一直在下降，现在只有169，但查了下排名，搜索个人博客和前端博客，能排在六七页这样，还算是不错的。 建了博客也一年多了，但并没有发表很多文章，没有记录什么学习笔记 ，也是深感惭愧啊。每天忙忙碌碌的，也没做出什么成绩，技术也并没有很大提高，经常在加班中度过。。。。。。
-                        </p>
-                        <a href="javascript:void(0);">阅读全文</a>
-                    </div>
-                </article>
-                <footer>
-                    <div class="article-footer-wrap">
+    <div class="main">
+        <div class="article-list-wrap">
+            <h2 class="article-recommend">文章<span class="highlight">推荐</span></h2>
+            <!--文章列表begin-->
+            <section>
+                <div class="article">
+                    <h2 class="article-title">
+                        <a href="/" title="文章标题">这是文章标题</a>
+                    </h2>
+                    <article>
+                        <div class="article-summary-wrap">
+                            <a href="/" class="article-img-wrap">
+                                <img src="../public/image/article-img.png">
+                            </a>
+                            <p class="article-content">
+                                客也一年多了，但并没有发表很多文章，没有记录什么学习笔记 ，也是深感惭愧啊。每天忙忙碌碌的，也没做出什么成绩，技术也并没有很大提高，经常在加班中度过。自从工作以来，工作繁忙，很少来打理博客，索引量一直在下降，现在只有169，但查了下排名，搜索个人博客和前端博客，能排在六七页这样，还算是不错的。 建了博客也一年多了，但并没有发表很多文章，没有记录什么学习笔记 ，也是深感惭愧啊。每天忙忙碌碌的，也没做出什么成绩，技术也并没有很大提高，经常在加班中度过。。。。。。
+                            </p>
+                            <a href="javascript:void(0);" class="read-more">阅读全文</a>
+                        </div>
+                    </article>
+                    <footer>
+                        <div class="article-footer-wrap">
                         <span>
                             <i title="日期图标"></i>
                             <time>2017年04月15日</time>
                         </span>
-                        <span>
+                            <span>
                             <i title="浏览量图标"></i>
                             浏览529次
                         </span>
-                        <span>
+                            <span>
                             <i title="顶一个图标"></i>
                             顶
                         </span>
-                        <span>
+                            <span>
                             <i title="踩一个图标"></i>
                             踩
                         </span>
-                        <span>
+                            <span>
                             <i title="评论图标"></i>
                             评论(88888)
                         </span>
-                        <!--分类-->
-                        <span>
-                            <a class="">html5</a>
+                            <!--分类-->
+                        <span class="article-type">
+                            分类:[<a href="javascript:void(0);" class="">html5</a>]
                         </span>
-                        <!--分类-->
-                    </div>
-                </footer>
-            </div>
-        </section>
-        <!--文章列表end-->
-    </div>
-    <aside>
-        <div class="article-relation-wrap">
-        <!--文章分类begin-->
-
-        <!--文章分类end-->
-        <!--热门文章begin-->
-
-        <!--热门文章end-->
-        <!--文章存档begin-->
-
-        <!--文章存档end-->
-
+                            <!--分类-->
+                        </div>
+                    </footer>
+                </div>
+            </section>
+            <!--文章列表end-->
         </div>
-    </aside>
+        <aside>
+            <div class="article-relation-wrap">
+                <!--文章分类begin-->
+
+                <!--文章分类end-->
+                <!--热门文章begin-->
+
+                <!--热门文章end-->
+                <!--文章存档begin-->
+
+                <!--文章存档end-->
+
+            </div>
+        </aside>
+    </div>
 </main>
 <section></section>
 <footer>

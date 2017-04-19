@@ -13,12 +13,6 @@ html,body {/*将body的最小高度设置为屏幕的高度*/
     font-family: "Microsoft YaHei",Arial, Helvetica, sans-serif;
     word-break: break-all;/*强制英文单词断行*/
     word-wrap: break-word; /*强制换行*/
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
 img, ul {
     border:0

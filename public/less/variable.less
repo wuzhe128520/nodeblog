@@ -1,0 +1,48 @@
+@charset "utf-8";
+//黑色主色调
+@headerColor: #0D0D0D;
+//背景色主色调、文字副色调、
+@bgColor: #F24429;
+//计算宽度
+.calc-width(@num) {
+  width: -moz-calc(@num);
+  width: -webkit-calc(@num);
+  width: calc(@num);
+}
+//过渡
+.transition(@attr,@time) {
+  transition: @attr @time;
+  -moz-transition: @attr @time; /* Firefox 4 */
+  -webkit-transition: @attr @time; /* Safari 和 Chrome */
+  -o-transition: @attr @time; /* Opera */
+}
+//边框圆角
+.radius(@size){
+  -webkit-border-radius: @size;
+  -moz-border-radius: @size;
+  border-radius: @size;
+}
+//阴影
+
+.boxshadow(@h-shadow,@v-shadow,@blur,@color) {
+  -moz-box-shadow: @h-shadow @v-shadow @blur @color; /* 老的 Firefox */
+  box-shadow: @h-shadow @v-shadow @blur @color;
+}
+//透明度
+.opacity(@int,@float) {
+  opacity: @float;
+  filter: ~"alpha(opacity=@int)";
+}
+//文本阴影
+.text-shadow (@string: 0 1px 3px rgba(0, 0, 0, 0.25)) {
+  text-shadow: @string;
+}
+//禁止选中文本
+.disable-select(@str) {
+  -webkit-touch-callout: @str;
+  -webkit-user-select: @str;
+  -khtml-user-select: @str;
+  -moz-user-select: @str;
+  -ms-user-select: @str;
+  user-select: @str;
+}
