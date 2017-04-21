@@ -1,4 +1,5 @@
 @charset "utf-8";
+@import "icon.less";
 //黑色主色调
 @headerColor: #0D0D0D;
 //背景色主色调、文字副色调、
@@ -45,4 +46,39 @@
   -moz-user-select: @str;
   -ms-user-select: @str;
   user-select: @str;
+}
+.h-style {
+  position: relative;
+  padding: 10px;
+  border-bottom: 1px solid #bbb;
+  font-size: 16px;
+  background: rgba(255,255,255,0.5);
+  &:before {
+    content: '';
+    display: block;
+    width: 5px;
+    height: 60%;
+    position: absolute;
+    background: #E15782;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+  }
+  .highlight {
+    color: #E15782;
+  }
+}
+.title {
+  margin: 0 0 20px 0;
+}
+.pl10 {
+  padding-left: 10px;
+}
+.pr10 {
+  padding-right: 10px;
+}
+.see-more {
+  float: right;
+  color: #525252;
 }

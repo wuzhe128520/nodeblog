@@ -1,0 +1,68 @@
+@charset "utf-8";
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+}
+.icon-diy {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  color: #fff;
+}
+.icon-black {
+  background-color: #4C4B49;
+}
+.icon-red {
+  background-color: #CD2B45;
+}
+.icon-green {
+  background-color: #ADA30A;
+}
+.icon-orange {
+  background-color: #F69523;
+}
+.icon-blue {
+  background-color: #63B6F7;
+}
+.icon-gray {
+  background-color: #B0AFAA;
+}
+.icon-default {
+  background-color: #A2A2A2;
+}
+.h-style {
+  position: relative;
+  padding: 10px;
+  border-bottom: 1px solid #bbb;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.5);
+}
+.h-style:before {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 60%;
+  position: absolute;
+  background: #E15782;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+.h-style .highlight {
+  color: #E15782;
+}
+.title {
+  margin: 0 0 20px 0;
+}
+.pl10 {
+  padding-left: 10px;
+}
+.pr10 {
+  padding-right: 10px;
+}
+.see-more {
+  float: right;
+  color: #525252;
+}
