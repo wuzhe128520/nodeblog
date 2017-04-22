@@ -45,6 +45,20 @@
                 <p class="site-care">
                     关注web前端技术，热爱web前端开发！
                 </p>
+                <!--百度分享begin -->
+                <div class="share-wrap">
+                    <div class="bdsharebuttonbox" data-tag="share_1">
+                        <a class="bds_mshare" data-cmd="mshare"></a>
+                        <a class="bds_qzone" data-cmd="qzone" href="#"></a>
+                        <a class="bds_tsina" data-cmd="tsina"></a>
+                        <a class="bds_baidu" data-cmd="baidu"></a>
+                        <a class="bds_renren" data-cmd="renren"></a>
+                        <a class="bds_tqq" data-cmd="tqq"></a>
+                        <a class="bds_more" data-cmd="more">更多</a>
+                        <a class="bds_count" data-cmd="count"></a>
+                    </div>
+                </div>
+                <!--百度分享end -->
             </div>
         </div>
         <div class="nav-wrap">
@@ -569,20 +583,6 @@
                     </div>
                 </section>
                 <!--文章分类end-->
-                <!--百度分享begin -->
-                <section>
-                    <div class="bdsharebuttonbox" data-tag="share_1">
-                        <a class="bds_mshare" data-cmd="mshare"></a>
-                        <a class="bds_qzone" data-cmd="qzone" href="#"></a>
-                        <a class="bds_tsina" data-cmd="tsina"></a>
-                        <a class="bds_baidu" data-cmd="baidu"></a>
-                        <a class="bds_renren" data-cmd="renren"></a>
-                        <a class="bds_tqq" data-cmd="tqq"></a>
-                        <a class="bds_more" data-cmd="more">更多</a>
-                        <a class="bds_count" data-cmd="count"></a>
-                    </div>
-                </section>
-                <!--百度分享end -->
                 <!--标签云begin-->
                 <section>
                     <div class="article-tags">
@@ -683,11 +683,28 @@
 <script type="text/javascript" src="../public/js/jquery.min.js"></script>
 <script type="text/javascript" src="../public/js/comm.js"></script>
 <script type="text/javascript">
-    function init() {
-        console.log("加载成功！");
-    }
     $(init);
-    window.onload = function(){
+    function init() {
+        share(
+            {
+                common: {
+                    bdText : $("#blog").text(),
+                    bdDesc : '文章摘要（一般是前250字）',
+                    bdUrl : window.location.href.split("?")[0],
+                    onBeforeClick: function(cmd, config){
+                        alert(config.valueOf());
+                        for(let i in config){
+                            console.log(i,config[i]);
+                        }
+                        //config.bdText= $('.js_article_title').text();
+                        return config;
+                    }
+                },
+                share: [{
+                    "bdSize" : 24
+                }]
+            }
+        );
         var time = new Date();
         var year=time.getFullYear();
         document.getElementById("siteDate").innerHTML = year;

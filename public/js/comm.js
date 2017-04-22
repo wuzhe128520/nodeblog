@@ -62,7 +62,7 @@
     }]
 };*/
 //这个函数主要功能是构建一个对象出来，返回一个对象
-function share(obj,newCommon) {
+function share(obj,callback) {
     let config = {
         common: obj.common||{},
         share: obj.share||[],
@@ -70,12 +70,6 @@ function share(obj,newCommon) {
         image: obj.image||[],
         selectShare: obj.selectShare||[]
     };
-    if(newCommon){
-        $.extend(config.common,newCommon);
-    }
-    if(config.common.onBeforeClick){
-        config.common.onBeforeClick
-    }
     for(let i in config){
         let isArray = typeof config[i]==='object'&&config[i] instanceof Array;
         let isObject = typeof config[i] ==='object'&&!(config[i] instanceof Function);
@@ -95,28 +89,7 @@ function share(obj,newCommon) {
         }
     }
             window._bd_share_config = config;
+    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
 }
 
-share(
-    {
-    common: {
-        bdText : $("#blog").text(),
-        bdDesc : '文章摘要（一般是前250字）',
-        bdUrl : window.location.href.split("?")[0],
-        onBeforeClick: function(cmd, config){
-            alert(config.valueOf());
-            for(let i in config){
-                console.log(i,config[i]);
-            }
-            //config.bdText= $('.js_article_title').text();
-            return config;
-    }
-},
-share: [{
-            "bdSize" : 24
-        }]
-    }
-);
-console.log(window._bd_share_config);
-with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
 
