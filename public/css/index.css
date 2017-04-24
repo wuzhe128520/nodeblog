@@ -9,6 +9,7 @@
   line-height: 20px;
   text-align: center;
   color: #fff;
+  vertical-align: baseline;
 }
 .icon-black {
   background-color: #4C4B49;
@@ -226,14 +227,21 @@ body {
   float: left;
   vertical-align: middle;
 }
-.layer-left {
-  width: 862px;
-  float: left;
+/*=====布局类 begin=====*/
+.layer-wz {
+  width: 1200px;
+  margin: 0 auto;
 }
-.layer-aside {
-  width: 208px;
+.layer-left-wz {
+  width: 840px;
+  float: left;
+  margin: 0 30px 0 0;
+}
+.layer-aside-wz {
+  width: 300px;
   float: right;
 }
+/*=====布局类 end=====*/
 .main {
   width: 1200px;
   margin: 15px auto 0;
