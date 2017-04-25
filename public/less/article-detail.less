@@ -132,20 +132,30 @@
   }
 
 }
-/* comments begin */
+/* 评论回复 begin */
 .comments-wrap {
   .comments-all {
     padding-left: 0;
   }
 }
 .comments-head {
+  font-size: 14px;
+  height: 40px;
+  line-height: 40px;
   a {
     color: #999;
   }
   .comments-number {
-    float: left;
-    .highlight {
 
+    display: inline;
+    border: 1px solid #ccc;
+    background-color: rgba(0,0,0,0.04);
+    padding: 0 5px;
+    height: 25px;
+    line-height: 25px;
+    .radius(5px);
+    .highlight {
+      color: #d32;
     }
   }
   .comments-sort {
@@ -157,7 +167,6 @@
         color: #d32;
       }
     }
-
   }
 }
 .comments {
@@ -236,4 +245,24 @@
   }
 
 }
-/* comments end */
+.declare-comment-wrap {
+  color: #333;
+  h3 {
+    line-height: 25px;
+    font-size: 16px;
+    font-weight: normal;
+    margin: 15px 0;
+  }
+  p {
+    margin: 0 0 10px;
+    input {
+      height: 25px;
+    }
+  }
+  .declare-btn {
+    padding: 5px 10px;
+    color: #fff;
+    background-color: #333;
+  }
+}
+/* 评论回复 end */

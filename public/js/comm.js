@@ -62,24 +62,24 @@
     }]
 };*/
 //这个函数主要功能是构建一个对象出来，返回一个对象
-function share(obj,callback) {
-    let config = {
+function share(obj) {
+   /* let config = {
         common: obj.common||{},
         share: obj.share||[],
         slide: obj.slide||[],
         image: obj.image||[],
         selectShare: obj.selectShare||[]
-    };
-    for(let i in config){
+    };*/
+   /* for(let i in config){
         let isArray = typeof config[i]==='object'&&config[i] instanceof Array;
         let isObject = typeof config[i] ==='object'&&!(config[i] instanceof Function);
         if(isArray||isObject){
-            /*
+            /!*
             * 如果是对象
             *   !obj[i] 为真 则是 空 删除这个属性
             * 如果是数组
             *   obj[i].length < 1 则是空 删除这个属性
-            * */
+            * *!/
             let lg = (!config[i]&&config[i].length===undefined)||config[i].length < 1;
             console.log("length：",lg);
             if(lg){
@@ -87,8 +87,8 @@ function share(obj,callback) {
                 delete config[i];
             }
         }
-    }
-            window._bd_share_config = config;
+    }*/
+            window._bd_share_config = obj;
     with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
 }
 

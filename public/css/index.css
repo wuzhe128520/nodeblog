@@ -191,7 +191,7 @@ body {
 }
 .site-description .site-title a {
   color: #000;
-  text-shadow: '#fff 1px 1px 1px';
+  text-shadow: #fff 1px 1px 1px;
 }
 .site-description .type-print {
   position: relative;
@@ -360,9 +360,9 @@ body {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -moz-box-shadow: 0 0 3px #bbb;
+  -moz-box-shadow: outset 0 0 3px #bbb;
   /* 老的 Firefox */
-  box-shadow: 0 0 3px #bbb;
+  box-shadow: outset 0 0 3px #bbb;
   margin: 0 0 10px 0;
 }
 .article-hot-random .hot-random-wrap {

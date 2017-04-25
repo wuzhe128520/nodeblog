@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="../public/css/reset.css" />
     <link rel="stylesheet" href="../public/css/article-detail.css" />
+    <link rel="stylesheet" href="../public/js/plugin/highlight/styles/default.css" />
 </head>
 <body>
 <!--头部begin-->
@@ -79,6 +80,15 @@
                     </header>
                     <!--文章详情begin-->
                     <div class="article-detail-content clearfix js_article_content">
+                        <pre>
+                            <code class="javascript">
+                                  $(document).ready(function() {
+                                  $('pre code').each(function(i, block) {
+                                    hljs.highlightBlock(block);
+                                  });
+                                });
+                            </code>
+                        </pre>
                         <p>
                             25号有事去深圳，本来还有一些事还没有处理完成，客户催得急，没办法，早早的就去了，乘坐的是SZ3355南航的班机，坐在我边上的是一位大约三十多岁的妈妈还着一位四岁左右的孩子，孩子很调皮，一路上一直玩着我的包。一个半小时后到达深圳，晚上睡觉的时候发现身份证丢了，随身的包翻了个遍没找着，这下可急死人了，因为我还要从深圳返回...
                             前段时间去了湖北黄冈市麻城市的龟峰山，也就是看杜鹃花的地方，办了一张黄冈旅游一卡通，是可以一年内免费游览
@@ -86,6 +96,24 @@
                             是还是准备进去玩一下。进门后有一块参天大树，里面的树木相对来说还算茂盛，里面一些东西似乎是后建...</p>
                         <p>
                         </p>
+                        <pre>
+                            <code class="javascript">
+                                    var app = {};
+                                    app.namespace = function(name){
+                                        var parts = name.split('.');
+                                        var current = app;
+                                        debugger;
+                                        for(var i in parts){
+                                            if(!current[parts[i]]){
+                                                current[parts[i]] = {};
+                                            }
+                                            current = current[parts[i]];
+                                        }
+                                    };
+                                    app.namespace('dom.style.css');
+                                    console.log(app);
+                            </code>
+                        </pre>
                         <p>
                             25号有事去深圳，本来还有一些事还没有处理完成，客户催得急，没办法，早早的就去了，乘坐的是SZ3355南航的班机，坐在我边上的是一位大约三十多岁的妈妈还着一位四岁左右的孩子，孩子很调皮，一路上一直玩着我的包。一个半小时后到达深圳，晚上睡觉的时候发现身份证丢了，随身的包翻了个遍没找着，这下可急死人了，因为我还要从深圳返回...
                             前段时间去了湖北黄冈市麻城市的龟峰山，也就是看杜鹃花的地方，办了一张黄冈旅游一卡通，是可以一年内免费游览
@@ -176,7 +204,7 @@
                     <!--相关文章 end-->
                     <!--评论部分 begin-->
                     <div class="comments-wrap">
-                        <div class="comments-head">
+                        <div class="comments-head clearfix">
                             <a href="/" class="comments-number">
                                 <span class="highlight">6</span>条评论
                             </a>
@@ -206,7 +234,7 @@
                                         <div class="comment-footer">
                                             <time>2017年02月16日</time>
                                             <a href="javascript:void(0);">
-                                                <i class="icon-reply"></i>回复
+                                                <i class="icon-reply" title="回复图标"></i>回复
                                             </a>
                                         </div>
                                     </div>
@@ -232,7 +260,7 @@
                                                 <div class="comment-footer">
                                                     <time>2017年02月16日</time>
                                                     <a href="javascript:void(0);">
-                                                        <i class="icon-reply"></i>回复
+                                                        <i class="icon-reply" title="回复图标"></i>回复
                                                     </a>
                                                 </div>
                                             </div>
@@ -409,7 +437,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="respond">
+                    <div class="declare-comment-wrap">
                         <h3>发表评论</h3>
                         <form id="commentForm" action="" method="post">
                             <p>
@@ -427,12 +455,10 @@
                                 <label for="site">网站</label>
                             </p>
                             <p>
-                            <textarea name="comment" tabindex="4" cols="100%" rows="10">
-
-                            </textarea>
+                            <textarea name="comment" tabindex="4" cols="100%" rows="10"></textarea>
                             </p>
                             <p>
-                                <input name="submit" value="提交评论" type="submit">
+                                <input name="submit" value="发表评论" class="declare-btn" type="submit">
                             </p>
                         </form>
                     </div>
@@ -515,6 +541,10 @@
 <!--尾部end-->
     <script type="text/javascript" src="../public/js/jquery.min.js"></script>
     <script type="text/javascript" src="../public/js/comm.js"></script>
+    <script type="text/javascript" src="../public/js/plugin/highlight/highlight.pack.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad();
+    </script>
     <script type="text/javascript">
         $(init);
         function init(){
@@ -522,7 +552,7 @@
                 {
                     common: {
                         bdText : $(".js_article_title").text(),
-                        bdDesc : $(".js_article_content").text(),
+                        bdDesc : $(".js_article_content").text().substring(0,269),
                         bdUrl : window.location.href.split("?")[0],
                         onBeforeClick: function(cmd, config){
                             for(let i in config){
@@ -536,7 +566,8 @@
                         "bdSize" : 24
                     }],
                     selectShare : [{
-                        "bdselectMiniList" : ['qzone','tqq','kaixin001','bdxc','tqf']
+                        "bdselectMiniList" : ['qzone','weixin'],
+                        "bdContainerClass" : "js_article_content"
                     }]
                 }
             );

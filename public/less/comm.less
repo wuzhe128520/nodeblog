@@ -25,9 +25,9 @@
 }
 //阴影
 
-.boxshadow(@h-shadow,@v-shadow,@blur,@color) {
-  -moz-box-shadow: @h-shadow @v-shadow @blur @color; /* 老的 Firefox */
-  box-shadow: @h-shadow @v-shadow @blur @color;
+.boxshadow(@h-shadow,@v-shadow,@blur,@color,@inset:outset) {
+  -moz-box-shadow: @inset @h-shadow @v-shadow @blur @color; /* 老的 Firefox */
+  box-shadow: @inset @h-shadow @v-shadow @blur @color;
 }
 //透明度
 .opacity(@int,@float) {
@@ -38,6 +38,14 @@
 .text-shadow (@string: 0 1px 3px rgba(0, 0, 0, 0.25)) {
   text-shadow: @string;
 }
+//缩放
+.scale (@factor) {
+  -webkit-transform: scale(@factor);
+  -moz-transform:      scale(@factor);
+  -ms-transform:       scale(@factor);
+  -o-transform:        scale(@factor);
+  transform:           scale(@factor);
+}
 //禁止选中文本
 .disable-select(@str) {
   -webkit-touch-callout: @str;
@@ -47,6 +55,7 @@
   -ms-user-select: @str;
   user-select: @str;
 }
+
 .h-style {
   position: relative;
   padding: 10px;
@@ -185,7 +194,7 @@ body {
     font-size: 16px;
     a {
       color: #000;
-      .text-shadow('#fff 1px 1px 1px');
+      .text-shadow(#fff 1px 1px 1px);
     }
   }
   .type-print {

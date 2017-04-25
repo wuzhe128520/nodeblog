@@ -191,7 +191,7 @@ body {
 }
 .site-description .site-title a {
   color: #000;
-  text-shadow: '#fff 1px 1px 1px';
+  text-shadow: #fff 1px 1px 1px;
 }
 .site-description .type-print {
   position: relative;
@@ -370,15 +370,31 @@ body {
   font-size: 14px;
   color: #E15782;
 }
-/* comments begin */
+/* 评论回复 begin */
 .comments-wrap .comments-all {
   padding-left: 0;
+}
+.comments-head {
+  font-size: 14px;
+  height: 40px;
+  line-height: 40px;
 }
 .comments-head a {
   color: #999;
 }
 .comments-head .comments-number {
-  float: left;
+  display: inline;
+  border: 1px solid #ccc;
+  background-color: rgba(0, 0, 0, 0.04);
+  padding: 0 5px;
+  height: 25px;
+  line-height: 25px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.comments-head .comments-number .highlight {
+  color: #d32;
 }
 .comments-head .comments-sort {
   float: right;
@@ -467,4 +483,24 @@ body {
   color: #d32;
   border: 1px solid #ccc;
 }
-/* comments end */
+.declare-comment-wrap {
+  color: #333;
+}
+.declare-comment-wrap h3 {
+  line-height: 25px;
+  font-size: 16px;
+  font-weight: normal;
+  margin: 15px 0;
+}
+.declare-comment-wrap p {
+  margin: 0 0 10px;
+}
+.declare-comment-wrap p input {
+  height: 25px;
+}
+.declare-comment-wrap .declare-btn {
+  padding: 5px 10px;
+  color: #fff;
+  background-color: #333;
+}
+/* 评论回复 end */
