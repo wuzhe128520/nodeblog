@@ -360,9 +360,9 @@ body {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  -moz-box-shadow: outset 0 0 3px #bbb;
+  -moz-box-shadow: 0 0 3px #bbb;
   /* 老的 Firefox */
-  box-shadow: outset 0 0 3px #bbb;
+  box-shadow: 0 0 3px #bbb;
   margin: 0 0 10px 0;
 }
 .article-hot-random .hot-random-wrap {

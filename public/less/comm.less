@@ -25,9 +25,15 @@
 }
 //阴影
 
-.boxshadow(@h-shadow,@v-shadow,@blur,@color,@inset:outset) {
-  -moz-box-shadow: @inset @h-shadow @v-shadow @blur @color; /* 老的 Firefox */
-  box-shadow: @inset @h-shadow @v-shadow @blur @color;
+.boxshadow(@h-shadow,@v-shadow,@blur,@color) {
+  -moz-box-shadow: @h-shadow @v-shadow @blur @color; /* 老的 Firefox */
+  box-shadow: @h-shadow @v-shadow @blur @color;
+}
+//内阴影
+.inner-shadow (@x: 0, @y: 1px, @blur: 2px, @spread: 0, @alpha: 0.25) {
+  -webkit-box-shadow: inset @x @y @blur @spread rgba(0, 0, 0, @alpha);
+  -moz-box-shadow:    inset @x @y @blur @spread rgba(0, 0, 0, @alpha);
+  box-shadow:         inset @x @y @blur @spread rgba(0, 0, 0, @alpha);
 }
 //透明度
 .opacity(@int,@float) {
