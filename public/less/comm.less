@@ -255,3 +255,137 @@ body {
   float: right;
 }
 /*=====布局类 end=====*/
+/* 评论回复 begin */
+.comments-wrap {
+  .comments-all {
+    padding-left: 0;
+  }
+}
+.comments-head {
+  font-size: 14px;
+  height: 40px;
+  line-height: 40px;
+  a {
+    color: #999;
+  }
+  .comments-number {
+
+    display: inline;
+    border: 1px solid #ccc;
+    background-color: rgba(0,0,0,0.04);
+    padding: 0 5px;
+    height: 25px;
+    line-height: 25px;
+    .radius(5px);
+    .highlight {
+      color: #d32;
+    }
+  }
+  .comments-sort {
+    float: right;
+    a {
+      padding: 0 4px;
+      margin: 0 2px;
+      &.current {
+        color: #d32;
+      }
+    }
+  }
+}
+.comments {
+  padding: 10px 0 5px 10px;
+  border-top: 1px solid rgba(0,0,0,0.13);
+  .user {
+    width: 50px;
+    height: 50px;
+    img {
+      .radius(50%);
+    }
+    float: left;
+  }
+  .comment-body {
+    height: 72px;
+    padding-left: 50px;
+    .comment-name {
+      >a {
+        color: #d32;
+      }
+      font-size: 14px;
+    }
+    .comment-content {
+      font-size: 16px;
+      margin: 0;
+    }
+  }
+  .comment-footer {
+    font-size: 14px;
+    a {
+      color: #999;
+      &:hover {
+        color: #555;
+      }
+    }
+    .icon-reply {
+      margin-right: 3px
+    }
+  }
+}
+.comment-childs {
+  margin-left: 38px;
+  .user {
+    img {
+      width: 30px;
+      height: 30px;
+    }
+  }
+}
+.comments-pages-wrap {
+  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+  border-top: 1px solid rgba(0, 0, 0, 0.13);
+  padding: 15px 0;
+  ul {
+    float: right;
+    li {
+      float: left;
+      margin: 0 3px;
+      a {
+        border: 1px solid transparent;
+        color: #777;
+        &:hover,
+        &.current-page {
+          .radius(3px);
+          background-color: rgba(0,0,0,0.03);
+        }
+        &.current-page {
+          color: #d32;
+          border: 1px solid #ccc;
+        }
+        padding: 2px 5px;
+        font-size: 12px;
+      }
+    }
+  }
+
+}
+.declare-comment-wrap {
+  color: #333;
+  h3 {
+    line-height: 25px;
+    font-size: 16px;
+    font-weight: normal;
+    margin: 15px 0;
+  }
+  p {
+    margin: 0 0 10px;
+    input {
+      height: 25px;
+    }
+  }
+  .declare-btn {
+    padding: 5px 10px;
+    color: #fff;
+    background-color: #333;
+  }
+}
+/* 评论回复 end */

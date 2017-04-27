@@ -376,153 +376,47 @@ body {
   background-color: #333;
 }
 /* 评论回复 end */
-.main {
-  width: 1200px;
-  margin: 15px auto 0;
+.message-board-wrap {
+  background: #fff;
+  padding: 15px;
+  margin-top: 15px;
 }
-.article-list-wrap {
-  float: left;
-  width: 862px;
-  overflow: hidden;
-}
-.article {
-  margin: 20px 0 0 0;
-  padding: 20px;
-  background: #f1f1f1;
-}
-.article .article-title {
+.message-board-wrap .message-board-title {
+  margin: 0 0 25px 0;
+  height: 40px;
+  line-height: 40px;
+  font-weight: normal;
   font-size: 16px;
-  margin: 0 0 10px 0;
+  border-bottom: 3px solid #E15782;
 }
-.article .article-title a {
-  color: #272A30;
-}
-.article-summary-wrap {
-  height: 200px;
-}
-.article-summary-wrap .article-img-wrap {
-  display: block;
-  width: 208px;
-  height: 108px;
-  overflow: hidden;
-  float: left;
-  margin-right: 15px;
-}
-.article-summary-wrap .article-img-wrap img {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  max-height: 100%;
-}
-.article-summary-wrap .article-content {
-  text-indent: 2em;
-  line-height: 30px;
-  font-size: 14px;
-}
-.article-summary-wrap .read-more {
+.message-board-wrap .message-board-title a {
   position: relative;
-  top: 0;
-  float: right;
-  display: block;
-  color: #fff;
-  background: rgba(225, 87, 130, 0.6);
-  transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  /* Firefox 4 */
-  -webkit-transition: all 0.3s;
-  /* Safari 和 Chrome */
-  -o-transition: all 0.3s;
-  /* Opera */
-  padding: 5px 10px;
-}
-.article-summary-wrap .read-more:hover {
-  background: #e15782;
-}
-.article-footer-wrap {
-  margin: 15px 0 0 0;
-}
-.article-footer-wrap span:not(:last-child) {
-  margin: 0 20px 0 0;
-}
-.article-footer-wrap .article-type {
-  float: right;
-}
-.article-footer-wrap .article-type a {
-  color: #666;
-}
-.article-relation-wrap {
-  width: 300px;
-  float: right;
-  margin: 0 0 0 38px;
-}
-.article-type-wrap .type {
-  float: left;
-  width: 90px;
-  height: 90px;
-  line-height: 90px;
-  text-align: center;
-  margin: 0 10px 10px 0;
-  background: #71a532;
-  color: #fff;
-}
-.article-type-wrap .type:nth-child(1) {
-  background: #a98659;
-}
-.article-type-wrap .type:nth-child(2) {
-  background: #8c49ad;
-}
-.article-type-wrap .type:nth-child(3) {
-  background: #e7769e;
-}
-.article-type-wrap .type:nth-child(4) {
-  background: #ff9900;
-}
-.article-type-wrap .type:nth-child(5) {
-  background: #63B6F7;
-}
-.article-type-wrap .type a {
-  display: block;
-  width: 100%;
-  height: 100%;
-  color: #fff;
-}
-.article-tags .tag {
+  top: 3px;
   display: inline-block;
-  padding: 6px 15px;
-  color: #666;
-  background: #fafafa;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  -moz-box-shadow: 0 0 3px #bbb;
-  /* 老的 Firefox */
-  box-shadow: 0 0 3px #bbb;
+  color: #272A30;
+  height: 100%;
+}
+.message-board-wrap .message-board-title a:hover {
+  border-bottom: 3px solid #d32;
+}
+.message-board-wrap .send-word-title .owner-word {
+  position: relative;
+  font-weight: normal;
+  font-size: 16px;
+  height: 30px;
+  line-height: 30px;
   margin: 0 0 10px 0;
 }
-.article-hot-random .hot-random-wrap {
-  padding-bottom: 20px;
+.message-board-wrap .send-word-title .owner-word:after {
+  position: absolute;
+  content: '';
+  display: block;
+  bottom: 0;
+  width: 67px;
+  border-bottom: 2px solid #E15782;
 }
-.article-hot-random .hot-random-wrap i {
-  vertical-align: baseline;
-}
-.article-hot-random .hot-random-wrap li {
-  height: 36px;
-  line-height: 36px;
-}
-.article-hot-random .hot-random-wrap a {
-  color: #525252;
-  margin: 0 0 0 10px;
-}
-.article-archive .archive-wrap {
-  width: 297px;
-}
-.article-archive li {
-  float: left;
-  margin-bottom: 5px;
-}
-.article-archive li:not(:nth-child(3n)) {
-  margin-right: 6px;
-}
-.article-archive li a {
-  color: #525252;
+.message-board-wrap .send-word-title .send-word {
+  text-indent: 2em;
+  font-size: 14px;
+  line-height: 30px;
 }
