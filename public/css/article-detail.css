@@ -241,6 +241,21 @@ body {
   width: 300px;
   float: right;
 }
+/*=====设置页脚紧贴底部的方法 bengin=====*/
+body {
+  display: flex;
+  flex-direction: column;
+  /*在ie中会忽略flex中的min-height*/
+  height: 100vh;
+}
+main {
+  flex: 1 0 auto;
+}
+header,
+footer {
+  flex-shrink: 0;
+}
+/*=====设置页脚紧贴底部的方法 end=====*/
 /*=====布局类 end=====*/
 /* 评论回复 begin */
 .comments-wrap .comments-all {

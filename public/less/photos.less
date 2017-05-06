@@ -1,0 +1,72 @@
+@import "comm.less";
+.photos-title {
+  font-weight: normal;
+  font-size: 16px;
+  height: 40px;
+  line-height: 40px;
+  margin: 0 0 25px;
+  border-bottom: 3px solid rgb(225, 87, 130);
+  a {
+    display: inline-block;
+    color: #272A30;
+    height: 100%;
+  }
+}
+.photos-wrap {
+  background: #fff;
+  padding: 10px;
+  margin-top: 15px;
+}
+.photos-list {
+  ul{
+
+    li {
+      float: left;
+      width: 184px;
+      height: 176px;
+      margin: 0 6px;
+    }
+
+  }
+
+  .photo-wrap {
+    position: relative;
+    width: 100%;
+    height: 154px;
+    a {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin-top: -25px;
+  }
+  .pic-num {
+    position: absolute;
+    top: auto;
+    bottom: 5px;
+    right: 5px;
+    left: auto;
+    color: #fff;
+    font-size: 26px;
+    font-family: Gulim;
+    line-height: 1;
+  }
+  .photo-name {
+    font-size: 14px;
+    height: 16px;
+    line-height: 16px;
+    a {
+      margin: 3px 0;
+      color: #333;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  }
+}

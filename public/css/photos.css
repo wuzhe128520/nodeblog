@@ -391,3 +391,67 @@ footer {
   background-color: #333;
 }
 /* 评论回复 end */
+.photos-title {
+  font-weight: normal;
+  font-size: 16px;
+  height: 40px;
+  line-height: 40px;
+  margin: 0 0 25px;
+  border-bottom: 3px solid #e15782;
+}
+.photos-title a {
+  display: inline-block;
+  color: #272A30;
+  height: 100%;
+}
+.photos-wrap {
+  background: #fff;
+  padding: 10px;
+  margin-top: 15px;
+}
+.photos-list ul li {
+  float: left;
+  width: 184px;
+  height: 176px;
+  margin: 0 6px;
+}
+.photos-list .photo-wrap {
+  position: relative;
+  width: 100%;
+  height: 154px;
+}
+.photos-list .photo-wrap a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.photos-list .photo-wrap img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin-top: -25px;
+}
+.photos-list .photo-wrap .pic-num {
+  position: absolute;
+  top: auto;
+  bottom: 5px;
+  right: 5px;
+  left: auto;
+  color: #fff;
+  font-size: 26px;
+  font-family: Gulim;
+  line-height: 1;
+}
+.photos-list .photo-wrap .photo-name {
+  font-size: 14px;
+  height: 16px;
+  line-height: 16px;
+}
+.photos-list .photo-wrap .photo-name a {
+  margin: 3px 0;
+  color: #333;
+}
+.photos-list .photo-wrap .photo-name a:hover {
+  text-decoration: underline;
+}
