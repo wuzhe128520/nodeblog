@@ -57,11 +57,11 @@
 .title {
   margin: 0 0 20px 0;
 }
-.pl10 {
-  padding-left: 10px;
+.pl30 {
+  padding-left: 30px;
 }
-.pr10 {
-  padding-right: 10px;
+.pr30 {
+  padding-right: 30px;
 }
 .see-more {
   float: right;
@@ -391,6 +391,14 @@ footer {
   background-color: #333;
 }
 /* 评论回复 end */
+/*=====iconfont样式 begin=====*/
+.iconfont-wrap {
+  color: #888;
+}
+.iconfont-wrap:hover {
+  color: #333;
+}
+/*=====iconfont样式 end=====*/
 .mood-wrap {
   width: 1200px;
   margin: 20px auto 20px;
