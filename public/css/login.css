@@ -398,131 +398,134 @@ footer {
   color: #333;
 }
 /*=====iconfont样式 end=====*/
-.main-wrap {
-  margin-top: 15px;
-  background: #F1F0EE;
-  padding: 15px;
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
-.article-detail-wrap {
-  word-wrap: break-word;
+body {
+  background: url(../image/bg1.jpg) no-repeat 62% 90%;
+  background-size: cover;
+  text-align: center;
+  font-family: 'Josefin Sans', sans-serif;
 }
-.article-nav {
-  height: 42px;
-  line-height: 42px;
-  border-bottom: 3px solid #E15782;
+/*=====登录 begin*/
+.login-title {
+  margin: 40px 0 32px;
 }
-.article-nav li {
+.login-title h1 {
+  font-size: 48px;
+  color: #fff;
+  letter-spacing: 4px;
+  font-weight: 500;
+}
+.main-content-wrap {
+  position: relative;
+  width: 23%;
+  margin: 0 auto;
+}
+.main-content-wrap .img-wrap .login-img {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+}
+.no-account {
   float: left;
+  text-indent: 30px;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 5px 0;
+  line-height: 25px;
 }
-.article-nav li a {
-  color: #272A30;
-  font-size: 12px;
+.no-account .register-link-wrap {
+  font-size: 0;
 }
-.article-title {
-  text-align: center;
-  font-weight: normal;
-  font-size: 22px;
-  margin: 20px 0;
+.no-account .register-link {
+  color: #fff;
+  border-bottom: 1px solid #fff;
+  padding: 5px 0;
+  font-size: 16px;
 }
-.article-time-view {
-  text-align: center;
-  border: 1px dashed #ccc;
-  margin: 0 30px 10px 30px;
-  font-size: 12px;
-  padding: 3px 0;
-}
-.article-detail-content {
-  font-size: 14px;
-  line-height: 30px;
-  margin-bottom: 10px;
-}
-.article-detail-content p {
-  text-indent: 2em;
-  padding: 0;
-}
-.aside h2 {
-  font-size: 14px;
-  color: #000;
-  height: 38px;
-  line-height: 38px;
-  padding: 0 0 0 10px;
-}
-.aside .aside-content-wrap {
-  margin: 0 0 10px 0;
-}
-.number-wrap > li {
-  height: 24px;
-  line-height: 24px;
-}
-.number-wrap .number {
-  display: inline-block;
-  width: 30px;
-  text-align: center;
-  vertical-align: middle;
-}
-.number-wrap .number + a {
-  color: #525252;
-  font-size: 12px;
-  transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  /* Firefox 4 */
-  -webkit-transition: all 0.3s;
-  /* Safari 和 Chrome */
-  -o-transition: all 0.3s;
-  /* Opera */
-}
-.number-wrap .number + a:hover {
-  color: #E15782;
-  text-decoration: underline;
-}
-.aside-content-wrap {
-  border: 1px solid #D8D8D6;
-  border-top-width: 3px;
-  border-top-color: #E15782;
-}
-.hot-article-wrap ul li {
-  padding: 0 0 0 6px;
-  height: 30px;
-  line-height: 30px;
-}
-.hot-article-wrap ul li > a {
-  color: #525252;
-  font-size: 12px;
-  margin: 0 0 0 6px;
-}
-.relation-tags {
-  color: #E15782;
-  margin: 0 0 10px 0;
-  font-size: 14px;
-}
-.relation-tags > * {
-  display: inline-block;
-}
-.relation-tags > a {
-  font-size: 14px;
-  color: #FE5187;
-  padding: 5px 20px;
-  background: rgba(153, 153, 153, 0.8);
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-.relation-tags > a:hover {
-  background: #E15782;
+.login-form {
   color: #fff;
 }
-.other-article-wrap {
-  font-size: 14px;
-  margin: 0 0 10px 0;
+.remember-login {
+  margin-top: 32px;
 }
-.other-article-wrap li {
-  height: 24px;
-  line-height: 24px;
+.remember-login .checked-pwd {
+  float: left;
+  width: 38%;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 10px;
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: 1px;
 }
-.other-article-wrap li.empty {
+.remember-login .login-btn-wrap {
+  float: right;
+  width: 30%;
+}
+/*=====登录 end*/
+input[type='text'],
+input[type='password'] {
+  font-size: 16px;
+  padding: 16px 0;
+  border: none;
+  margin-bottom: 5px;
+  background: none;
+  border-bottom: 1px solid #eee;
+  width: 87%;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #fff;
+}
+.login-btn,
+.register-btn {
+  color: #fff;
+  background: #d20962;
+  padding: 8px 31px;
+  font-size: 16px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  font-weight: 400;
+  transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  /* Firefox 4 */
+  -webkit-transition: all 0.5s;
+  /* Safari 和 Chrome */
+  -o-transition: all 0.5s;
+  /* Opera */
+}
+.login-btn:hover,
+.register-btn:hover {
+  background: #fff;
   color: #000;
 }
-.other-article-wrap li > a {
-  font-size: 14px;
-  color: #E15782;
+.title {
+  font-size: 24px;
+  color: #fff;
+  letter-spacing: 50px;
+  text-indent: 50px;
+  margin: 5px 0 32px 0;
+  font-weight: 400;
+}
+/*=====注册 begin=====*/
+.register-form {
+  color: rgba(255, 255, 255, 0.6);
+}
+.register-btn {
+  width: 87%;
+  margin: 15px 0;
+}
+.auth-wrap {
+  display: block;
+  margin: 10px 0 0 0;
+}
+.auth-wrap > img {
+  width: 87%;
+}
+/*=====注册 end=====*/
+.login-wrap,
+.register-wrap {
+  display: none;
 }

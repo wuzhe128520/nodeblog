@@ -1,0 +1,128 @@
+@import "comm.less";
+html,body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  background: url(../image/bg1.jpg) no-repeat 62% 90%;
+  background-size: cover;
+  text-align: center;
+  font-family: 'Josefin Sans', sans-serif;
+}
+/*=====登录 begin*/
+.login-title {
+  margin: 40px 0 32px;
+  h1 {
+    font-size: 48px;
+    color: #fff;
+    letter-spacing: 4px;
+    font-weight: 500;
+  }
+}
+.main-content-wrap {
+  position: relative;
+  width: 23%;
+  margin: 0 auto;
+  .img-wrap {
+    .login-img {
+      .radius(50%);
+    }
+  }
+}
+.no-account {
+      float: left;
+      text-indent: 30px;
+      color: rgba(255,255,255,0.5);
+      padding: 5px 0;
+      line-height: 25px;
+      .register-link-wrap {
+        font-size: 0;
+      }
+      .register-link {
+        color: #fff;
+        border-bottom: 1px solid #fff;
+        padding: 5px 0;
+        font-size: 16px;
+      }
+    }
+.login-form {
+  color: #fff;
+}
+.remember-login {
+  margin-top: 32px;
+  .checked-pwd {
+    float: left;
+    width: 38%;
+    color: rgba(255,255,255,0.6);
+    margin-top: 10px;
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+  .login-btn-wrap {
+    float: right;
+    width: 30%;
+
+  }
+}
+
+/*=====登录 end*/
+input[type='text'],
+input[type='password'] {
+  font-size: 16px;
+  padding: 16px 0;
+  border: none;
+  margin-bottom: 5px;
+  background: none;
+  border-bottom: 1px solid #eee;
+  width: 87%;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #fff;
+}
+.login-btn,
+.register-btn {
+  color: #fff;
+  background: #d20962;
+  padding: 8px 31px;
+  font-size: 16px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  font-weight: 400;
+  .transition(all,0.5s);
+  &:hover {
+    background: #fff;
+    color: #000;
+  }
+}
+.title {
+  font-size: 24px;
+  color: #fff;
+  letter-spacing: 50px;
+  text-indent: 50px;
+  margin: 5px 0 32px 0;
+  font-weight: 400;
+}
+/*=====注册 begin=====*/
+.register-form {
+  color: rgba(255,255,255,0.6);
+}
+.register-btn {
+  width: 87%;
+  margin: 15px 0;
+}
+.auth-wrap {
+  display: block;
+  margin: 10px 0 0 0;
+  &>img {
+    width: 87%;
+  }
+}
+/*=====注册 end=====*/
+.login-wrap,
+.register-wrap {
+  display: none;
+}
+
+

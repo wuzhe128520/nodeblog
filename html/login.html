@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="../public/css/reset.css">
+    <link rel="stylesheet" href="../public/css/login.css">
+    <link rel="stylesheet" href="../public/font/iconfont.css">
+</head>
+<body>
+<header>
+    <div class="login-title">
+        <h1>无畏滴青春博客</h1>
+    </div>
+</header>
+<main>
+    <div class="main-content-wrap">
+        <div class="img-wrap">
+            <figure>
+                <img src="../public/image/pro.jpg" class="login-img" alt="登录头像" />
+                <figcaption class="title" id="title"></figcaption>
+            </figure>
+        </div>
+        <div class="login-register-wrap">
+            <!--登录 begin-->
+            <div id="login" class="login-wrap clearfix">
+                <form action="" method="post" class="login-form">
+                    <div class="username-wrap">
+                        <i class="iconfont icon-username"></i>
+                        <input type="text" placeholder="用户名" />
+                    </div>
+                    <div class="password-wrap">
+                        <i class="iconfont icon-unlock"></i>
+                        <input type="password" placeholder="密码" />
+                    </div>
+                    <div class="remember-login clearfix">
+                        <span class="checked-pwd">
+                            <input type="checkbox" />
+                             记住密码?
+                        </span>
+                        <div class="login-btn-wrap">
+                            <input type="submit" value="登录" class="login-btn" />
+                        </div>
+                    </div>
+                </form>
+                <p class="no-account">还没有账号？点此立即
+                    <span class="register-link-wrap">
+                        <a class="register-link js_register_link" href="javascript:void(0);" id="registerLink">注册</a>
+                    </span>
+                </p>
+            </div>
+            <!--登录 end-->
+            <!--注册 begin-->
+            <div id="register" class="register-wrap">
+                <form action="" method="post" class="register-form">
+                    <ul>
+                        <li>
+                            <div>
+                                <input type="text" placeholder="用户名" name="" id="username">
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <input type="password" placeholder="密码" id="password">
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <input type="text" placeholder="邮箱(用于邮件验证)" id="email">
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <input type="text" placeholder="验证码(证明你不是机器人)" class="auth-code">
+                                <a href="javascript:void(0);" class="auth-wrap">
+                                    <img src="../public/image/code.png" width="87%" height="50" />
+                                </a>
+                            </div>
+                        </li>
+                        <li>
+                            <input type="submit" value="注册" class="register-btn" />
+                        </li>
+
+                    </ul>
+                </form>
+                <p class="no-account">已有账号？点此立即
+                    <span class="register-link-wrap">
+                        <a class="register-link js_register_link" href="javascript:void(0);" id="loginLink">登录</a>
+                    </span>
+                </p>
+            </div>
+            <!--注册 end-->
+        </div>
+    </div>
+</main>
+<footer>
+    <div class="footer-wrap">
+        <section>
+            <div class="footer-content">
+                <div class="content-wrap">
+                    <div class="friend-links"></div>
+                    <div class="copyright">
+                        Copyright &copy<span id="siteDate"></span> 无畏滴青春鄂ICP备16019423号
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</footer>
+<!--尾部end-->
+<script type="text/javascript" src="../public/js/jquery.min.js"></script>
+<script type="text/javascript" src="../public/js/comm.js"></script>
+<script type="text/javascript">
+    $(init);
+    function init(){
+        showBlock();
+        //点击登录链接，显示登录
+        $('#loginLink').click (
+            function(event){
+                event.stopPropagation();
+                event.preventDefault();
+                $('#login').show();
+                $('#register').hide();
+                $('#title').text('登录');
+         });
+        $('#registerLink').click(
+            function(event){
+                event.stopPropagation();
+                event.preventDefault();
+                $('#login').hide();
+                $('#register').show();
+                $('#title').text('注册');
+        });
+    }
+    //通过请求参数(show)来决定显示登录或注册,1 显示登录 0 显示注册
+    function showBlock(){
+        var href = window.location.href;
+        //链接是否有多个参数
+            //匹配show的参数
+            var regexp = /show=(\w+)/g;
+            //match这里返回的数组
+            var matchStr =regexp.test(href);
+            console.log(RegExp.$1);
+            //显示登录
+            if(Number(RegExp.$1)===1){
+                $('#login').show();
+                $('#title').text('登录');
+            }
+            else {
+                //显示注册
+                $('#register').show();
+                $('#title').text('注册');
+
+            }
+    }
+</script>
+</body>
+</html>
