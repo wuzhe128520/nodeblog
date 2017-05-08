@@ -52,7 +52,7 @@ const express = require('express'),
            if(req.session.admin){
                res.locals.admin = req.session.admin;
            }
-           sql('select * from article order by time desc limit 0,2',(err, data)=>{
+           sql('select * from article order by time desc limit 0,10',(err, data)=>{
                sql('select count(*) as articlenum  from article',(errs,counts)=>{
                    console.log(counts);
                    res.render('index.ejs',{data: data,counts: counts});
@@ -83,7 +83,7 @@ const express = require('express'),
        });
        //分页的原理
        router.get('/article-detail/list-:page.html',(req, res)=>{
-           sql('select * from article order by time desc limit ?,2',[(req.params.page-1)*2],(err, data)=>{
+           sql('select * from article order by time desc limit ?,10',[(req.params.page-1)*10],(err, data)=>{
                sql('select count(*) as articlenum  from article',(errs,counts)=>{
                    console.log(counts);
                    res.render('index.ejs',{data: data,counts: counts});
@@ -117,7 +117,7 @@ const express = require('express'),
                             }
                 });
         });
-        //发表文章
+        //发表评论
         router.post('/article-detail/:id.html',(req, res)=>{
             console.log(req.params.id,req.body.content);
         sql('insert into articlecomments (uid,aid,content) values (0,?,?)',[req.params.id, req.body.content],(err,data)=>{

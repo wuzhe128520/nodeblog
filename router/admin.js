@@ -18,7 +18,7 @@ router.use((req,res,next)=>{
 router.get('/',(req,res) => {
     res.render('admin/admin');
 });
-
+//用户管理
 router.get('/user',(req, res)=> {
     sql('select * from user',(err,data)=>{
             if(err){
@@ -28,6 +28,7 @@ router.get('/user',(req, res)=> {
             res.render('admin/user',{data: data});
     });
 });
+//删除用户
 router.post('/user/delete',(req, res)=> {
     console.log(req.body.userid);
     let userid = req.body.userid;
@@ -59,7 +60,8 @@ router.get('/user/update',(req, res)=> {
             res.send("修改成功");
    });
 });
-router.get('/article',(req, res)=>{
+//发表文章后台页面
+router.get('/writearticle',(req, res)=>{
     res.render('admin/article');
 });
 //upload.single 用来接收一个文件
@@ -71,9 +73,10 @@ router.post('/article',upload.single('uploadfile'),(req,res)=>{
         author = req.body.author,
         content = req.body.content,
         img = '/image/' + req.file.filename,
+        summery = req.body.summery.substr(0,200) + '...',
         time = new Date().toLocaleString();
         console.log(time);
-        sql('insert into article(title,tag,author,content,time,img) values(?,?,?,?,?,?)',[title,tag,author,content,time,img],(err,data)=>{
+        sql('insert into article(title,tag,author,content,time,img,summery) values(?,?,?,?,?,?,?)',[title,tag,author,content,time,img,summery],(err,data)=>{
                 if(err){
                     console.log(err);
                     res.send('添加文章失败！');
@@ -82,7 +85,6 @@ router.post('/article',upload.single('uploadfile'),(req,res)=>{
                 res.send("添加文章成功！");
 
         });
-
 });
 router.get('/nav',(req,res)=>{
     //查询父级

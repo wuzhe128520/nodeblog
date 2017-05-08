@@ -1,56 +1,179 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 <!--引入其他模板页面-->
 <% include header.ejs %>
-<!--
-get方式提交
-<form action="/reg" method="get">
-    <input type="text" name="name" />
-    <input type="text" name="pass" />
-    <input type="submit" />
-</form>
--->
-<!--<img src="image/public.jpg"  alt="" />-->
-<h1>博客首页</h1>
-<% if(locals.login) {%>
-欢迎：
-<% if(locals.admin){%>
-       管理员
-    <%}%>
-    <%=locals.login%>
-    <a href="/logout">退出</a>
-<%}else {%>
-    <a href="/login">登录</a>
-    <a href="/register">注册</a>
+<script>
+    loadStaticFile('css/index.css');
+</script>
+<main>
+    <div class="main clearfix">
+        <div class="article-list-wrap">
+            <h2 class="article-recommend h-style">文章<span class="highlight">推荐</span></h2>
+            <!--文章列表begin-->
+            <%for(var i = 0;i<data.length;i++){%>
+            <section>
+                <div class="article">
+                    <h2 class="article-title">
+                        <a href="/article-detail/<%=data[i].id%>.html" title="文章标题" class="js_article_title"><%=data[i].title%></a>
+                    </h2>
+                    <article>
+                        <div class="article-summary-wrap">
+                            <%if(data[i].img){%>
+                            <a href="/article-detail/<%=data[i].id%>.html" class="article-img-wrap">
+                                <img src="<%=data[i].img%>" />
+                            </a>
+                            <%}%>
+                            <p class="article-content">
+                                <%=data[i].summery%>
+                            </p>
+                            <a href="/article-detail/<%=data[i].id%>.html" class="read-more">阅读全文</a>
+                        </div>
+                    </article>
+                    <footer>
+                        <div class="article-footer-wrap">
+                        <span>
+                            <a href="javascript:void(0);" class="iconfont-wrap">
+                                <i title="日期图标" class="iconfont icon-time"></i>
+                                <time><%=data[i].time%></time>
+                            </a>
+                        </span>
+                            <span>
+                                <a href="javascript:void(0);" class="iconfont-wrap">
+                                    <i title="浏览量图标" class="iconfont icon-eye"></i>
+                                    浏览529次
+                                </a>
 
-<%}%>
-<!-- 接收的方式  <%= %> -->
-<!-- <%= %>这种方式接收的是转义后的 -->
-<!-- <%- %>这种方式接收的是没有转义的  -->
-<!-- <% %> 主要是用来写js代码的 -->
-<%for(var i = 0;i<data.length;i++){%>
-<a href="/article-detail/<%=data[i].id%>.html">
-<div>
-    <%if(data[i].img){%>
-        <img src="<%=data[i].img%>" />
-    <%}%>
-    <h1><%=data[i].title%></h1>
-    <p><%=data[i].author%>   标签：<%=data[i].tag%></p>
-    <p><time><%=data[i].time%></time></p>
-    <div>
-        <%-data[i].content%>
+                        </span>
+                            <span>
+                                <a href="javascript:void(0);" class="iconfont-wrap">
+                                    <i title="顶一个图标" class="iconfont icon-ding"></i>
+                                    顶(122)
+                                </a>
+                        </span>
+                            <span>
+                                <a href="javascript:void(0);" class="iconfont-wrap">
+                                        <i title="踩一个图标" class="iconfont icon-iconfontcai"></i>
+                                        踩(100)
+                                </a>
+                        </span>
+                            <span>
+                                <a href="javascript:void(0);" class="iconfont-wrap">
+                                    <i title="评论图标" class="iconfont icon-comments"></i>
+                                    评论(88888)
+                                </a>
+                        </span>
+                            <!--分类-->
+                            <span class="article-type">
+                            标签:[<a href="javascript:void(0);" class=""><%=data[i].tag%></a>]
+                        </span>
+                            <!--分类-->
+                        </div>
+                    </footer>
+                </div>
+            </section>
+            <%}%>
+            <!--文章列表end-->
+        </div>
+        <aside>
+            <div class="article-relation-wrap">
+                <!--文章分类begin-->
+                <section>
+                    <div class="article-type-wrap">
+                        <h3 class="h-style title">文章<span class="highlight">分类</span></h3>
+                        <ul class="type-wrap clearfix">
+                            <li class="type"><a href="javascript:void(0);">html5</a></li>
+                            <li class="type"><a href="javascript:void(0);">css3</a></li>
+                            <li class="type"><a href="javascript:void(0);">jquery</a></li>
+                            <li class="type"><a href="javascript:void(0);">vue</a></li>
+                            <li class="type"><a href="javascript:void(0);">gulp</a></li>
+                            <li class="type"><a href="javascript:void(0);">javascript</a></li>
+                        </ul>
+                    </div>
+                </section>
+                <!--文章分类end-->
+                <!--标签云begin-->
+                <section>
+                    <div class="article-tags">
+                        <h3 class="h-style title">标签<span class="highlight">云</span></h3>
+                        <a class="tag"  href="javascript:void(0);">前端</a>
+                        <a class="tag"  href="javascript:void(0);">seo</a>
+                        <a class="tag"  href="javascript:void(0);">博客</a>
+                        <a class="tag"  href="javascript:void(0);">jquery</a>
+                        <a class="tag"  href="javascript:void(0);">html5</a>
+                        <a class="tag"  href="javascript:void(0);">css3</a>
+                        <a class="tag"  href="javascript:void(0);">angular</a>
+                        <a class="tag"  href="javascript:void(0);">react</a>
+                        <a class="tag"  href="javascript:void(0);">vue</a>
+                        <a class="tag"  href="javascript:void(0);">网站</a>
+                        <a class="tag"  href="javascript:void(0);"> node</a>
+                        <a class="tag"  href="javascript:void(0);"> webpack</a>
+                        <a class="tag"  href="javascript:void(0);"> github</a>
+                        <a href="javascript:void(0);" class="tag" id="moreTag">更多</a>
+                    </div>
+                </section>
+                <!--标签云end-->
+                <!--热门文章begin-->
+                <section>
+                    <div class="article-hot article-hot-random">
+                        <h3 class="h-style title">热门<span class="highlight">文章</span></h3>
+                        <ul class="hot-wrap hot-random-wrap pl30 pr30">
+                            <li class="ellipsis"><i class="icon icon-diy icon-black">1</i><a href="javascript:void(0);">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-red">2</i><a href="javascript:void(0);">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-green">3</i><a href="javascript:void(0);">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-orange">4</i><a href="javascript:void(0);">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-blue">5</i><a href="javascript:void(0);">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-gray">6</i><a href="javascript:void(0);">杨雨个人博客模板下载</a></li>
+                        </ul>
+                    </div>
+                </section>
+                <!--热门文章end-->
+                <!--随机文章begin-->
+                <section>
+                    <div class="article-random article-hot-random">
+                        <h3 class="h-style title">随机<span class="highlight">文章</span></h3>
+                        <ul class="random-wrap hot-random-wrap pl30 pr30">
+                            <li class="ellipsis"><i class="icon icon-diy icon-default">1</i><a href="">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-default">2</i><a href="">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-default">3</i><a href="">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-default">4</i><a href="">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-default">5</i><a href="">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-default">6</i><a href="">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-default">7</i><a href="">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-default">8</i><a href="">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-default">9</i><a href="">杨雨个人博客模板下载</a></li>
+                            <li class="ellipsis"><i class="icon icon-diy icon-default">10</i><a href="">杨雨个人博客模板下载</a></li>
+                        </ul>
+                    </div>
+                </section>
+                <!--随机文章end-->
+                <!--文章存档begin-->
+                <section>
+                    <div class="article-archive">
+                        <h3 class="h-style title">文章<span class="highlight">存档</span></h3>
+                        <div class="pl30 pr30">
+                            <ul class="archive-wrap clearfix">
+                                <li><a href="">2017年04月</a></li>
+                                <li><a href="">2017年03月</a></li>
+                                <li><a href="">2017年02月</a></li>
+                                <li><a href="">2017年01月</a></li>
+                                <li><a href="">2016年12月</a></li>
+                                <li><a href="">2016年11月</a></li>
+                                <li><a href="">2016年10月</a></li>
+                                <li><a href="">2016年09月</a></li>
+                                <li><a href="">2016年08月</a></li>
+                                <li><a href="">2016年07月</a></li>
+                                <li><a href="">2016年06月</a></li>
+                                <li><a href="" class="">查看更多</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                <!--文章存档end-->
+            </div>
+        </aside>
     </div>
-</div>
-</a>
-<%}%>
+</main>
 <div>
     <ul>
-        <%for(var i = 0;i < Math.ceil(counts[0].articlenum/2);i++){%>
+        <%for(var i = 0;i < Math.ceil(counts[0].articlenum/10);i++){%>
             <li class="active">
                 <a href="/article-detail/list-<%= i+1%>.html">
                     第<%=i+1%>页
@@ -59,7 +182,34 @@ get方式提交
         <%}%>
     </ul>
 </div>
-<div style="color:red;">修改后的首页</div>
-<script src="/js/jquery.min.js"></script>
+<% include footer.ejs%>
+<script type="text/javascript">
+    $(init);
+    function init() {
+        share(
+            {
+                common: {
+                    bdText : $("#blog").text(),
+                    bdDesc : '文章摘要（一般是前250字）',
+                    bdUrl : window.location.href.split("?")[0],
+                    onBeforeClick: function(cmd, config){
+                        alert(config.valueOf());
+                        for(let i in config){
+                            console.log(i,config[i]);
+                        }
+                        //config.bdText= $('.js_article_title').text();
+                        return config;
+                    }
+                },
+                share: [{
+                    "bdSize" : 24
+                }]
+            }
+        );
+        var time = new Date();
+        var year=time.getFullYear();
+        document.getElementById("siteDate").innerHTML = year;
+    }
+</script>
 </body>
 </html>

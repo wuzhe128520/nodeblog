@@ -214,6 +214,13 @@ var comm = {
               }
           }
      },
+     /*
+      *   去除html标签:
+      *
+     */
+     escapeHTML: function(str){
+        return str.replace(/<[\/\!]*[^<>]*>/ig,"");
+     }
 };
 
 

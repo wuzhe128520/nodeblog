@@ -13,10 +13,12 @@
     文章标题：<input type="text" class="title" name="title" />
     标签：    <input type="text" class="tag" name="tag"/>
     作者：    <input type="text" class="author" name="author" />
-    内容：   <textarea class="content" value="" name="content"></textarea>
+       <input class="content" value="" name="content" type="hidden"></input>
     <input type="file" name="uploadfile"/>
+    <input type="hidden" value="" name="summery" id="summery">
     <button id="declare">发布文章</button>
 </form>
+内容：
 <script id="editor" type="text/plain" style="width:1024px;height:500px;"></script>
 
 <script src="/js/jquery.min.js"></script>
@@ -27,6 +29,8 @@
         $("#declare").click(function(e){
             e.preventDefault();
             var content = ue.getContent();
+            var summery = ue.getContentTxt();
+            $("#summery").val(summery);
             $(".content").val(content);
             console.log(content);
             $("#form").submit();

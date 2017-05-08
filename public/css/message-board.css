@@ -94,6 +94,15 @@ body {
 }
 .head-wrap .login-reg-wrap {
   float: right;
+  font-size: 14px;
+}
+.head-wrap .login-reg-wrap .logout {
+  margin: 0 0 0 10px;
+  font-size: 12px;
+  color: #888;
+}
+.head-wrap .login-reg-wrap .logout:hover {
+  color: #fff;
 }
 .head-wrap .login-btn,
 .head-wrap .reg-btn {
