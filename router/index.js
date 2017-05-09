@@ -82,7 +82,7 @@ const express = require('express'),
            });
        });
        //分页的原理
-       router.get('/article-detail/list-:page.html',(req, res)=>{
+       router.get('/list-:page.html',(req, res)=>{
            sql('select * from article order by time desc limit ?,10',[(req.params.page-1)*10],(err, data)=>{
                sql('select count(*) as articlenum  from article',(errs,counts)=>{
                    console.log(counts);
