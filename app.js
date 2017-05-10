@@ -9,15 +9,16 @@ const http = require('http'),
        cookieParser = require('cookie-parser'),
         sql = require('./module/mysql'),
         session = require('express-session'),
+        utils = require('./module/utils');
         ws = require('socket.io');
         module.exports = app;
-
        //响应浏览器的方法
        //第一个参数访问的路径 2个参数： 回调
        /*app.get('/',(req,res)=>{
            //响应数据的方法之一
             res.send(`这是吴哲写的node噢`);
        });*/
+       app.locals.dateFormat = utils.dateFormat;
        //设置模板引擎的目录
        app.set('views',__dirname + '/views');
        //设置使用的模板引擎是ejs

@@ -9,7 +9,7 @@
 标签<%=data[0]['tag']%>
 作者<%=data[0]['author']%>
 内容<%-data[0]['content']%>
-发布时间<%=data[0]['time']%><br/>
+发布时间<%=locals.dateFormat(data[0].time)%><br/>
 <p>评论：</p>
 <% if(comments.length !=0){%>
     <% for(var i in comments){%>

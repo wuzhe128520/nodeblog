@@ -14,7 +14,9 @@
        });*/
 const express = require('express'),
        router = express.Router(),
+       dateformat = require('moment'),
        sql = require('../module/mysql');
+
 /*       router.get('/',(req,res) => {
            sql('select * from user',(err,data)=>{
                //res.render()用来响应模板引擎文件的，第二个参数是向模板文件传递的数据(json)
@@ -55,6 +57,7 @@ const express = require('express'),
            sql('select * from article order by time desc limit 0,10',(err, data)=>{
                sql('select count(*) as articlenum  from article',(errs,counts)=>{
                    console.log(counts);
+                   console.log(data);
                    res.render('index.ejs',{data: data,counts: counts});
                });
            });
