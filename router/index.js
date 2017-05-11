@@ -1,54 +1,10 @@
 /**
  * Created by Administrator on 2017/3/10.
  */
-/*const express = require("express");
-       router = express.Router();
-       router.get('/',(req,res)=>{
-           //响应一个文件的方法(必须是绝对路径)
-           res.sendFile(process.cwd() + '/views/index.html');
-            //res.send("hello");
-            //res.json() 响应json数据
-       });
-       router.get('/123',(req,res)=>{
-            res.send("world")
-       });*/
 const express = require('express'),
        router = express.Router(),
        dateformat = require('moment'),
        sql = require('../module/mysql');
-
-/*       router.get('/',(req,res) => {
-           sql('select * from user',(err,data)=>{
-               //res.render()用来响应模板引擎文件的，第二个参数是向模板文件传递的数据(json)
-               res.render('index',{data: data});
-           });
-       });
-       router.get('/reg',(req,res)=>{
-           //get方式提交的内容
-           // ? 动态数据 1、数据库代码  2、动态的值[]
-           //req.query获取get方式提交的表单数据
-           sql('insert into user (username,password) values (?,?)',[req.query.name,req.query.pass],(err,data)=>{
-
-               res.json({
-                   chenggong: "成功"
-               });
-
-           });
-       });
-
-       router.get('/qingrenjie',(req, res)=> {
-
-           res.render('post.ejs');
-
-       });
-
-       router.post('/reg',(req,res)=>{
-
-            res.json({
-                chenggong: 'post成功'
-            });
-
-       });*/
        //首页
        router.get('/',(req, res)=>{
            if(req.session.admin){
@@ -106,7 +62,9 @@ const express = require('express'),
         router.get('/article-detail/:id.html',(req, res)=>{
             //req.params 同时接收get，post，其他 提交数据的形式
                 sql('select * from article where id=?',[req.params.id],(err,data)=>{
-                    console.log(data[0]['views']);
+                            console.log(data[0]['views']);
+                            var id = req.params.id;
+                            console.log(id);
                             if(err){
                                 console.log(err);
                             }
@@ -114,10 +72,17 @@ const express = require('express'),
                                 //status 返回页面的状态码
                                 res.status(404).render('404');
                             }else {
-                                sql('select * from articlecomments where aid = ?',[req.params.id],(err,comments)=>{
+                                sql('select * from articlecomments where aid = ?',[id],(err,comments)=>{
                                     res.render('article-detail',{comments: comments,data: data});
                                 });
                             }
+                            sql('update article set views = views + 1 where id = ?',[id],(err) => {
+                               if(err){
+                                   console.log(err);
+                               } else {
+                                   console.log('浏览量自增1');
+                               }
+                            });
                 });
         });
         //发表评论
@@ -131,6 +96,57 @@ const express = require('express'),
                 res.send("评论成功！");
           });
       });
+
+      //顶
+      router.post('/ding', (req, res) => {
+            let articleId = req.body.id;
+            console.log('ding:');
+            console.log(articleId);
+            sql('update article set ding = ding + 1 where id = ?',[articleId],(err, data) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    sql('select ding from article where id = ?',[articleId],(error, ding) => {
+                        if (error) {
+                           console.log(error);
+                        } else {
+                            console.log(ding);
+                            res.json({
+                                dm: ding
+                            });
+                        }
+                    });
+
+                }
+
+            });
+      });
+
+     //踩
+     router.post('/cai', (req, res) => {
+    let articleId = req.body.id;
+    console.log('ding:');
+    console.log(articleId);
+    sql('update article set cai = cai + 1 where id = ?',[articleId],(err, data) => {
+        if (err) {
+            console.log(err);
+        } else {
+            sql('select cai from article where id = ?',[articleId],(error, cai) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log(cai);
+                    res.json({
+                        c: cai
+                    });
+                }
+            });
+
+        }
+
+    });
+});
+
        //退出
        router.get('/logout',(req, res)=>{
            res.clearCookie('login');

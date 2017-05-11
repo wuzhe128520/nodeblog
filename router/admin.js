@@ -67,7 +67,6 @@ router.get('/writearticle',(req, res)=>{
 //upload.single 用来接收一个文件
 router.post('/article',upload.single('uploadfile'),(req,res)=>{
     console.log(req.file);
-
     let title = req.body.title,
         tag = req.body.tag,
         author = req.body.author,

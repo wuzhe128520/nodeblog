@@ -5,12 +5,12 @@
 </script>
 <main>
     <div class="main clearfix">
-        <div class="article-list-wrap">
+        <div class="article-list-wrap" id="articles">
             <h2 class="article-recommend h-style">文章<span class="highlight">推荐</span></h2>
             <!--文章列表begin-->
             <%for(var i = 0;i<data.length;i++){%>
             <section>
-                <div class="article">
+                <div class="article js_article" data-articleid ='<%=data[i].id%>'>
                     <h2 class="article-title">
                         <a href="/article-detail/<%=data[i].id%>.html" title="文章标题" class="js_article_title"><%=data[i].title%></a>
                     </h2>
@@ -35,26 +35,25 @@
                                 <time><%=locals.dateFormat(data[i].time)%></time>
                             </a>
                         </span>
-                            <span>
+                        <span>
                                 <a href="javascript:void(0);" class="iconfont-wrap">
                                     <i title="浏览量图标" class="iconfont icon-eye"></i>
-                                    浏览529次
-                                </a>
-
-                        </span>
-                            <span>
-                                <a href="javascript:void(0);" class="iconfont-wrap">
-                                    <i title="顶一个图标" class="iconfont icon-ding"></i>
-                                    顶(122)
+                                    浏览<%=data[i].views|0%>次
                                 </a>
                         </span>
-                            <span>
-                                <a href="javascript:void(0);" class="iconfont-wrap">
-                                        <i title="踩一个图标" class="iconfont icon-iconfontcai"></i>
-                                        踩(100)
+                        <span>
+                                <a href="javascript:void(0);" class="iconfont-wrap js_ding">
+                                    <i title="顶一个图标" class="iconfont icon-ding" ></i>
+                                    顶(<span class="js_ding_text"><%=data[i].ding|0%></span>)
                                 </a>
                         </span>
-                            <span>
+                        <span>
+                                <a href="javascript:void(0);" class="iconfont-wrap js_cai">
+                                        <i title="踩一个图标" class="iconfont icon-iconfontcai js_cai"></i>
+                                        踩(<span class="js_cai_text"><%=data[i].cai|0%></span>)
+                                </a>
+                        </span>
+                        <span>
                                 <a href="javascript:void(0);" class="iconfont-wrap">
                                     <i title="评论图标" class="iconfont icon-comments"></i>
                                     评论(88888)
@@ -208,7 +207,55 @@
         );
         var time = new Date();
         var year=time.getFullYear();
+
         document.getElementById("siteDate").innerHTML = year;
+
+        function handleClick() {
+            var $target = $(this);
+            var articleId = $target.closest('.js_article').data('articleid');
+            ding($target,articleId);
+        }
+        $("#articles").on('click','.js_ding',handleClick);
+        //顶的业务逻辑
+        function ding($self,articleId) {
+            alert(articleId);
+            comm.ajax.commAjax({
+                url: '/ding',
+                type: 'post',
+                data: {id: articleId},
+                errorFn: function(error){
+                    alert('失败');
+                },
+                successFn: function(data){
+                    console.log(data);
+                    $self.find('.js_ding_text').text(data.dm[0].ding);
+                }
+            });
+
+        }
+
+        function handleCaiClick() {
+            var $target = $(this);
+            var articleId = $target.closest('.js_article').data('articleid');
+            cai($target,articleId);
+        }
+        $("#articles").on('click','.js_cai',handleCaiClick);
+
+        //踩的业务逻辑
+        function cai($self,articleId) {
+            comm.ajax.commAjax({
+                url: '/cai',
+                type: 'post',
+                data: {id: articleId},
+                errorFn: function(error){
+                    alert('失败');
+                },
+                successFn: function(data){
+                    console.log(data);
+                    $self.find('.js_cai_text').text(data.c[0].cai);
+                }
+            });
+        }
     }
 </script>
 </body>
