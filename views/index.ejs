@@ -70,6 +70,63 @@
             </section>
             <%}%>
             <!--文章列表end-->
+            <div class="article-footer">
+                <div class="pages clearfix">
+                    <ul class="page-wrap">
+                        <%
+                            //每页显示几条数据
+                            var  showPageNum = parseInt(pages.showPageNum),
+                            //总页数
+                            totalPage = Math.ceil(pages.counts[0].articlenum/10),
+                            //当前页
+                            currentPage = parseInt(pages.current);
+                        %>
+
+                        <li class="page">
+                            <span><%= currentPage %>/<%= totalPage %></span>
+                        </li>
+
+                        <% if(loopPage!== 1){ %>
+                            <li class="page">
+                                <a href="/list-<%= currentPage - 1 %>.html">
+                                    <
+                                </a>
+                            </li>
+                        <% } %>
+
+                        <%
+                            for(var i = 0;i < totalPage ;i++){
+                            //循环中的当前页码
+                            var loopPage = i + 1;
+                        %>
+
+                            <li class="page">
+                                <a <% if(loopPage === currentPage) { %>
+                                        class="active" href="javascript:void(0);"
+                                        <% } else { %>
+                                        href="/list-<%= loopPage %>.html"
+                                        <% } %>
+                                >
+                                    <%= loopPage %>
+                                </a>
+                            </li>
+
+                        <%}%>
+
+                        <%if(currentPage !== totalPage){%>
+
+                            <li class="page">
+                                <a href="/list-<%= currentPage + 1 %>.html">
+                                    >
+                                </a>
+                            </li>
+                            <li class="page">
+                                <a href="/list-<%= totalPage %>.html">尾页</a>
+                            </li>
+                        <%}%>
+                    </ul>
+                </div>
+            </div>
         </div>
         <aside>
             <div class="article-relation-wrap">
@@ -114,12 +171,25 @@
                     <div class="article-hot article-hot-random">
                         <h3 class="h-style title">热门<span class="highlight">文章</span></h3>
                         <ul class="hot-wrap hot-random-wrap pl30 pr30">
-                            <li class="ellipsis"><i class="icon icon-diy icon-black">1</i><a href="javascript:void(0);">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-red">2</i><a href="javascript:void(0);">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-green">3</i><a href="javascript:void(0);">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-orange">4</i><a href="javascript:void(0);">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-blue">5</i><a href="javascript:void(0);">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-gray">6</i><a href="javascript:void(0);">杨雨个人博客模板下载</a></li>
+                            <% for(var i = 0; i < topsix.length; i++){%>
+                                <li class="ellipsis">
+                                    <i class="icon icon-diy <%if(i ===0 ){%>
+                                    icon-black
+                                    <%} else if(i ===1 ) {%>
+                                       icon-red
+                                    <%}else if(i === 2) {%>
+                                       icon-green
+                                    <%}else if(i === 3) {%>
+                                       icon-orange
+                                    <%}else if(i === 4) {%>
+                                       icon-blue
+                                    <%}else if(i === 5) {%>
+                                       icon-gray
+                                    <%}%>
+                                "><%=i + 1%></i>
+                                    <a href="/article-detail/<%= topsix[i].id %>.html"><%= topsix[i].title %></a>
+                                </li>
+                            <%}%>
                         </ul>
                     </div>
                 </section>
@@ -129,16 +199,12 @@
                     <div class="article-random article-hot-random">
                         <h3 class="h-style title">随机<span class="highlight">文章</span></h3>
                         <ul class="random-wrap hot-random-wrap pl30 pr30">
-                            <li class="ellipsis"><i class="icon icon-diy icon-default">1</i><a href="">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-default">2</i><a href="">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-default">3</i><a href="">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-default">4</i><a href="">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-default">5</i><a href="">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-default">6</i><a href="">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-default">7</i><a href="">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-default">8</i><a href="">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-default">9</i><a href="">杨雨个人博客模板下载</a></li>
-                            <li class="ellipsis"><i class="icon icon-diy icon-default">10</i><a href="">杨雨个人博客模板下载</a></li>
+                            <% for(var i = 0; i < random.length; i++) {%>
+                                <li class="ellipsis">
+                                    <i class="icon icon-diy icon-default"><%= i+1 %></i>
+                                    <a href="/article-detail/<%= random[i].id %>.html"><%=random[i].title%></a>
+                                </li>
+                            <%}%>
                         </ul>
                     </div>
                 </section>
@@ -170,17 +236,7 @@
         </aside>
     </div>
 </main>
-<div>
-    <ul>
-        <%for(var i = 0;i < Math.ceil(counts[0].articlenum/10);i++){%>
-            <li class="active">
-                <a href="/list-<%= i+1%>.html">
-                    第<%=i+1%>页
-                </a>
-            </li>
-        <%}%>
-    </ul>
-</div>
+
 <% include footer.ejs%>
 <script type="text/javascript">
     $(init);
@@ -218,7 +274,6 @@
         $("#articles").on('click','.js_ding',handleClick);
         //顶的业务逻辑
         function ding($self,articleId) {
-            alert(articleId);
             comm.ajax.commAjax({
                 url: '/ding',
                 type: 'post',

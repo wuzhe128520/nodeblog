@@ -420,3 +420,37 @@ footer {
   }
 }
 /*=====iconfont样式 end=====*/
+/*=====分页 begin=====*/
+.pages {
+  margin: 20px 0;
+  .page-wrap {
+    float: right;
+  }
+  .page {
+    float: left;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    background: #fff;
+    border: 1px solid #DDD;
+    text-align: center;
+    .radius(2px);
+    &>span {
+      color: #888;
+      font-size: 14px;
+    }
+  &>a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: #888;
+    font-size: 14px;
+    &.active {
+      color: #fff;
+      background: rgba(225, 87, 130, 0.6);
+      cursor: default;
+    }
+  }
+  }
+}
+/*=====分页 end=====*/
