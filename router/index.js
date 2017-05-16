@@ -5,83 +5,125 @@ const express = require('express'),
        router = express.Router(),
        dateformat = require('moment'),
        sql = require('../module/mysql');
+        //首页数据和首页分页数据公用函数
+        function indexQuery(res,start,length,currentPage) {
+            //以时间倒序显示10条数据
+            var p2 = new Promise(function(resolve, reject){
+                sql('select * from article ac , articletype act where ac.typeid = act.id order by ac.time desc limit ?,?',[start,length],(err, data) => {
+                    if(err) {
+                        console.log(err);
+                        return;
+                    }
+                    resolve(data);
+                });
+            });
 
+            //查询总页数
+            var p3 = new Promise(function(resolve, reject) {
+                sql('select count(*) as articlenum  from article',(err,counts)=>{
+                    console.log(counts);
+                    if(err){
+                        console.log(err);
+                        return;
+                    }
+                    resolve(counts);
+                });
+            });
+
+            //查询"顶"最多的6条数据
+            var p4 = new Promise(function(resolve, reject){
+                sql('select id,title,ding from article order by ding desc limit 0,6', (errs, topsix) => {
+
+                    if (errs) {
+                        console.log(errs);
+                        return;
+                    }
+                    resolve(topsix);
+                });
+            });
+
+            //随机查询10条博客
+            var p5 = new Promise(function(resolve, reject){
+                sql('select id,title from article order by rand() limit 10', (errs, random) => {
+
+                    if(errs){
+                        console.log(errs);
+                    }
+                    resolve(random);
+                });
+            });
+
+            //以时间分组查询
+            var p6 = new Promise(function(resolve, reject) {
+                sql("select time from article group by date_format(time,'%Y%m')", (errs, monthdata) => {
+
+                    if(errs){
+                        console.log(err);
+                        return;
+                    }
+                    resolve(monthdata);
+                });
+            });
+
+            //查询分类
+            var p7 = new Promise(function(resolve, reject) {
+                sql("select * from articletype", function(err, types){
+
+                    if(err){
+                        console.log(err);
+                        return;
+                    }
+                    resolve(types);
+                });
+            });
+
+            //查询标签
+            var p8 = new Promise(function(resolve, reject) {
+
+                sql("select * from articletag", function(err, tags){
+
+                    if(err){
+                        console.log(err);
+                        return;
+                    }
+                    resolve(tags);
+                });
+            });
+
+            //使用Promise让上面的异步操作都执行完之后再渲染页面
+            Promise.all([p2,p3,p4,p5,p6,p7,p8]).then(function(data) {
+
+               /* console.log('data[0]--------------------------------------------------------------------');
+                console.log(data[0]);*/
+               console.log('data[4]:');
+               console.log(data[4]);
+                console.log('data[5]:');
+               console.log(data[5]);
+                console.log('data[6]:');
+               console.log(data[6]);
+                let showPageNum = 10;
+                res.render('index.ejs',{
+                    data: data[0],
+                    pages: {
+                        counts: data[1],
+                        current: currentPage||1,
+                        showPageNum: showPageNum
+                    },
+                    topsix: data[2],
+                    random: data[3],
+                    monthdata: data[4],
+                    typedata: data[5],
+                    tagdata: data[6]
+                });
+            });
+        }
        //首页
        router.get('/',(req, res)=>{
 
                if(req.session.admin){
                    res.locals.admin = req.session.admin;
                }
-
-               //以时间倒序显示10条数据
-               var p2 = new Promise(function(resolve, reject){
-                   sql('select * from article order by time desc limit 0,10',(err, data)=>{
-                       if(err) {
-                           console.log(err);
-                           return;
-                       }
-                       resolve(data);
-                   });
-               });
-
-               //查询总页数
-               var p3 = new Promise(function(resolve, reject) {
-                   sql('select count(*) as articlenum  from article',(err,counts)=>{
-                       if(err){
-                           console.log(err);
-                           return;
-                       }
-                       resolve(counts);
-                   });
-               });
-
-               //查询"顶"最多的6条数据
-               var p4 = new Promise(function(resolve, reject){
-                   sql('select id,title,ding from article order by ding desc limit 0,6', (errs, topsix) => {
-
-                       if (errs) {
-                           console.log(errs);
-                           return;
-                       }
-                       resolve(topsix);
-                   });
-               });
-
-               //随机查询10条博客
-               var p5 = new Promise(function(resolve, reject){
-                   sql('select id,title from article order by rand() limit 10', (errs, random) => {
-                       console.log('random---------------------------------');
-                       console.log(random);
-                       if(errs){
-                           console.log(errs);
-                        }
-                        resolve(random);
-                   });
-               });
-
-               //按照年月份查询
-               var p6 = new Promise(function(resolve, reject) {
-                   sql("select * from article where date_format(time,'%Y%m')=?",[], (errs, monthdata) => {
-
-                   });
-               });
-
-               Promise.all([p2,p3,p4,p5]).then(function(data) {
-                   console.log('posts');
-                   console.log(data);
-                   let showPageNum = 10;
-                   res.render('index.ejs',{
-                       data: data[0],
-                       pages: {
-                           counts: data[1],
-                           current: 1,
-                           showPageNum: showPageNum
-                       },
-                       topsix: data[2],
-                       random: data[3]
-                   });
-               });
-
+                indexQuery(res,0,10);
        });
 
        //模拟导航
@@ -107,27 +149,25 @@ const express = require('express'),
            });
        });
 
-       //分页的原理
+       //分页
        router.get('/list-:page.html',(req, res)=>{
            //当前页
            let currentPage = req.params.page,
                 showPageNum = 10;
-           //根据时间正序排序分页显示10篇文章
-           sql('select * from article order by time desc limit ?,?',[(currentPage - 1)*10,showPageNum],(err, data)=>{
+                indexQuery(res, (currentPage - 1)*10, showPageNum, currentPage);
+       });
 
-               //count: 文章的总数 page: 当前页
-               sql('select count(*) as articlenum  from article',(errs,counts)=>{
+       //查询某年某月的数据
+       router.get('/querybymonth/:yearmonth.html', (req, res) => {
 
-                   res.render('index.ejs',{
-                       data: data,
-                       pages: {
-                           counts: counts,
-                           current: currentPage,
-                           showPageNum: showPageNum
-                       }
-                   });
-               });
-           });
+            sql("select * from article where date_format(time,'%Y%m')=?",[req.params.yearmonth], (errs, ymdata) => {
+
+                if(errs){
+                    console.log(errs);
+                    return;
+                }
+                res.send(ymdata);
+            });
        });
 
        //搜索
