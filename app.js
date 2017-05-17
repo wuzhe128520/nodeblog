@@ -5,28 +5,26 @@ const http = require('http'),
        express = require('express'),
        app = express(),
        bodyParser = require("body-parser"),
+
        //获取cookie
        cookieParser = require('cookie-parser'),
-        sql = require('./module/mysql'),
-        session = require('express-session'),
-        utils = require('./module/utils');
-        ws = require('socket.io');
-        module.exports = app;
-       //响应浏览器的方法
-       //第一个参数访问的路径 2个参数： 回调
-       /*app.get('/',(req,res)=>{
-           //响应数据的方法之一
-            res.send(`这是吴哲写的node噢`);
-       });*/
+       sql = require('./module/mysql'),
+       session = require('express-session'),
+       utils = require('./module/utils'),
+       path = require('path'),
+       ws = require('socket.io');
+       module.exports = app;
+
+       //全局时间格式化
        app.locals.dateFormat = utils.dateFormat;
        //设置模板引擎的目录
        app.set('views',__dirname + '/views');
        //设置使用的模板引擎是ejs
        app.set('view engine','ejs');
        //设置存放静态文件的路由
-       app.use(express.static(__dirname + '/public'));
+       app.use(express.static(path.join(__dirname,'/public')));
        //在访问静态文件时，必须使加上bc这个路径
-       //app.use('/abc',express.static(__dirname + '/public'));
+       //app.use('/article-detail',express.static(__dirname + '/article-detail/public'));
        //用来接收json的数据
        app.use(bodyParser.json());
        app.use(bodyParser.urlencoded({extended: true}));

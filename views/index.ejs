@@ -1,7 +1,6 @@
-<!--引入其他模板页面-->
-<% include header.ejs %>
+<%include header.ejs%>
 <script>
-    loadStaticFile('css/index.css');
+    loadStaticFile('/css/index.css');
 </script>
 <main>
     <div class="main clearfix">
@@ -230,7 +229,11 @@
     </div>
 </main>
 
-<% include footer.ejs%>
+<%include footer.ejs%>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/comm.js"></script>
+
+
 <script type="text/javascript">
     $(init);
     function init() {

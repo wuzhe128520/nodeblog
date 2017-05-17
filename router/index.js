@@ -9,7 +9,7 @@ const express = require('express'),
         function indexQuery(res,start,length,currentPage) {
             //以时间倒序显示10条数据
             var p2 = new Promise(function(resolve, reject){
-                sql('select * from article ac , articletype act where ac.typeid = act.id order by ac.time desc limit ?,?',[start,length],(err, data) => {
+                sql('select * from article ac , articletype act where ac.typeid = act.type_id order by ac.time desc limit ?,?',[start,length],(err, data) => {
                     if(err) {
                         console.log(err);
                         return;
@@ -93,14 +93,17 @@ const express = require('express'),
             //使用Promise让上面的异步操作都执行完之后再渲染页面
             Promise.all([p2,p3,p4,p5,p6,p7,p8]).then(function(data) {
 
+                console.log('data[0]--------------------------------------------------------------------');
+                console.log(data[0]);
                /* console.log('data[0]--------------------------------------------------------------------');
-                console.log(data[0]);*/
+                console.log(data[0]);
                console.log('data[4]:');
                console.log(data[4]);
                 console.log('data[5]:');
                console.log(data[5]);
                 console.log('data[6]:');
                console.log(data[6]);
+                */
                 let showPageNum = 10;
                 res.render('index.ejs',{
                     data: data[0],
@@ -183,10 +186,11 @@ const express = require('express'),
        //:id.html方式接收前端页面传递过来的参数,req.params得到:id的值
         router.get('/article-detail/:id.html',(req, res)=>{
             //req.params 同时接收get，post，其他 提交数据的形式
-                sql('select * from article where id=?',[req.params.id],(err,data)=>{
-                            console.log(data[0]['views']);
+                sql('select * from article where id = ?',[req.params.id],(err,data)=>{
+
                             var id = req.params.id;
-                            console.log(id);
+                            console.log('根据id查询文章内容：');
+                            console.log(data);
                             if(err){
                                 console.log(err);
                             }
@@ -194,17 +198,24 @@ const express = require('express'),
                                 //status 返回页面的状态码
                                 res.status(404).render('404');
                             }else {
-                                sql('select * from articlecomments where aid = ?',[id],(err,comments)=>{
-                                    res.render('article-detail',{comments: comments,data: data});
+                                var promise = new Promise(function(resolve, reject){
+                                    sql('update article set views = views + 1 where id = ?',[id],(err) => {
+                                        if(err){
+                                            console.log(err);
+                                        } else {
+                                            console.log('浏览量自增1');
+                                        }
+                                        resolve();
+                                    });
                                 });
+                                promise.then(function(){
+                                    sql('select * from comments where aid = ?',[id],(err,comments)=>{
+                                        res.render('article-detail',{comments: comments,data: data});
+                                    });
+                                });
+
                             }
-                            sql('update article set views = views + 1 where id = ?',[id],(err) => {
-                               if(err){
-                                   console.log(err);
-                               } else {
-                                   console.log('浏览量自增1');
-                               }
-                            });
+
                 });
         });
 

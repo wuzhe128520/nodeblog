@@ -1,24 +1,324 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>文章详情页</title>
-</head>
-<body>
-标题<%=data[0]['title']%>
-标签<%=data[0]['tag']%>
-作者<%=data[0]['author']%>
-内容<%-data[0]['content']%>
-发布时间<%=locals.dateFormat(data[0].time)%><br/>
-<p>评论：</p>
-<% if(comments.length !=0){%>
-    <% for(var i in comments){%>
-        <p><%=comments[i].content%></p>
-   <%}%>
-<%}%>
+<!--引入其他模板页面-->
+<% include header.ejs %>
+<script>
+    (function(){
+        loadStaticFile(['/css/article-detail.css','/js/plugin/highlight/styles/default.css']);
+    })();
+</script>
+<main>
+    <div class="main-wrap layer-wz clearfix">
+        <div class="layer-left-wz">
+            <ul class="article-nav">
+                <li><a href="">首页</a>&gt;</li>
+                <li><a href="" title="文章所属大分类">html5</a>&gt;</li>
+                <li><a href="" title="文章小分类">文章小分类</a>&gt;</li>
+            </ul>
+            <article>
+                <div class="article-detail-wrap">
+                    <header>
+                        <h1 class="js_article_title article-title"><%=data[0]['title']%></h1>
+                        <p class="article-time-view">发布时间:<time><%=locals.dateFormat(data[0].time,'YYYY-MM-DD hh:mm:ss')%></time> <%= data[0].views %>次浏览</p>
+                    </header>
+                    <!--文章详情begin-->
+                    <div class="article-detail-content clearfix js_article_content">
+                        <pre>
+                            <code class="javascript">
+                                  $(document).ready(function() {
+                                  $('pre code').each(function(i, block) {
+                                    hljs.highlightBlock(block);
+                                  });
+                                });
+                            </code>
+                        </pre>
+                        <%-data[0]['content']%>
+                    </div>
+                    <!--文章详情end-->
+                    <!--百度分享begin-->
+                    <div class="share">
+                        <div class="article-detail-footer">
+
+                        </div>
+                    </div>
+                    <!--百度分享end-->
+                    <!--文章相关标签 begin-->
+                    <div class="relation-wrap">
+                        <div class="relation-tags">
+                            <i class="icon-tag" title="标签图标"></i>标签
+                            <a href="/">js</a>
+                            <a href="/">vue</a>
+                            <a href="/">node</a>
+                        </div>
+                        <div class="other-article-wrap">
+                            <ul>
+                                <li>
+                                    <span class="prev-article">上一篇：</span>
+                                    <a href="/"> 手机移动端web资源整合</a>
+                                </li>
+                                <li>
+                                    <span>下一篇：</span>
+                                    <a href="/"> 前端博客以及个人博客排名没了</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--文章相关标签 end-->
+                    <!--相关文章 begin-->
+                    <div class="related-article"></div>
+                    <!--相关文章 end-->
+                    <!--评论部分 begin-->
+                    <div class="comments-wrap">
+                        <div class="comments-head clearfix">
+                            <a href="/" class="comments-number">
+                                <span class="highlight">6</span>条评论
+                            </a>
+                            <div class="comments-sort">
+                                <a href="/" class="current">最新</a>
+                                <a href="/">最早</a>
+                                <a href="/">最热</a>
+                            </div>
+                        </div>
+                        <ul class="comments-all">
+                            <li>
+                                <div class="comments">
+                                    <div class="user">
+                                        <a href="javascript:void(0);">
+                                            <img src="../public/image/user.jpg" />
+                                        </a>
+                                    </div>
+                                    <div class="comment-body">
+                                        <div class="comment-name">
+                                            <a href="javascript:void(0);">
+                                                我浪故我在
+                                            </a>
+                                        </div>
+                                        <p class="comment-content">
+                                            坚持就是胜利！
+                                        </p>
+                                        <div class="comment-footer">
+                                            <time>2017年02月16日</time>
+                                            <a href="javascript:void(0);">
+                                                <i title="回复图标" class="iconfont icon-huifu" ></i>回复
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul class="comment-childs">
+                                    <li>
+                                        <!-- main comment content  begin -->
+                                        <div class="comments">
+                                            <div class="user">
+                                                <a href="javascript:void(0);">
+                                                    <img src="../public/image/user.jpg" />
+                                                </a>
+                                            </div>
+                                            <div class="comment-body">
+                                                <div class="comment-name">
+                                                    <a href="javascript:void(0);">
+                                                        我浪故我在
+                                                    </a>
+                                                </div>
+                                                <p class="comment-content">
+                                                    坚持就是胜利！
+                                                </p>
+                                                <div class="comment-footer">
+                                                    <time>2017年02月16日</time>
+                                                    <a href="javascript:void(0);">
+                                                        <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- main comment content end-->
+                                        <!-- child comment begin -->
+                                        <ul class="comment-childs">
+                                            <li>
+                                                <div class="comments">
+                                                    <div class="user">
+                                                        <a href="javascript:void(0);">
+                                                            <img src="../public/image/user.jpg" />
+                                                        </a>
+                                                    </div>
+                                                    <div class="comment-body">
+                                                        <div class="comment-name">
+                                                            <a href="javascript:void(0);">
+                                                                我浪故我在
+                                                            </a>
+                                                        </div>
+                                                        <p class="comment-content">
+                                                            坚持就是胜利！
+                                                        </p>
+                                                        <div class="comment-footer">
+                                                            <time>2017年02月16日</time>
+                                                            <a href="javascript:void(0);">
+                                                                <i class="iconfont icon-huifu"></i>回复
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="comments">
+                                                    <div class="user">
+                                                        <a href="javascript:void(0);">
+                                                            <img src="../public/image/user.jpg" />
+                                                        </a>
+                                                    </div>
+                                                    <div class="comment-body">
+                                                        <div class="comment-name">
+                                                            <a href="javascript:void(0);">
+                                                                我浪故我在
+                                                            </a>
+                                                        </div>
+                                                        <p class="comment-content">
+                                                            坚持就是胜利！
+                                                        </p>
+                                                        <div class="comment-footer">
+                                                            <time>2017年02月16日</time>
+                                                            <a href="javascript:void(0);">
+                                                                <i class="iconfont icon-huifu"></i>回复
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <!-- child comment end -->
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div  class="comments-pages-wrap clearfix">
+                            <ul>
+                                <li><a href="/" class="current-page">1</a></li>
+                                <li><a href="/">2</a></li>
+                                <li><a href="/">3</a></li>
+                                <li><a href="/">4</a></li>
+                                <li><a href="/">5</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="declare-comment-wrap">
+                        <h3>发表评论</h3>
+                        <form id="commentForm" action="" method="post">
+                            <p>
+                                <input type="text" tabindex="1" name="author" id="author" value=""/>
+                                <label for="author">名称（必须）</label>
+                            </p>
+                            <p>
+                                <input name="email" tabindex="2" id="email" />
+                                <label for="email">
+                                    邮件地址(必须)
+                                </label>
+                            </p>
+                            <p>
+                                <input type="text" tabindex="3" id="site" name="site" />
+                                <label for="site">网站</label>
+                            </p>
+                            <p>
+                                <textarea name="comment" tabindex="4" cols="100%" rows="10"></textarea>
+                            </p>
+                            <p>
+                                <input name="submit" value="发表评论" class="declare-btn" type="submit">
+                            </p>
+                        </form>
+                    </div>
+                    <!--评论部分 end-->
+                </div>
+            </article>
+        </div>
+        <div class="aside layer-aside-wz">
+            <aside>
+                <section>
+                    <div class="last-article-wrap">
+                        <h2>
+                            博客最新
+                        </h2>
+                        <div class="aside-content-wrap">
+                            <ul class="number-wrap">
+                                <li><i class="number ls3">1</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
+                                <li><i class="number ls3">2</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
+                                <li><i class="number ls3">3</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
+                                <li><i class="number">4</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
+                                <li><i class="number">5</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
+                                <li><i class="number">6</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
+                                <li><i class="number">7</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
+                                <li><i class="number">8</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
+                                <li><i class="number">9</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
+                                <li><i class="number">10</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div class="aside-content-wrap">
+                        <h2>热点文章</h2>
+                        <ul class="number-wrap">
+                            <li><i class="number ls3">1</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="number ls3">2</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="number ls3">3</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="number">4</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="number">5</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="number">6</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="number">7</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="number">8</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="number">9</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="number">10</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                        </ul>
+                    </div>
+                </section>
+                <section>
+                    <div class="hot-article-wrap aside-content-wrap">
+                        <h2>热评文章</h2>
+                        <ul>
+                            <li><i class="icon icon-diy icon-black">1</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="icon icon-diy icon-red">2</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="icon icon-diy icon-green">3</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="icon icon-diy icon-orange">4</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="icon icon-diy icon-blue">5</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <li><i class="icon icon-diy icon-gray">6</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                        </ul>
+                    </div>
+                </section>
+            </aside>
+        </div>
+    </div>
+</main>
 <form action="/article-detail/<%=data[0]['id']%>.html" method="post">
     评论 <textarea name="content"></textarea>
     <button>发表评论</button>
 </form>
+<% include footer.ejs %>
+<script type="text/javascript" src="/js/plugin/highlight/highlight.pack.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+<script type="text/javascript">
+    $(init);
+    function init(){
+        share(
+            {
+                common: {
+                    bdText : $(".js_article_title").text(),
+                    bdDesc : $(".js_article_content").text().substring(0,269),
+                    bdUrl : window.location.href.split("?")[0],
+                    onBeforeClick: function(cmd, config){
+                        for(let i in config){
+                            console.log(i,config[i]);
+                        }
+                        //config.bdText= $('.js_article_title').text();
+                        return config;
+                    }
+                },
+                share: [{
+                    "bdSize" : 24
+                }],
+                selectShare : [{
+                    "bdselectMiniList" : ['qzone','weixin'],
+                    "bdContainerClass" : "js_article_content"
+                }]
+            }
+        );
+    }
+</script>
 </body>
 </html>

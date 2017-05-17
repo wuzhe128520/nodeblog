@@ -3,8 +3,10 @@
  */
 function loadStaticFile (fileSrcs){
     var element,
+        //创建文档碎片
         fragment = document.createDocumentFragment();
-    if(Object.prototype.toString.call(fileSrcs) === 'array'){
+    if(Object.prototype.toString.call(fileSrcs).toLowerCase() === '[object array]'){
+
         var i = 0,
             length = fileSrcs.length;
         for(;i < length; i++){
