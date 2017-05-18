@@ -5,8 +5,10 @@ const express = require('express'),
        router = express.Router(),
        dateformat = require('moment'),
        sql = require('../module/mysql');
-        //首页数据和首页分页数据公用函数
-        function indexQuery(res,start,length,currentPage) {
+
+        //以时间倒序显示10条数据
+        function querytendata(start,length) {
+
             //以时间倒序显示10条数据
             var p2 = new Promise(function(resolve, reject){
                 sql('select * from article ac , articletype act where ac.typeid = act.type_id order by ac.time desc limit ?,?',[start,length],(err, data) => {
@@ -17,6 +19,47 @@ const express = require('express'),
                     resolve(data);
                 });
             });
+            return p2;
+
+        }
+
+        //查询顶最多的数据
+        function queryding() {
+            //查询"顶"最多的6条数据
+            let p4 = new Promise(function(resolve, reject){
+                sql('select id,title,ding from article order by ding desc limit 0,6', (errs, topsix) => {
+
+                    if (errs) {
+                        console.log(errs);
+                        return;
+                    }
+                    resolve(topsix);
+                });
+            });
+            return p4;
+        }
+
+        //随机查询10条数据
+        function queryRandom() {
+
+            var p5 = new Promise(function(resolve, reject){
+
+                sql('select id,title from article order by rand() limit 10', (errs, random) => {
+
+                    if(errs){
+                        console.log(errs);
+                    }
+                    resolve(random);
+                });
+            });
+
+            return p5;
+        }
+
+        //首页数据和首页分页数据公用函数
+        function indexQuery(res,currentPage) {
+            //以时间倒序显示10条数据
+            var p2 = querytendata(0,10);
 
             //查询总页数
             var p3 = new Promise(function(resolve, reject) {
@@ -31,27 +74,10 @@ const express = require('express'),
             });
 
             //查询"顶"最多的6条数据
-            var p4 = new Promise(function(resolve, reject){
-                sql('select id,title,ding from article order by ding desc limit 0,6', (errs, topsix) => {
-
-                    if (errs) {
-                        console.log(errs);
-                        return;
-                    }
-                    resolve(topsix);
-                });
-            });
+            var p4 = queryding();
 
             //随机查询10条博客
-            var p5 = new Promise(function(resolve, reject){
-                sql('select id,title from article order by rand() limit 10', (errs, random) => {
-
-                    if(errs){
-                        console.log(errs);
-                    }
-                    resolve(random);
-                });
-            });
+            var p5 = queryRandom();
 
             //以时间分组查询
             var p6 = new Promise(function(resolve, reject) {
@@ -95,15 +121,6 @@ const express = require('express'),
 
                 console.log('data[0]--------------------------------------------------------------------');
                 console.log(data[0]);
-               /* console.log('data[0]--------------------------------------------------------------------');
-                console.log(data[0]);
-               console.log('data[4]:');
-               console.log(data[4]);
-                console.log('data[5]:');
-               console.log(data[5]);
-                console.log('data[6]:');
-               console.log(data[6]);
-                */
                 let showPageNum = 10;
                 res.render('index.ejs',{
                     data: data[0],
@@ -120,6 +137,12 @@ const express = require('express'),
                 });
             });
         }
+
+        //查询相关文章
+        function queryRelative() {
+            sql('select id,title from article where typeid = 2 order by rand() limit 3; ');
+        }
+
        //首页
        router.get('/',(req, res)=>{
 
@@ -186,11 +209,8 @@ const express = require('express'),
        //:id.html方式接收前端页面传递过来的参数,req.params得到:id的值
         router.get('/article-detail/:id.html',(req, res)=>{
             //req.params 同时接收get，post，其他 提交数据的形式
-                sql('select * from article where id = ?',[req.params.id],(err,data)=>{
-
-                            var id = req.params.id;
-                            console.log('根据id查询文章内容：');
-                            console.log(data);
+                var id = req.params.id;
+                sql('select * from article al,articletype at where al.id = ? and al.typeid=at.type_id',[req.params.id],(err,data)=>{
                             if(err){
                                 console.log(err);
                             }
@@ -198,7 +218,45 @@ const express = require('express'),
                                 //status 返回页面的状态码
                                 res.status(404).render('404');
                             }else {
+                                //得到标签id
+                                var tagsdata = data[0].tags;
+                                tagsAry = tagsdata.split(',');
+                                var j = 0,
+                                tLegnth = tagsAry.length,
+                                sqlStr = 'select * from articletag where tag_id in ',
+                                       str = '',
+                                        param = [];
+                                console.log(tLegnth);
+                                for(;j < tLegnth; j++) {
+
+                                    if(j===0) {
+                                        str = '(?,';
+                                    } else if(j === (tLegnth - 1 )) {
+                                        str += '?)'
+                                    } else {
+                                        str += '?,';
+                                    }
+                                    param.push(tagsAry[j]);
+                                }
+                                sqlStr += str;
+                                console.log(sqlStr);
+                                console.log(param);
+                                var promise2 = new Promise(function(resolve,reject){
+
+                                   //查询标签
+                                   sql(sqlStr,param,(err,tags) => {
+
+                                       if(err){
+                                           console.log(err);
+                                           return;
+                                       }
+                                       resolve(tags);
+                                   });
+                                });
+
                                 var promise = new Promise(function(resolve, reject){
+
+                                    //修改浏览量
                                     sql('update article set views = views + 1 where id = ?',[id],(err) => {
                                         if(err){
                                             console.log(err);
@@ -208,9 +266,48 @@ const express = require('express'),
                                         resolve();
                                     });
                                 });
-                                promise.then(function(){
-                                    sql('select * from comments where aid = ?',[id],(err,comments)=>{
-                                        res.render('article-detail',{comments: comments,data: data});
+
+                                var promise3 = new Promise(function(resolve, reject) {
+
+                                    //查询下一篇
+                                    sql('select id,title from article where id > ? order by time desc limit 1',[id],(err, next) => {
+
+                                            if(err){
+                                                console.log(err);
+                                            }
+
+                                        //查询上一篇
+                                        sql('select id,title from article where id < ? order by time desc limit 1',[id],(err, last) => {
+
+                                            if(err){
+                                                console.log(err);
+                                            }
+                                            resolve({next: next[0],last: last[0]});
+                                        })
+
+                                    });
+                                });
+
+                                var promise4 = querytendata(0,10);
+
+                                var promise5 = queryding();
+
+                                Promise.all([promise,promise2,promise3,promise4,promise5]).then(function(alldata){
+                                    sql('select * from comments where topic_id = ?',[id],(err,comments)=>{
+                                        if(err){
+                                            console.log(err);
+                                            return;
+                                        }
+                                        console.log('alldata[2]:');
+                                        console.log(alldata[2]);
+                                        res.render('article-detail',{
+                                            comments: comments,
+                                            data: data,
+                                            tags: alldata[1],
+                                            sibling: alldata[2],
+                                            lastest: alldata[3],
+                                            topsix: alldata[4]
+                                        });
                                     });
                                 });
 

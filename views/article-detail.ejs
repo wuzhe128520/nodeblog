@@ -10,8 +10,7 @@
         <div class="layer-left-wz">
             <ul class="article-nav">
                 <li><a href="">首页</a>&gt;</li>
-                <li><a href="" title="文章所属大分类">html5</a>&gt;</li>
-                <li><a href="" title="文章小分类">文章小分类</a>&gt;</li>
+                <li><a href="/type/<%=data[0].type_id%>" title="文章所属大分类"><%=data[0].typename%></a>&gt;</li>
             </ul>
             <article>
                 <div class="article-detail-wrap">
@@ -43,20 +42,32 @@
                     <!--文章相关标签 begin-->
                     <div class="relation-wrap">
                         <div class="relation-tags">
-                            <i class="icon-tag" title="标签图标"></i>标签
-                            <a href="/">js</a>
-                            <a href="/">vue</a>
-                            <a href="/">node</a>
+                            <i class="icon-tag" title="标签图标"></i>标签:
+                            <%
+                                var i = 0,
+                                    length = tags.length;
+                                    for(;i < length; i++){
+                            %>
+                                    <a href="/tag/<%=tags[i].tag_id%>"><%=tags[i].tagname%></a>
+                            <%}%>
                         </div>
                         <div class="other-article-wrap">
                             <ul>
                                 <li>
                                     <span class="prev-article">上一篇：</span>
-                                    <a href="/"> 手机移动端web资源整合</a>
+                                    <%if(sibling.last!=null){%>
+                                        <a href="/article-detail/<%= sibling.last.id %>.html"><%= sibling.last.title %></a>
+                                    <%} else {%>
+                                        <a href="javascript:void(0);">没有了</a>
+                                    <%}%>
                                 </li>
                                 <li>
                                     <span>下一篇：</span>
-                                    <a href="/"> 前端博客以及个人博客排名没了</a>
+                                    <%if(sibling.next!=null){%>
+                                    <a href="/article-detail/<%=sibling.next.id%>.html"> <%= sibling.next.title %></a>
+                                    <%} else {%>
+                                    <a href="javascript:void(0);">没有了</a>
+                                    <%}%>
                                 </li>
                             </ul>
                         </div>
@@ -235,16 +246,13 @@
                         </h2>
                         <div class="aside-content-wrap">
                             <ul class="number-wrap">
-                                <li><i class="number ls3">1</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
-                                <li><i class="number ls3">2</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
-                                <li><i class="number ls3">3</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
-                                <li><i class="number">4</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
-                                <li><i class="number">5</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
-                                <li><i class="number">6</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
-                                <li><i class="number">7</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
-                                <li><i class="number">8</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
-                                <li><i class="number">9</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
-                                <li><i class="number">10</i><a href="">织梦DedeCMS自带的幻灯片修改技</a></li>
+                                <%
+                                    var i = 0,
+                                        length = lastest.length;
+                                    for(;i < length; i++){
+                                %>
+                                    <li><i class="number"><%=(i+1)%></i><a href="/article-detail/<%=lastest[i].id%>.html"><%=lastest[i].title%></a></li>
+                                <%}%>
                             </ul>
                         </div>
                     </div>
@@ -253,16 +261,15 @@
                     <div class="aside-content-wrap">
                         <h2>热点文章</h2>
                         <ul class="number-wrap">
-                            <li><i class="number ls3">1</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="number ls3">2</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="number ls3">3</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="number">4</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="number">5</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="number">6</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="number">7</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="number">8</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="number">9</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="number">10</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
+                            <%
+                                var j = 0,
+                                    length = topsix.length;
+                                for(j; j < length; j++) {
+                            %>
+                            <li>
+                                <i class="number ls3"><%= (j + 1) %></i>
+                                <a href="/article-detail/<%= topsix[j].id %>.html"><%=topsix[j].title%></a></li>
+                            <%}%>
                         </ul>
                     </div>
                 </section>
@@ -293,32 +300,28 @@
     hljs.initHighlightingOnLoad();
 </script>
 <script type="text/javascript">
-    $(init);
-    function init(){
-        share(
-            {
-                common: {
-                    bdText : $(".js_article_title").text(),
-                    bdDesc : $(".js_article_content").text().substring(0,269),
-                    bdUrl : window.location.href.split("?")[0],
-                    onBeforeClick: function(cmd, config){
-                        for(let i in config){
-                            console.log(i,config[i]);
-                        }
-                        //config.bdText= $('.js_article_title').text();
-                        return config;
-                    }
-                },
-                share: [{
-                    "bdSize" : 24
-                }],
-                selectShare : [{
-                    "bdselectMiniList" : ['qzone','weixin'],
-                    "bdContainerClass" : "js_article_content"
-                }]
-            }
-        );
-    }
+
+  window._bd_share_config={
+      "common":{
+          "bdSnsKey":{},
+          "bdText":"",
+          "bdMini":"2",
+          "bdPic":"",
+          "bdStyle":"0",
+          "bdSize":"24"
+      },
+      "share":{},
+      "image":{
+          "viewList":["qzone","tsina","tqq","renren","weixin"],
+          "viewText":"分享到：",
+          "viewSize":"16"
+      },
+      "selectShare":{
+          "bdContainerClass":null,
+          "bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]
+      }
+  };
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
 </script>
 </body>
 </html>

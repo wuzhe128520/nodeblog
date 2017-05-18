@@ -61,11 +61,6 @@
         "bdselectMiniList" : ['qzone','tqq','kaixin001','bdxc','tqf']
     }]
 };*/
-//这个函数主要功能是构建一个对象出来，返回一个对象
-function share(obj) {
-            window._bd_share_config = obj;
-    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
-}
 /* 弹框插件layer */
 var comm = {
      /*数据类型判断*/
