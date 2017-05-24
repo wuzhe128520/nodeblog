@@ -20,8 +20,7 @@
 </form>
 内容：
 <script id="editor" type="text/plain" style="width:1024px;height:500px;"></script>
-
-<script src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
 <script>
 
     $(function(){
@@ -37,28 +36,5 @@
         });
     });
 </script>
-<!--<script>
-    $("#declare").bind("click",function(){
-            $.ajax({
-                url: '/admin/article',
-                type: 'post',
-                dataType: 'json',
-                contentType: 'multipart/form-data',
-                data: {
-                    title: $('.title').val(),
-                    tag: $('.tag').val(),
-                    author: $('.author').val(),
-                    content: $('.content').val(),
-                    uploadfile: $().val();
-                },
-                success: function(data){
-                    alert(data.success);
-                },
-                error: function(data){
-
-                }
-            });
-    });
-</script>-->
 </body>
 </html>

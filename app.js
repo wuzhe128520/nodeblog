@@ -14,7 +14,6 @@ const http = require('http'),
        path = require('path'),
        ws = require('socket.io');
        module.exports = app;
-
        //全局时间格式化
        app.locals.dateFormat = utils.dateFormat;
        //设置模板引擎的目录

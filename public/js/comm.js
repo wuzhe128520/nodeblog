@@ -61,7 +61,6 @@
         "bdselectMiniList" : ['qzone','tqq','kaixin001','bdxc','tqf']
     }]
 };*/
-/* 弹框插件layer */
 var comm = {
      /*数据类型判断*/
      /*
@@ -78,9 +77,9 @@ var comm = {
     //产生min到max之间的随机数(包含min，不包含max)
     randomNum: function(min, max) {
         if(max < min) return;
-        var num =(Math.random())*(max - min) + min;
+        var num =Math.floor(Math.random()*(max - min) + min);
         //console.log(Math.ceil(num));
-        return Math.floor(num);
+        return num;
     },
      //公用ajax请求
      ajax: {
@@ -129,7 +128,11 @@ var comm = {
              $.ajax(defaultObj);
          }
      },
-     /*弹框插件*/
+     /**
+      * 弹框插件
+      *
+      *
+      * */
      layer: {
           dialog: function(config, extendObj){
                 var defaultObj = {
@@ -159,6 +162,25 @@ var comm = {
                 $.extend(defaultObj, extendObj);
                 layer.open(defaultObj);
           },
+
+          //普通信息框
+          alert: function(content,options,yesCallback){
+              layer.alert(content,options,yesCallback);
+          },
+
+          //询问框
+          confirm: function(content,options,yesFn,cancelFn) {
+              layer.confirm(content,options,yesFn,cancelFn);
+          },
+          //提示框
+          msg: function(content,options,endCallback) {
+              layer.msg(content,options,endCallback);
+         },
+
+         //tips层
+         tips: function(content,follow,options) {
+              layer.tips(content,follow,options);
+         },
           /*
           * type: 0表示id，type：1表示url
           * 如果是id：
@@ -215,7 +237,397 @@ var comm = {
      */
      escapeHTML: function(str){
         return str.replace(/<[\/\!]*[^<>]*>/ig,"");
-     }
+     },
+    /**
+     * canvas验证码
+     * id: 目标元素
+     * num: 生成的验证码有几个数字或文字
+     */
+     validateCode: function(id,num) {
+
+        //canvas的id
+        var $canvas = $('#'+id),
+
+            //验证码的文字库
+            letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',0,1,2,3,4,5,6,7,8,9],
+            lettersLength = letters.length,
+
+            //保存验证码的内容
+            codeContent = '123';
+
+        //生成的验证码的宽高
+        pic_width = $canvas.width(),
+            pic_height = $canvas.height();
+
+
+        //随机数
+        function randomNum(min,max){
+            return Math.floor(Math.random()*(max-min)+min);
+        }
+
+        //随机颜色
+        function randomColor(min,max){
+
+            var _r = randomNum(min,max);
+            var _g = randomNum(min,max);
+            var _b = randomNum(min,max);
+
+            return "rgb("+_r+","+_g+","+_b+")";
+        }
+
+        //画图片
+        function drawValidate() {
+
+            //getContext("2d") 对象是内建的 HTML5 对象，拥有多种绘制路径、矩形、圆形、字符以及添加图像的方法。
+            ctx = $canvas.get(0).getContext("2d");
+
+            //textBaseline 属性设置或返回在绘制文本时的当前文本基线。
+            ctx.textBaseline = "bottom";
+
+            //fillStyle 属性设置或返回用于填充绘画的颜色、渐变或模式。
+            ctx.fillStyle = randomColor(180,240);
+
+            //fillRect() 方法绘制“已填色”的矩形。默认的填充颜色是黑色。
+            /**
+             * context.fillRect(x,y,width,height);
+             *  x: 矩形左上角的x坐标
+             *  y: 矩形左上角的y坐标
+             *  width: 矩形的宽度，以像素计
+             *  height: 矩形的高度，以像素计
+             *
+             */
+            ctx.fillRect(0,0,pic_width,pic_height);
+
+            //将验证码数据给validateCode函数的变量codeContent
+            codeContent = drawLetter(ctx);
+            drawLine(ctx);
+            drawCircle(ctx);
+        }
+
+        //画文字
+        function drawLetter(ctx) {
+            var code = '';
+            for(var i=0; i<num; i++){
+
+                var x = (pic_width-10)/num*i+10,
+                    y = randomNum(pic_height/2,pic_height),
+                    deg = randomNum(-45,45),
+                    txt = letters[randomNum(0,lettersLength)],
+                    code = code+ txt;
+                console.log(txt);
+                console.log(codeContent);
+                ctx.fillStyle = randomColor(10,100);
+
+                //font 属性设置或返回画布上文本内容的当前字体属性。
+                ctx.font = randomNum(16,40)+"px SimHei";
+
+                //translate() 方法重新映射画布上的 (0,0) 位置。
+                ctx.translate(x,y);
+
+                /**
+                 * rotate(angle) 方法旋转当前的绘图。(旋转角度，以弧度计。
+                 * 如需将角度转换为弧度，请使用 degrees*Math.PI/180 公式进行计算)
+                 */
+                ctx.rotate(deg*Math.PI/180);
+
+                //fillText() 方法在画布上绘制填色的文本。文本的默认颜色是黑色。
+                ctx.fillText(txt, 0,0);
+                ctx.rotate(-deg*Math.PI/180);
+                ctx.translate(-x,-y);
+            }
+            console.log("code:"+code);
+            return code;
+        }
+
+        //画线条
+        function drawLine(ctx) {
+
+            for(var i=0; i<num; i++){
+
+                //strokeStyle 属性设置或返回用于笔触的颜色、渐变或模式。
+                ctx.strokeStyle = randomColor(90,180);
+
+                /**
+                 * beginPath() 方法开始一条路径，或重置当前的路径。
+                 * 提示：请使用这些方法来创建路径：moveTo()、lineTo()、quadricCurveTo()、bezierCurveTo()、
+                 * arcTo() 以及 arc()。
+                 * 提示：请使用 stroke() 方法在画布上绘制确切的路径。
+                 */
+                ctx.beginPath();
+
+                /*
+                 moveTo() 方法将当前位置设置为 (x, y) 并用它作为第一点创建一条新的子路径。
+                 如果之前有一条子路径并且它包含刚才的那一点，那么从路径中删除该子路径。
+                 */
+                ctx.moveTo(randomNum(0,pic_width), randomNum(0,pic_height));
+
+                //lineTo() 方法为当前子路径添加一条直线。
+                ctx.lineTo(randomNum(0,pic_width), randomNum(0,pic_height));
+
+                /*
+                 * stroke() 方法绘制当前路径的边框。路径定义的几何线条产生了，但线条的可视化取决于
+                 * strokeStyle、lineWidth、lineJoin、lineCap 和 miterLimit 等属性。
+                 * 术语“勾勒”，指的是钢笔或笔刷的画笔。它意味着“画......轮廓”。
+                 * 和 stroke() 方法相对的是 fill()，该方法会填充路径的内部区域而不是勾勒出路径的边框。
+                 * */
+                ctx.stroke();
+            }
+
+        }
+
+        //画圆点
+        function drawCircle(ctx) {
+
+            for(var i=0; i < num*10; i++){
+
+                ctx.fillStyle = randomColor(0,255);
+                ctx.beginPath();
+
+                /*
+                 arc() 方法创建弧/曲线（用于创建圆或部分圆）。
+                 提示：如需通过 arc() 来创建圆，请把起始角设置为 0，结束角设置为 2*Math.PI。
+                 */
+                ctx.arc(randomNum(0,pic_width),randomNum(0,pic_height), 1, 0, 2*Math.PI);
+
+                /*
+                 * fill() 方法填充路径。
+                 *
+                 * */
+                ctx.fill();
+            }
+
+        }
+
+        //处理点击验证码的事件
+        function handleClick(e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+            drawValidate();
+
+        }
+
+        $($canvas).on('click',handleClick).triggerHandler('click');
+
+        return {
+
+            //获取验证码的内容
+            getContent: function() {
+
+                return codeContent.toLowerCase();
+            },
+            //获取新的验证码
+            getNewCode: function() {
+                $($canvas).trigger('click');
+            }
+        }
+
+    },
+    scrollEvent: function(){
+        console.log($(this).scrollTop());
+        var $target = $(this);
+        if($target.scrollTop() > 150){
+            $("#scrollTop").fadeIn();
+        }
+        else {
+            $("#scrollTop").fadeOut();
+        }
+    },
+    //绑定全局的滚动事件
+    scroll: function(){
+        $(window).bind("scroll.scrollTop",comm.debounce(comm.scrollEvent,300));
+    },
+    //滚动到顶部。(在滚动到顶部的时候会触发全局的滚动事件)-
+    scrollToTop: function(){
+        $(window).unbind("scroll.scrollTop");
+        $("html,body").animate({"scrollTop": 0}, 600);
+        $("#scrollTop").animate({"bottom": "3000px"},600,function(){
+            $(this).hide().css({"bottom": "2em"});
+            $(window).bind("scroll.scrollTop",comm.debounce(comm.scrollEvent,300));
+        });
+    },
+    //返回 function 函数的防反跳版本, 将延迟函数的执行(真正的执行)在函数最后一次调用时刻的 wait 毫秒之后.
+    debounce: function(func, wait, immediate) {
+        var timeout, args, context, timestamp, result;
+
+        var later = function() {
+            var last = comm.now() - timestamp;
+
+            if (last < wait && last >= 0) {
+                timeout = setTimeout(later, wait - last);
+            } else {
+                timeout = null;
+                if (!immediate) {
+                    result = func.apply(context, args);
+                    if (!timeout) context = args = null;
+                }
+            }
+        };
+
+        return function() {
+            context = this;
+            args = arguments;
+            timestamp = comm.now();
+            var callNow = immediate && !timeout;
+            if (!timeout) timeout = setTimeout(later, wait);
+            if (callNow) {
+                result = func.apply(context, args);
+                context = args = null;
+            }
+
+            return result;
+        };
+    },
+    now: Date.now || function() {
+        return new Date().getTime();
+    },
+    //创建并返回一个像节流阀一样的函数，当重复调用函数的时候，最多每隔 wait毫秒调用一次该函数。
+    throttle: function(func, wait, options) {
+        var context, args, result;
+        var timeout = null;
+        var previous = 0;
+        if (!options) options = {};
+        var later = function() {
+            previous = options.leading === false ? 0 : _.now();
+            timeout = null;
+            result = func.apply(context, args);
+            if (!timeout) context = args = null;
+        };
+        return function() {
+            var now = comm.now();
+            if (!previous && options.leading === false) previous = now;
+            var remaining = wait - (now - previous);
+            context = this;
+            args = arguments;
+            if (remaining <= 0 || remaining > wait) {
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = null;
+                }
+                previous = now;
+                result = func.apply(context, args);
+                if (!timeout) context = args = null;
+            } else if (!timeout && options.trailing !== false) {
+                timeout = setTimeout(later, remaining);
+            }
+            return result;
+        };
+    },
+    scrollEvent: function(){
+        console.log($(this).scrollTop());
+        var $target = $(this);
+        if($target.scrollTop() > 150){
+            $("#scrollTop").fadeIn();
+        }
+        else {
+            $("#scrollTop").fadeOut();
+        }
+    },
+    //绑定全局的滚动事件
+    scroll: function(){
+        $(window).bind("scroll.scrollTop",comm.debounce(comm.scrollEvent,300));
+    },
+    //滚动到顶部。(在滚动到顶部的时候会触发全局的滚动事件)-
+    scrollToTop: function(){
+        $(window).unbind("scroll.scrollTop");
+        $("html,body").animate({"scrollTop": 0}, 600);
+        $("#scrollTop").animate({"bottom": "3000px"},600,function(){
+            $(this).hide().css({"bottom": "2em"});
+            $(window).bind("scroll.scrollTop",comm.debounce(comm.scrollEvent,300));
+        });
+    },
+    //返回 function 函数的防反跳版本, 将延迟函数的执行(真正的执行)在函数最后一次调用时刻的 wait 毫秒之后.
+    debounce: function(func, wait, immediate) {
+        var timeout, args, context, timestamp, result;
+
+        var later = function() {
+            var last = comm.now() - timestamp;
+
+            if (last < wait && last >= 0) {
+                timeout = setTimeout(later, wait - last);
+            } else {
+                timeout = null;
+                if (!immediate) {
+                    result = func.apply(context, args);
+                    if (!timeout) context = args = null;
+                }
+            }
+        };
+
+        return function() {
+            context = this;
+            args = arguments;
+            timestamp = comm.now();
+            var callNow = immediate && !timeout;
+            if (!timeout) timeout = setTimeout(later, wait);
+            if (callNow) {
+                result = func.apply(context, args);
+                context = args = null;
+            }
+
+            return result;
+        };
+    },
+    now: Date.now || function() {
+        return new Date().getTime();
+    },
+    //创建并返回一个像节流阀一样的函数，当重复调用函数的时候，最多每隔 wait毫秒调用一次该函数。
+    throttle: function(func, wait, options) {
+        var context, args, result;
+        var timeout = null;
+        var previous = 0;
+        if (!options) options = {};
+        var later = function() {
+            previous = options.leading === false ? 0 : comm.now();
+            timeout = null;
+            result = func.apply(context, args);
+            if (!timeout) context = args = null;
+        };
+        return function() {
+            var now = comm.now();
+            if (!previous && options.leading === false) previous = now;
+            var remaining = wait - (now - previous);
+            context = this;
+            args = arguments;
+            if (remaining <= 0 || remaining > wait) {
+                if (timeout) {
+                    clearTimeout(timeout);
+                    timeout = null;
+                }
+                previous = now;
+                result = func.apply(context, args);
+                if (!timeout) context = args = null;
+            } else if (!timeout && options.trailing !== false) {
+                timeout = setTimeout(later, remaining);
+            }
+            return result;
+        };
+    },
+
+    //添加水印
+    waterMark: function() {
+        if($("#waterMark").length > 0){
+            return false;
+        }
+        var $water = $("input.js_water_mark"),
+            target = {},
+            offSet = $water.offset();
+        target.x = offSet.left;
+        target.y = offSet.top;
+        target.outerWidth = $water.outerWidth();
+        target.outerHeight = $water.outerHeight();
+        $water.attr("placeholder","");
+
+        $("<label style='color: red;font-size: 14px;' id='waterMark'>请输入关键字!</label>").
+        css({"position":"absolute","paddingLeft": "3px","left": target.x,"top": target.y,"height": target.outerHeight,"width": target.outerWidth,"lineHeight": target.outerHeight + "px"})
+            .appendTo("body");
+
+        $("#waterMark").click(function(){
+            $(this).remove();
+            $("#query").attr("placeholder","搜索").removeClass("search-error");
+            $("#query").focus();
+        });
+    }
 };
 
 

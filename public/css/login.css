@@ -457,23 +457,23 @@ body {
 }
 /*=====登录 begin*/
 .login-title {
-  margin: 40px 0 32px;
+  margin: 0 0 32px;
 }
 .login-title h1 {
-  font-size: 48px;
+  font-size: 30px;
   color: #fff;
   letter-spacing: 4px;
   font-weight: 500;
 }
 .main-content-wrap {
-  position: relative;
-  width: 23%;
-  margin: 0 auto;
-}
-.main-content-wrap .img-wrap .login-img {
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
+  height: 500px;
+  width: 442px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 .no-account {
   float: left;
@@ -531,7 +531,6 @@ input[type='password'] {
   padding: 8px 31px;
   font-size: 16px;
   cursor: pointer;
-  letter-spacing: 1px;
   font-weight: 400;
   transition: all 0.5s;
   -moz-transition: all 0.5s;
@@ -545,6 +544,10 @@ input[type='password'] {
 .register-btn:hover {
   background: #fff;
   color: #000;
+}
+.register-btn {
+  letter-spacing: 50px;
+  text-indent: 50px;
 }
 .title {
   font-size: 24px;
@@ -566,7 +569,7 @@ input[type='password'] {
   display: block;
   margin: 10px 0 0 0;
 }
-.auth-wrap > img {
+.auth-wrap > .img {
   width: 87%;
 }
 /*=====注册 end=====*/

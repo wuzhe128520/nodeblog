@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<%
+var isActive = locals.data.active;
+if(isActive){%>
+<%=locals.data.username%>,账号激活成功<span id="text"></span>秒后,跳转到首页
+<script>
+    var target = document.getElementById('text');
+    target.innerHTML = 3;
+    var i = 3;
+    var index = setInterval(function(){
+        target.innerHTML = --i;
+        if(i === 1){
+            clearInterval(index);
+            window.location.href = '/login?show=1';
+        }
+    },1000);
+</script>
+<%} else { %>
+账号激活失败！
+<%}%>
+<%=locals.active%>
+</body>
+</html>

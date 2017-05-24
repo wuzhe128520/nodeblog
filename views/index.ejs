@@ -228,86 +228,25 @@
         </aside>
     </div>
 </main>
-
 <%include footer.ejs%>
-<script type="text/javascript" src="/js/jquery.min.js"></script>
-<script type="text/javascript" src="/js/comm.js"></script>
-
-
 <script type="text/javascript">
-    $(init);
-    function init() {
-        share(
-            {
-                common: {
-                    bdText : $("#blog").text(),
-                    bdDesc : '文章摘要（一般是前250字）',
-                    bdUrl : window.location.href.split("?")[0],
-                    onBeforeClick: function(cmd, config){
-                        alert(config.valueOf());
-                        for(let i in config){
-                            console.log(i,config[i]);
-                        }
-                        //config.bdText= $('.js_article_title').text();
-                        return config;
-                    }
-                },
-                share: [{
-                    "bdSize" : 24
-                }]
-            }
-        );
-        var time = new Date();
-        var year=time.getFullYear();
-
-        document.getElementById("siteDate").innerHTML = year;
-
-        function handleClick() {
-            var $target = $(this);
-            var articleId = $target.closest('.js_article').data('articleid');
-            ding($target,articleId);
+    window._bd_share_config={
+        "common":{
+            "bdSnsKey":{},
+            "bdText":"",
+            "bdMini":"2",
+            "bdPic":"",
+            "bdStyle":"0",
+            "bdSize":"24"
+        },
+        "share":{},
+        "image":{
+            "viewList":["qzone","tsina","tqq","renren","weixin"],
+            "viewText":"分享到：",
+            "viewSize":"16"
         }
-        $("#articles").on('click','.js_ding',handleClick);
-        //顶的业务逻辑
-        function ding($self,articleId) {
-            comm.ajax.commAjax({
-                url: '/ding',
-                type: 'post',
-                data: {id: articleId},
-                errorFn: function(error){
-                    alert('失败');
-                },
-                successFn: function(data){
-                    console.log(data);
-                    $self.find('.js_ding_text').text(data.dm[0].ding);
-                }
-            });
-
-        }
-
-        function handleCaiClick() {
-            var $target = $(this);
-            var articleId = $target.closest('.js_article').data('articleid');
-            cai($target,articleId);
-        }
-        $("#articles").on('click','.js_cai',handleCaiClick);
-
-        //踩的业务逻辑
-        function cai($self,articleId) {
-            comm.ajax.commAjax({
-                url: '/cai',
-                type: 'post',
-                data: {id: articleId},
-                errorFn: function(error){
-                    alert('失败');
-                },
-                successFn: function(data){
-                    console.log(data);
-                    $self.find('.js_cai_text').text(data.c[0].cai);
-                }
-            });
-        }
-    }
+    };
+    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
 </script>
 </body>
 </html>

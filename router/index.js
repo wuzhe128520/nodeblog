@@ -57,9 +57,9 @@ const express = require('express'),
         }
 
         //首页数据和首页分页数据公用函数
-        function indexQuery(res,currentPage) {
+        function indexQuery(res,start,length,currentPage) {
             //以时间倒序显示10条数据
-            var p2 = querytendata(0,10);
+            var p2 = querytendata(start,length);
 
             //查询总页数
             var p3 = new Promise(function(resolve, reject) {
