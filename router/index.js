@@ -210,7 +210,9 @@ const express = require('express'),
         router.get('/article-detail/:id.html',(req, res)=>{
             //req.params 同时接收get，post，其他 提交数据的形式
                 var id = req.params.id;
+
                 sql('select * from article al,articletype at where al.id = ? and al.typeid=at.type_id',[req.params.id],(err,data)=>{
+
                             if(err){
                                 console.log(err);
                             }
@@ -267,6 +269,7 @@ const express = require('express'),
                                     });
                                 });
 
+                                //查询上一篇 下一篇
                                 var promise3 = new Promise(function(resolve, reject) {
 
                                     //查询下一篇
@@ -293,22 +296,111 @@ const express = require('express'),
                                 var promise5 = queryding();
 
                                 Promise.all([promise,promise2,promise3,promise4,promise5]).then(function(alldata){
-                                    sql('select * from comments where topic_id = ?',[id],(err,comments)=>{
+
+                                    //查询出当前文章的所有评论
+                                    sql('select comm.*,us.username from comments comm left join user us on dicid = 1 where comm.topic_id = ? and comm.from_uid = us.id',[id],(err,comments)=>{
+
                                         if(err){
                                             console.log(err);
                                             return;
                                         }
-                                        console.log('alldata[2]:');
-                                        console.log(alldata[2]);
-                                        res.render('article-detail',{
-                                            comments: comments,
-                                            data: data,
-                                            tags: alldata[1],
-                                            sibling: alldata[2],
-                                            lastest: alldata[3],
-                                            topsix: alldata[4]
+
+                                        //查询当前文章下的所有回复
+                                        sql('select * from reply where dicid=1 and comment_id in (select comm.commid from comments comm where comm.topic_id = ? and  comm.dicid = 1)',[id],(err, replys) => {
+                                                if(err){
+                                                    console.log(err);
+                                                    return;
+                                                }
+
+                                                var comrep=[],
+                                                    purereplys = [];
+                                                for(var i = 0; i < comments.length; i++){
+
+                                                    var commobj = comments[i],
+                                                        child = {
+                                                            commid: commobj.commid,
+                                                            content: commobj.content,
+                                                            from_uid: commobj.from_uid,
+                                                            comm_time: commobj.comm_time
+                                                        };
+                                                    var rpChild = [];
+
+                                                    for(var j = 0; j < replys.length; j++){
+
+                                                        var rpobj = replys[j];
+
+                                                        //找到当前评论下的所有回复
+                                                        if(rpobj.comment_id === commobj.commid ) {
+
+                                                           //将当前评论下的所有回复存入新的数组
+                                                            purereplys.push(rpobj);
+
+                                                            //针对评论的回复
+                                                            if(rpobj.reply_type ===4){
+
+                                                                purereplys.splice(purereplys.length-1,1);
+
+                                                                //第一条回复放到rpChild
+                                                                rpChild.push(rpobj);
+
+                                                                //得到第一个评论的回复id(回复表的主键)
+                                                                var rpid = rpobj.rpid;
+
+                                                                //得到第一条回复下所有的子孙回复
+                                                                var ary = digui(rpid);
+
+                                                                rpChild['replys'] = ary;
+
+                                                            }
+
+                                                        }
+                                                    }
+
+                                                    child['replys'] = rpChild;
+
+                                                    comrep.push(child);
+                                                }
+
+                                                //递归出第一条回复下的所有回复(除了第一条)
+                                                function digui(rpid) {
+                                                    var ary = [];
+                                                    for(var n = 0; n < purereplys.length; n++){
+
+                                                        var repobj = purereplys[n];
+                                                        if(repobj.reply_id === rpid&&repobj.reply_type===5){
+
+                                                                ary.push(repobj);
+
+                                                                replys.splice(n,1);
+
+
+                                                                var childrpid = rpobj.rpid;
+
+                                                                digui(childrpid);
+                                                        }
+                                                    }
+
+                                                    return ary;
+                                                }
+
+                                                console.log('构建新的数据结构：');
+                                                console.log(comrep);
+                                               res.render('article-detail',{
+                                                    commentsReply: comrep,
+                                                    data: data,
+                                                    tags: alldata[1],
+                                                    sibling: alldata[2],
+                                                    lastest: alldata[3],
+                                                    topsix: alldata[4]
+                                                });
+
                                         });
+
+
                                     });
+
+
+
                                 });
 
                             }

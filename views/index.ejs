@@ -31,7 +31,7 @@
                         <span>
                             <a href="javascript:void(0);" class="iconfont-wrap">
                                 <i title="日期图标" class="iconfont icon-time"></i>
-                                <time><%=locals.dateFormat(data[i].time,'YYYY-MM-DD hh:mm:ss')%></time>
+                                <time><%=locals.dateFormat(data[i].time,'YYYY-MM-DD HH:mm:ss')%></time>
                             </a>
                         </span>
                         <span>
@@ -230,6 +230,57 @@
 </main>
 <%include footer.ejs%>
 <script type="text/javascript">
+    $(init);
+    function init() {
+
+        var time = new Date();
+        var year=time.getFullYear();
+
+        document.getElementById("siteDate").innerHTML = year;
+
+        function handleClick() {
+            var $target = $(this);
+            var articleId = $target.closest('.js_article').data('articleid');
+            ding($target,articleId);
+        }
+        $("#articles").on('click','.js_ding',handleClick);
+        //顶的业务逻辑
+        function ding($self,articleId) {
+            comm.ajax.commAjax({
+                url: '/ding',
+                type: 'post',
+                data: {id: articleId},
+                errorFn: function(error){
+                    comm.layer.msg('顶操作失败！');
+                },
+                successFn: function(data){
+                    $self.find('.js_ding_text').text(data.dm[0].ding);
+                }
+            });
+
+        }
+        function handleCaiClick() {
+            var $target = $(this);
+            var articleId = $target.closest('.js_article').data('articleid');
+            cai($target,articleId);
+        }
+        $("#articles").on('click','.js_cai',handleCaiClick);
+
+        //踩的业务逻辑
+        function cai($self,articleId) {
+            comm.ajax.commAjax({
+                url: '/cai',
+                type: 'post',
+                data: {id: articleId},
+                errorFn: function(error){
+                    comm.layer.msg('踩失败！');
+                },
+                successFn: function(data){
+                    $self.find('.js_cai_text').text(data.c[0].cai);
+                }
+            });
+        }
+    };
     window._bd_share_config={
         "common":{
             "bdSnsKey":{},

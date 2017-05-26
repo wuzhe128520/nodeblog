@@ -75,7 +75,7 @@ router.post('/article',upload.single('uploadfile'),(req,res)=>{
         summery = req.body.summery.substr(0,200) + '...',
         time = new Date().toLocaleString();
         console.log(time);
-        sql('insert into article(title,tag,author,content,time,img,summery) values(?,?,?,?,?,?,?)',[title,tag,author,content,time,img,summery],(err,data)=>{
+        sql('insert into article(title,tags,author,content,time,img,summery) values(?,?,?,?,?,?,?)',[title,tag,author,content,time,img,summery],(err,data)=>{
                 if(err){
                     console.log(err);
                     res.send('添加文章失败！');

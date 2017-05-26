@@ -84,7 +84,10 @@ em,i  {
 }
 /*解决谷歌浏览器input的谈黄色背景*/
 input:-webkit-autofill {
-  -webkit-box-shadow:0 0 0 1000px white inset
+  -webkit-box-shadow:0 0 0 1000px #222423 inset;
+  -webkit-text-fill-color: #fff;
+  background-color: rgb(0,0,0,0.6)!important;
+  opacity: 0.3;
 }
 .ellipsis {
   overflow:hidden;
@@ -121,3 +124,4 @@ p {
 .abs-relative {
   position: relative;
 }
+

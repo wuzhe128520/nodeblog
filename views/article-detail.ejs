@@ -13,7 +13,7 @@
                 <div class="article-detail-wrap">
                     <header>
                         <h1 class="js_article_title article-title"><%=data[0]['title']%></h1>
-                        <p class="article-time-view">发布时间:<time><%=locals.dateFormat(data[0].time,'YYYY-MM-DD hh:mm:ss')%></time> <%= data[0].views %>次浏览</p>
+                        <p class="article-time-view">发布时间:<time><%=locals.dateFormat(data[0].time,'YYYY-MM-DD HH:mm:ss')%></time> <%= data[0].views %>次浏览</p>
                     </header>
                     <!--文章详情begin-->
                     <div class="article-detail-content clearfix js_article_content">
@@ -86,114 +86,83 @@
                             </div>
                         </div>
                         <ul class="comments-all">
+
+                            <%var m=0,
+                                  length = commentsReply.length;
+                                for(;m < length; m++){
+                            %>
                             <li>
                                 <div class="comments">
                                     <div class="user">
                                         <a href="javascript:void(0);">
-                                            <img src="../public/image/user.jpg" />
+                                            <img src="/image/user.jpg" />
                                         </a>
                                     </div>
                                     <div class="comment-body">
                                         <div class="comment-name">
                                             <a href="javascript:void(0);">
-                                                我浪故我在
+                                                吴哲
                                             </a>
                                         </div>
                                         <p class="comment-content">
-                                            坚持就是胜利！
+                                            <%=commentsReply[m].content%>
                                         </p>
                                         <div class="comment-footer">
-                                            <time>2017年02月16日</time>
+                                            <time><%=locals.dateFormat(commentsReply[m].comm_time,'YYYY-MM-DD HH:mm:ss')%></time>
                                             <a href="javascript:void(0);">
                                                 <i title="回复图标" class="iconfont icon-huifu" ></i>回复
                                             </a>
                                         </div>
                                     </div>
                                 </div>
-                                <ul class="comment-childs">
-                                    <li>
-                                        <!-- main comment content  begin -->
-                                        <div class="comments">
-                                            <div class="user">
-                                                <a href="javascript:void(0);">
-                                                    <img src="../public/image/user.jpg" />
-                                                </a>
-                                            </div>
-                                            <div class="comment-body">
-                                                <div class="comment-name">
-                                                    <a href="javascript:void(0);">
-                                                        我浪故我在
-                                                    </a>
-                                                </div>
-                                                <p class="comment-content">
-                                                    坚持就是胜利！
-                                                </p>
-                                                <div class="comment-footer">
-                                                    <time>2017年02月16日</time>
-                                                    <a href="javascript:void(0);">
-                                                        <i title="回复图标" class="iconfont icon-huifu"></i>回复
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- main comment content end-->
-                                        <!-- child comment begin -->
-                                        <ul class="comment-childs">
-                                            <li>
-                                                <div class="comments">
-                                                    <div class="user">
-                                                        <a href="javascript:void(0);">
-                                                            <img src="../public/image/user.jpg" />
-                                                        </a>
-                                                    </div>
-                                                    <div class="comment-body">
-                                                        <div class="comment-name">
+                               <%
+                               loop(commentsReply[m].replys);
+                               function loop(replys){
+                                if(!replys){return;}
+                               if(replys.length > 0){
+                               for(var k = 0; k < replys.length;k++){
+                                %>
+
+                                            <ul class="comment-childs">
+                                                <li>
+                                                    <div class="comments">
+                                                        <div class="user">
                                                             <a href="javascript:void(0);">
-                                                                我浪故我在
+                                                                <img src="/image/user.jpg" />
                                                             </a>
                                                         </div>
-                                                        <p class="comment-content">
-                                                            坚持就是胜利！
-                                                        </p>
-                                                        <div class="comment-footer">
-                                                            <time>2017年02月16日</time>
-                                                            <a href="javascript:void(0);">
-                                                                <i class="iconfont icon-huifu"></i>回复
-                                                            </a>
+                                                        <div class="comment-body">
+                                                            <div class="comment-name">
+                                                                <a href="javascript:void(0);">
+                                                                    我浪故我在
+                                                                </a>
+                                                            </div>
+                                                            <p class="comment-content">
+                                                                <%=replys[k].reply_content%>
+                                                            </p>
+                                                            <div class="comment-footer">
+                                                                <time>2017年02月16日</time>
+                                                                <a href="javascript:void(0);">
+                                                                    <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                                                                </a>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="comments">
-                                                    <div class="user">
-                                                        <a href="javascript:void(0);">
-                                                            <img src="../public/image/user.jpg" />
-                                                        </a>
-                                                    </div>
-                                                    <div class="comment-body">
-                                                        <div class="comment-name">
-                                                            <a href="javascript:void(0);">
-                                                                我浪故我在
-                                                            </a>
-                                                        </div>
-                                                        <p class="comment-content">
-                                                            坚持就是胜利！
-                                                        </p>
-                                                        <div class="comment-footer">
-                                                            <time>2017年02月16日</time>
-                                                            <a href="javascript:void(0);">
-                                                                <i class="iconfont icon-huifu"></i>回复
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <!-- child comment end -->
-                                    </li>
-                                </ul>
+                                                </li>
+                                            </ul>
+                                  <% loop(replys[k].replys);
+                                  }%>
+
+
+                                  <%}%>
+
+                                <%}%>
+                                    <!--表示针对评论的回复-->
+
+                                <!--回复部分-->
+
                             </li>
+                           <%}%>
                         </ul>
                         <div  class="comments-pages-wrap clearfix">
                             <ul>
@@ -205,6 +174,7 @@
                             </ul>
                         </div>
                     </div>
+                    <!--发表评论 begin-->
                     <div class="declare-comment-wrap">
                         <h3>发表评论</h3>
                         <form id="commentForm" action="" method="post">
@@ -230,7 +200,6 @@
                             </p>
                         </form>
                     </div>
-                    <!--评论部分 end-->
                 </div>
             </article>
         </div>

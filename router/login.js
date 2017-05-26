@@ -17,11 +17,10 @@ router.get('/',(req, res)=>{
 router.post('/',(req, res)=>{
     const user = req.body['name'],
            pass = req.body['pass'],
-           md5 = crypto.createHash('md5');
-    let newpass = md5.update(pass).digest('hex');
+           md5 = crypto.createHash('md5'),
+           newpass = md5.update(pass).digest('hex');
     sql("select status from user where username = ? and password = ?",[user,newpass],(err,data)=>{
-            console.log("是否是激活状态：");
-            console.log(data);
+
             if(data.length === 1){
 
                 //表示未激活

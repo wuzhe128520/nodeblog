@@ -36,11 +36,11 @@
                 <form action="/register" method="post" class="login-form">
                     <div class="username-wrap">
                         <i class="iconfont icon-username"></i>
-                        <input type="text" name="user" class="user" placeholder="用户名" />
+                        <input type="text" name="user" autocomplete="off"  class="user" placeholder="用户名" />
                     </div>
                     <div class="password-wrap">
                         <i class="iconfont icon-unlock"></i>
-                        <input type="password" name="pass" class="pass" placeholder="密码" />
+                        <input type="password" name="pass" autocomplete="off" class="pass" placeholder="密码" />
                     </div>
                     <div class="remember-login clearfix">
                         <span class="checked-pwd">
@@ -65,22 +65,22 @@
                     <ul>
                         <li>
                             <div>
-                                <input type="text" placeholder="用户名" name="" id="username">
+                                <input type="text" autocomplete="off" placeholder="用户名" name="" id="username">
                             </div>
                         </li>
                         <li>
                             <div>
-                                <input type="password" placeholder="密码" id="password">
+                                <input type="password" autocomplete="off" placeholder="密码" id="password">
                             </div>
                         </li>
                         <li>
                             <div>
-                                <input type="text" placeholder="邮箱(用于邮件验证)" id="regEmail">
+                                <input type="text" autocomplete="off" placeholder="邮箱(用于邮件验证)" id="regEmail">
                             </div>
                         </li>
                         <li>
                             <div>
-                                <input type="text" placeholder="验证码(证明你不是机器人)" id="regCode" class="auth-code">
+                                <input type="text" autocomplete="off" placeholder="验证码(证明你不是机器人)" id="regCode" class="auth-code">
                                 <a href="javascript:void(0);" class="auth-wrap" title="点击更换验证码">
                                     <canvas width="384" height="50" id="code">您的浏览器不支持canvas，请升级您的浏览器！</canvas>
                                 </a>
@@ -233,7 +233,6 @@
             e.preventDefault();
             handleRegister();
         });
-
         function validateForm() {
 
             //判断email
@@ -301,7 +300,6 @@
                 }
                 return true;
         }
-
     }
 </script>
 </body>
