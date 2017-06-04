@@ -205,7 +205,34 @@ const express = require('express'),
            });
        });
 
-       //文章详情
+        //深拷贝对象
+        function deepCopy(p, c){
+            var c = c || {};
+            for(let i in p){
+                if(typeof p[i] === 'object'){
+                    c[i] = (p[i].constructor === Array) ?[]:{};
+                    deepCopy(p[i], c[i]);
+                }else {
+                    c[i] = p[i];
+                }
+            }
+            return c;
+        }
+
+        //判断是不是空对象
+        function isEmptyObject (obj){
+            var i = true;
+
+            for(var i in obj){
+                if(obj.hasOwnProperty(i)){
+                    i = false;
+                    break;
+                }
+            }
+            return i;
+        }
+
+//文章详情
        //:id.html方式接收前端页面传递过来的参数,req.params得到:id的值
         router.get('/article-detail/:id.html',(req, res)=>{
             //req.params 同时接收get，post，其他 提交数据的形式
@@ -221,26 +248,35 @@ const express = require('express'),
                                 res.status(404).render('404');
                             }else {
                                 //得到标签id
-                                var tagsdata = data[0].tags;
-                                tagsAry = tagsdata.split(',');
-                                var j = 0,
-                                tLegnth = tagsAry.length,
-                                sqlStr = 'select * from articletag where tag_id in ',
-                                       str = '',
-                                        param = [];
-                                console.log(tLegnth);
-                                for(;j < tLegnth; j++) {
+                                var tagsdata = data[0].tags,
+                                     param = null,
+                                    sqlStr = null;
+                                if(tagsdata.indexOf(',') != -1){
+                                    tagsAry = tagsdata.split(',');
+                                    let j = 0,
+                                        tLegnth = tagsAry.length,
+                                        str = '';
+                                    param = [];
+                                    sqlStr = 'select * from articletag where tag_id in ';
+                                    console.log(tLegnth);
+                                    for(;j < tLegnth; j++) {
 
-                                    if(j===0) {
-                                        str = '(?,';
-                                    } else if(j === (tLegnth - 1 )) {
-                                        str += '?)'
-                                    } else {
-                                        str += '?,';
+                                        if(j===0) {
+                                            str = '(?,';
+                                        } else if(j === (tLegnth - 1 )) {
+                                            str += '?)'
+                                        } else {
+                                            str += '?,';
+                                        }
+                                        param.push(tagsAry[j]);
                                     }
-                                    param.push(tagsAry[j]);
+                                    sqlStr += str;
+                                } else {
+                                    sqlStr = 'select * from articletag where tag_id = ?';
+                                    param = tagsdata;
                                 }
-                                sqlStr += str;
+
+
                                 console.log(sqlStr);
                                 console.log(param);
                                 var promise2 = new Promise(function(resolve,reject){
@@ -273,7 +309,7 @@ const express = require('express'),
                                 var promise3 = new Promise(function(resolve, reject) {
 
                                     //查询下一篇
-                                    sql('select id,title from article where id > ? order by time desc limit 1',[id],(err, next) => {
+                                    sql('select id,title from article where id > ? order by time asc limit 1',[id],(err, next) => {
 
                                             if(err){
                                                 console.log(err);
@@ -306,83 +342,140 @@ const express = require('express'),
                                         }
 
                                         //查询当前文章下的所有回复
-                                        sql('select * from reply where dicid=1 and comment_id in (select comm.commid from comments comm where comm.topic_id = ? and  comm.dicid = 1)',[id],(err, replys) => {
+                                        /*
+                                         select rp.*,us.username from reply rp,user us where rp.dicid=1 and rp.comment_id in (select comm.commid from comments comm where comm.topic_id = ? and  comm.dicid = 1) and rp.rp_from_uid = us.id
+                                         */
+                                        /*
+                                         select rp.*,(select username from  user where  id = rp.rp_from_uid) as from_username,(select username from  user where  id = rp.to_uid) as to_username from reply rp where rp.dicid=1 and rp.comment_id in (select comm.commid from comments comm where comm.topic_id = 56 and  comm.dicid = 1)
+                                        */
+                                        sql('select rp.*,(select username from  user where  id = rp.rp_from_uid) as from_username,(select username from  user where  id = rp.to_uid) as to_username from reply rp where rp.dicid=1 and rp.comment_id in (select comm.commid from comments comm where comm.topic_id = ? and  comm.dicid = 1)',[id],(err, replys) => {
+
                                                 if(err){
                                                     console.log(err);
                                                     return;
                                                 }
 
-                                                var comrep=[],
-                                                    purereplys = [];
+                                                //构建回复的数组对象
+                                                var comrep=[];
+
                                                 for(var i = 0; i < comments.length; i++){
 
                                                     var commobj = comments[i],
+                                                        //第一个子对象
                                                         child = {
                                                             commid: commobj.commid,
                                                             content: commobj.content,
                                                             from_uid: commobj.from_uid,
-                                                            comm_time: commobj.comm_time
+                                                            comm_time: commobj.comm_time,
+                                                            username: commobj.username,
+                                                            dicid: commobj.dicid
                                                         };
+
+                                                    //child下的子回复
                                                     var rpChild = [];
 
+                                                    //循环回复数据，找到当前评论下的回复
                                                     for(var j = 0; j < replys.length; j++){
-
+                                                        debugger;
                                                         var rpobj = replys[j];
+
+                                                        var newObj = deepCopy(rpobj);
 
                                                         //找到当前评论下的所有回复
                                                         if(rpobj.comment_id === commobj.commid ) {
 
-                                                           //将当前评论下的所有回复存入新的数组
-                                                            purereplys.push(rpobj);
-
                                                             //针对评论的回复
-                                                            if(rpobj.reply_type ===4){
+                                                            if(rpobj.reply_type === 4){
 
-                                                                purereplys.splice(purereplys.length-1,1);
-
-                                                                //第一条回复放到rpChild
-                                                                rpChild.push(rpobj);
-
-                                                                //得到第一个评论的回复id(回复表的主键)
+                                                                //回复id
                                                                 var rpid = rpobj.rpid;
 
-                                                                //得到第一条回复下所有的子孙回复
-                                                                var ary = digui(rpid);
+                                                                //通过递归得到当前回复下所有的子孙回复
+                                                                //debugger;
+                                                                var dg = digui(rpid);
+                                                                isEmpty = isEmptyObject(dg);
 
-                                                                rpChild['replys'] = ary;
+                                                                if(!isEmpty&&dg['replys'].length > 0){
 
+                                                                    newObj['replys']=[];
+                                                                    newObj['replys'].push(dg);
+
+                                                                }
+                                                                console.log('递归后的结果：');
+                                                                console.log(dg);
+                                                                rpChild.push(newObj);
                                                             }
-
                                                         }
                                                     }
-
-                                                    child['replys'] = rpChild;
+                                                    //将所有递归出来的所有回复数据放入rpChlid的属性replys下
+                                                    if(rpChild.length > 0){
+                                                        child['replys'] = rpChild;
+                                                    }
 
                                                     comrep.push(child);
                                                 }
 
-                                                //递归出第一条回复下的所有回复(除了第一条)
-                                                function digui(rpid) {
-                                                    var ary = [];
-                                                    for(var n = 0; n < purereplys.length; n++){
+                                            //递归构建 reply_type为5的回复
+                                            function dgs(result,pid) {
 
-                                                        var repobj = purereplys[n];
-                                                        if(repobj.reply_id === rpid&&repobj.reply_type===5){
+                                                debugger;
+                                                var rtn = [];
+                                                for(var i =0;i < result.length; i++){
 
-                                                                ary.push(repobj);
+                                                    var resultObj = result[i];
 
-                                                                replys.splice(n,1);
+                                                    if(resultObj.reply_id === pid && resultObj.reply_type === 5){
 
-
-                                                                var childrpid = rpobj.rpid;
-
-                                                                digui(childrpid);
+                                                        var childrpid = result[i].rpid;
+                                                        var dgsData = dgs(result,childrpid);
+                                                        console.log('dgsData:');
+                                                        console.log(dgsData);
+                                                        if(dgsData.length > 0){
+                                                            result[i].replys = dgs(result,childrpid);
                                                         }
+                                                        rtn.push(result[i]);
                                                     }
+                                                }
+                                                return rtn;
 
-                                                    return ary;
+                                            }
+
+                                            /**
+                                             *
+                                             * @param rpid 针对评论的回复id
+                                             * @returns {{}}
+                                             */
+                                                function digui(rpid) {
+                                                var dgobjs = {};
+                                                var dgsTwoData = dgs( replys,rpid);
+                                                console.log('dgsTwoData:');
+                                                console.log(dgsTwoData);
+                                                if(dgsTwoData.length > 0){
+                                                    dgobjs['replys'] = dgsTwoData;
+                                                    return dgobjs;
                                                 }
 
+                                                    //debugger;
+                                                   /*     var dgobjs = {};
+                                                        for(var n = 0; n < replys.length; n++){
+
+                                                            var repobj = replys[n];
+
+                                                            //reply_type为5，说明是回复的回复
+                                                            if(repobj.reply_id === rpid && repobj.reply_type === 5){
+
+                                                                var childrpid = rpobj.rpid;
+                                                                    dgobjs = deepCopy(repobj);
+                                                               // if(rpid !== childrpid){*/
+
+                                                                    //rpid为childrpid已经加入到数据里了
+
+                                                                //}
+                                                       /*     }
+                                                        }*/
+                                                }
+
+                                                debugger;
                                                 console.log('构建新的数据结构：');
                                                 console.log(comrep);
                                                res.render('article-detail',{
@@ -409,17 +502,62 @@ const express = require('express'),
         });
 
         //发表评论
-        router.post('/article-detail/:id.html',(req, res)=>{
+        router.post('/comment/:id.html',(req, res)=>{
             console.log(req.params.id,req.body.content);
-        sql('insert into articlecomments (uid,aid,content) values (0,?,?)',[req.params.id, req.body.content],(err,data)=>{
-                if(err){
-                    console.log(err);
-                    return;
-                }
-                res.send("评论成功！");
-          });
-      });
+            /**
+             * form_uid: 评论人id
+             *    dicid: 评论类型(1代表文章的评论)
+             * topic_id: 评论类型的id(这里代表文章的id)
+             *  content: 评论内容
+             */
+            let userid = req.cookies['login'].id,
+                time = new Date().toLocaleString();
+            if(userid){
+                sql('insert into comments (from_uid,dicid,topic_id,content,comm_time) values (?,?,?,?,?)',[userid,1,req.params.id, req.body.content,time],(err,data)=>{
 
+                    if(err){
+                        console.log(err);
+                        return;
+                    }
+
+                    res.send("评论成功！");
+                });
+            } else {
+                res.send("评论失败!用户id不存在!");
+            }
+
+         });
+
+        //发表回复
+        router.post('/reply',(req, res) => {
+            let data = req.body,
+                 commid = data.commid,
+                 replyid = data.replyid,
+                 replytype = data.replytype,
+                 content = data.content,
+                 touid = data.touid,
+                 fromuid = req.cookies['login'].id,
+                 dicid = data.dicid,
+                 time = new Date().toLocaleString();
+                 sql('insert into reply(comment_id,reply_id,reply_type,reply_content,rp_from_uid,to_uid,dicid,reply_time) values (?,?,?,?,?,?,?,?)',[commid,replyid,replytype,content,fromuid,touid,dicid,time],(err) => {
+                        if(err) {
+                            console.log(err);
+                            res.json({
+                                data: {
+                                    status: 0,
+                                    des: '回复失败!'+err
+                                }
+                            });
+                        } else {
+                            res.json({
+                                data: {
+                                    status: 1,
+                                    des: '回复成功!'
+                                }
+                            });
+                        }
+                 });
+        });
           //顶
         router.post('/ding', (req, res) => {
                 let articleId = req.body.id;

@@ -9,21 +9,31 @@
 <%
 var isActive = locals.data.active;
 if(isActive){%>
-<%=locals.data.username%>,账号激活成功<span id="text"></span>秒后,跳转到首页
+<%if(locals.data.username){%>
+    <%=locals.data.username%>,
+<%}%>
+<%=locals.data.content%><span id="redirect" style="display: none;"><span id="text">3</span>秒后,跳转到首页</span>
+
 <script>
-    var target = document.getElementById('text');
-    target.innerHTML = 3;
-    var i = 3;
-    var index = setInterval(function(){
-        target.innerHTML = --i;
-        if(i === 1){
-            clearInterval(index);
-            window.location.href = '/login?show=1';
-        }
-    },1000);
+    setTimeout(function(){
+        var redirect = document.getElementById('redirect'),
+            i = 3,
+            index = null,
+            target = document.getElementById('text');
+
+        redirect.style.display = 'inline';
+        target.innerHTML = 3;
+        index= setInterval(function(){
+            target.innerHTML = --i;
+            if(i === 1){
+                clearInterval(index);
+                window.location.href = '/login?show=1';
+            }
+        },1000);
+    },5000);
 </script>
 <%} else { %>
-账号激活失败！
+账号激活失败！<%=locals.data.content%>
 <%}%>
 <%=locals.active%>
 </body>

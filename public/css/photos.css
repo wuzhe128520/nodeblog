@@ -232,8 +232,9 @@ body {
 /*=====尾部 end=====*/
 .article-detail-content img {
   display: block;
-  float: left;
+  margin: 0 auto;
   vertical-align: middle;
+  max-width: 100%;
 }
 /*=====布局类 begin=====*/
 .layer-wz {
@@ -316,7 +317,7 @@ footer {
   border-radius: 50%;
 }
 .comments .comment-body {
-  height: 72px;
+  height: auto;
   padding-left: 50px;
 }
 .comments .comment-body .comment-name {
@@ -324,6 +325,9 @@ footer {
 }
 .comments .comment-body .comment-name > a {
   color: #d32;
+}
+.comments .comment-body .comment-name > a .reply_text {
+  color: black;
 }
 .comments .comment-body .comment-content {
   font-size: 16px;

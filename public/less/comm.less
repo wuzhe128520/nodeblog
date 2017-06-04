@@ -245,8 +245,10 @@ body {
 //设置文章详情页面图片的显示
 .article-detail-content img {
   display: block;
-  float: left;
+  margin: 0 auto;
   vertical-align: middle;
+  max-width: 100%;
+
 }
 /*=====布局类 begin=====*/
 .layer-wz {
@@ -327,11 +329,14 @@ footer {
     float: left;
   }
   .comment-body {
-    height: 72px;
+    height: auto;
     padding-left: 50px;
     .comment-name {
       >a {
         color: #d32;
+        .reply_text {
+          color: black;
+        }
       }
       font-size: 14px;
     }

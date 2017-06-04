@@ -234,7 +234,7 @@
                                         </p>
                                         <div class="comment-footer">
                                             <time>2017年02月16日</time>
-                                            <a href="javascript:void(0);">
+                                            <a href="javascript:void(0);" class="js_reply">
                                                 <i title="回复图标" class="iconfont icon-huifu" ></i>回复
                                             </a>
                                         </div>
@@ -260,7 +260,7 @@
                                                 </p>
                                                 <div class="comment-footer">
                                                     <time>2017年02月16日</time>
-                                                    <a href="javascript:void(0);">
+                                                    <a href="javascript:void(0);" class="js_reply">
                                                         <i title="回复图标" class="iconfont icon-huifu"></i>回复
                                                     </a>
                                                 </div>
@@ -287,7 +287,7 @@
                                                         </p>
                                                         <div class="comment-footer">
                                                             <time>2017年02月16日</time>
-                                                            <a href="javascript:void(0);">
+                                                            <a href="javascript:void(0);" class="js_reply">
                                                                 <i class="iconfont icon-huifu"></i>回复
                                                             </a>
                                                         </div>
@@ -312,7 +312,7 @@
                                                         </p>
                                                         <div class="comment-footer">
                                                             <time>2017年02月16日</time>
-                                                            <a href="javascript:void(0);">
+                                                            <a href="javascript:void(0);" class="js_reply">
                                                                 <i class="iconfont icon-huifu"></i>回复
                                                             </a>
                                                         </div>
@@ -335,6 +335,7 @@
                             </ul>
                         </div>
                     </div>
+                    <!--发表评论部分 begin-->
                     <div class="declare-comment-wrap">
                         <h3>发表评论</h3>
                         <form id="commentForm" action="" method="post">
@@ -360,6 +361,7 @@
                             </p>
                         </form>
                     </div>
+                    <!--发表评论部分 end-->
                     <!--评论部分 end-->
                 </div>
             </article>
@@ -443,32 +445,43 @@
     <script>
         hljs.initHighlightingOnLoad();
     </script>
+
     <script type="text/javascript">
         $(init);
         function init(){
-            share(
-                {
-                    common: {
-                        bdText : $(".js_article_title").text(),
-                        bdDesc : $(".js_article_content").text().substring(0,269),
-                        bdUrl : window.location.href.split("?")[0],
-                        onBeforeClick: function(cmd, config){
-                            for(let i in config){
-                                console.log(i,config[i]);
-                            }
-                            //config.bdText= $('.js_article_title').text();
-                            return config;
-                        }
-                    },
-                    share: [{
-                        "bdSize" : 24
-                    }],
-                    selectShare : [{
-                        "bdselectMiniList" : ['qzone','weixin'],
-                        "bdContainerClass" : "js_article_content"
-                    }]
-                }
-            );
+            //回复
+            $('.js_reply').on('click',function(){
+                /*
+                获取html模板,根据reply_type是否为4来判断是不是根评论id(comment_id),
+                被回复评论的id(reply_id)，回复内容(reply_content)，评论人id(from_uid),
+                被评论人id(to_uid),评论主题id(dicid，文章是1)
+                */
+
+                /*
+                对于根评论来说：
+                    comment_id 和 reply_id是一样的(所以只需要找到comment_id就行)；
+                    被评论人id(就是评论表的from_id)
+                */
+
+                //获取type，是否是根评论
+                var $target = $(this)
+
+                    //回复的是评论还是回复
+                    rpType = $target.data('replytype'),
+
+                    //被回复的评论(回复)id
+                    rpId = $target.data('replyuser'),
+
+                    //被回复人id
+                    rpUserId = $target.data('replyuser'),
+
+                    //哪个类型的回复(可能是文章的回复，也可能是说说的回复)
+                    rpDicId = $target.data('dicid');
+
+                    console.log(rpType,rpId,rpUserId,rpDicId);
+
+
+            });
         }
     </script>
 </body>

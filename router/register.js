@@ -70,36 +70,49 @@ router.get('/validate/:uuid.html',(req,res) => {
 
     const uuid = req.params.uuid;
 
-    sql('select id,createtime,username,email from user where code = ?',[uuid],(err, data) => {
+    sql('select id,createtime,username,email,status from user where code = ?',[uuid],(err, data) => {
         if(err){
             console.log(err);
         } else {
+
+            //如果这个验证码是对的
             if(data.length === 1){
 
-                if(new Date() - data[0].createtime > 1000*60*30) {
-                    //验证码过期了，重新发送
-                    const uuid = uuidV1();
-                    sendMail(data[0].email,'欢迎您注册无畏滴青春博客网站！点此<a style="color:red;" href="http://wuzhe128520.xicp.net:27936/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。');
-                    let time = new Date().toLocaleString();
-                    sql('update user set createtime = ?,code=? where id=?',[time,uuid,data[0].id],(err, data) => {
-                        if(err){
-                            console.log(err);
-                        } else {
-                            res.send('验证码已经过期,已重新发送验证码，请在邮箱查收！');
-                        }
-                    });
+                //如果这个用户没有激活，则开始激活
+                if(data[0].status !== 1) {
+
+                    //如果验证码没有过期
+                    if(new Date() - data[0].createtime > 1000*60*30) {
+                        //验证码过期了，重新发送
+                        const uuid = uuidV1();
+                        sendMail(data[0].email,'欢迎您注册无畏滴青春博客网站！点此<a style="color:red;" href="http://wuzhe128520.xicp.net:27936/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。');
+                        let time = new Date().toLocaleString();
+                        sql('update user set createtime = ?,code=? where id=?',[time,uuid,data[0].id],(err, data) => {
+                            if(err){
+                                console.log(err);
+                            } else {
+                                res.send('验证码已经过期,已重新发送验证码，请在邮箱查收！');
+                            }
+                        });
+                    } else {
+                        res.locals.data = {active: 1,content: '账号激活成功!',username: data[0].username};
+                        sql('update user set status = 1 where id = ?',[data[0].id], (err,data) => {
+                            if(err){
+                                console.log(err);
+                            } else {
+                                res.render('active');
+                            }
+                        });
+                    }
+
                 } else {
-                    res.locals.data = {active: 1,username: data[0].username};
-                    sql('update user set status = 1 where id = ?',[data[0].id], (err,data) => {
-                        if(err){
-                            console.log(err);
-                        } else {
-                            res.render('active');
-                        }
-                    });
+
+                    //如果用户已经激活，则进入登录页面
+                    res.locals.data = {active: 1,content: '您的账号已经激活，请不要重复激活!'};
+                    res.render('active');
                 }
             } else {
-                res.locas.active = 0;
+                res.locals.data = {active: 0,content:'邮箱验证码错误！'};
                 res.render('active');
             }
         }

@@ -17,15 +17,6 @@
                     </header>
                     <!--文章详情begin-->
                     <div class="article-detail-content clearfix js_article_content">
-                        <pre>
-                            <code class="javascript">
-                                  $(document).ready(function() {
-                                  $('pre code').each(function(i, block) {
-                                    hljs.highlightBlock(block);
-                                  });
-                                });
-                            </code>
-                        </pre>
                         <%-data[0]['content']%>
                     </div>
                     <!--文章详情end-->
@@ -92,16 +83,17 @@
                                 for(;m < length; m++){
                             %>
                             <li>
+                                <!--展示评论 begin-->
                                 <div class="comments">
                                     <div class="user">
                                         <a href="javascript:void(0);">
                                             <img src="/image/user.jpg" />
                                         </a>
                                     </div>
-                                    <div class="comment-body">
+                                    <div class="comment-body js_comment_body">
                                         <div class="comment-name">
                                             <a href="javascript:void(0);">
-                                                吴哲
+                                                <%=commentsReply[m].username%>
                                             </a>
                                         </div>
                                         <p class="comment-content">
@@ -109,21 +101,30 @@
                                         </p>
                                         <div class="comment-footer">
                                             <time><%=locals.dateFormat(commentsReply[m].comm_time,'YYYY-MM-DD HH:mm:ss')%></time>
-                                            <a href="javascript:void(0);">
+                                            <a href="javascript:void(0);" class="js_reply" data-replytype="4" data-replyid="<%=commentsReply[m].commid%>" data-replyuser="<%=commentsReply[m].from_uid%>" data-dicid="<%=commentsReply[m].dicid%>" >
                                                 <i title="回复图标" class="iconfont icon-huifu" ></i>回复
                                             </a>
                                         </div>
                                     </div>
                                 </div>
-                               <%
+                               <!--展示评论 end-->
+                                <%
                                loop(commentsReply[m].replys);
                                function loop(replys){
-                                if(!replys){return;}
+
+                                if(!replys||replys.length < 1){return;}
                                if(replys.length > 0){
                                for(var k = 0; k < replys.length;k++){
-                                %>
+                                   var reply =replys[k];
+                                    console.log("当前对象：");
+                                    console.log(reply);
+                                    if(reply.replys){
+                                        loop(reply.replys);
+                                        continue;
+                                    } else {
 
-                                            <ul class="comment-childs">
+                                %>
+                                   <ul class="comment-childs">
                                                 <li>
                                                     <div class="comments">
                                                         <div class="user">
@@ -131,18 +132,18 @@
                                                                 <img src="/image/user.jpg" />
                                                             </a>
                                                         </div>
-                                                        <div class="comment-body">
+                                                        <div class="comment-body js_comment_body">
                                                             <div class="comment-name">
                                                                 <a href="javascript:void(0);">
-                                                                    我浪故我在
+                                                                    <%=replys[k].from_username%> <span class="reply_text">回复</span> <%=replys[k].to_username%>
                                                                 </a>
                                                             </div>
                                                             <p class="comment-content">
                                                                 <%=replys[k].reply_content%>
                                                             </p>
                                                             <div class="comment-footer">
-                                                                <time>2017年02月16日</time>
-                                                                <a href="javascript:void(0);">
+                                                                <time><%=locals.dateFormat(replys[k].reply_time,'YYYY-MM-DD HH:mm:ss')%></time>
+                                                                <a href="javascript:void(0);" class="js_reply" data-replytype="5" data-commid="<%=replys[k].comment_id%>" data-replyid="<%=replys[k].rpid%>" data-replyuser="<%=replys[k].rp_from_uid%>" data-dicid="<%=replys[k].dicid%>">
                                                                     <i title="回复图标" class="iconfont icon-huifu"></i>回复
                                                                 </a>
                                                             </div>
@@ -150,10 +151,11 @@
                                                     </div>
                                                 </li>
                                             </ul>
-                                  <% loop(replys[k].replys);
+
+                                  <% }
+
+
                                   }%>
-
-
                                   <%}%>
 
                                 <%}%>
@@ -177,29 +179,16 @@
                     <!--发表评论 begin-->
                     <div class="declare-comment-wrap">
                         <h3>发表评论</h3>
-                        <form id="commentForm" action="" method="post">
+                        <form id="commentForm" action="/comment/<%=data[0]['id']%>.html" method="post">
                             <p>
-                                <input type="text" tabindex="1" name="author" id="author" value=""/>
-                                <label for="author">名称（必须）</label>
-                            </p>
-                            <p>
-                                <input name="email" tabindex="2" id="email" />
-                                <label for="email">
-                                    邮件地址(必须)
-                                </label>
-                            </p>
-                            <p>
-                                <input type="text" tabindex="3" id="site" name="site" />
-                                <label for="site">网站</label>
-                            </p>
-                            <p>
-                                <textarea name="comment" tabindex="4" cols="100%" rows="10"></textarea>
+                                <textarea name="content" tabindex="4" cols="100%" rows="10"></textarea>
                             </p>
                             <p>
                                 <input name="submit" value="发表评论" class="declare-btn" type="submit">
                             </p>
                         </form>
                     </div>
+                    <!--发表评论 end-->
                 </div>
             </article>
         </div>
@@ -256,12 +245,21 @@
         </div>
     </div>
 </main>
-<form action="/article-detail/<%=data[0]['id']%>.html" method="post">
-    评论 <textarea name="content"></textarea>
-    <button>发表评论</button>
-</form>
 <% include footer.ejs %>
 <script type="text/javascript" src="/js/plugin/highlight/highlight.pack.js"></script>
+<script type="text/template" id="template">
+    <div class="declare-comment-wrap">
+        <h3>发表评论</h3>
+        <form>
+            <p>
+                <textarea name="comment" tabindex="4" cols="100%" rows="10"></textarea>
+            </p>
+            <p>
+                <input name="submit" value="发表评论" class="declare-btn" type="submit" onsubmit="return false;">
+            </p>
+        </form>
+    </div>
+</script>
 <script>
     hljs.initHighlightingOnLoad();
     window._bd_share_config={
@@ -285,6 +283,116 @@
         }
     };
     with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    $(init);
+    function init(){
+        //回复
+        $('.js_reply').on('click',function(){
+            /*
+             获取html模板,根据reply_type是否为4来判断是不是根评论id(comment_id),
+             被回复评论的id(reply_id)，回复内容(reply_content)，评论人id(from_uid),
+             被评论人id(to_uid),评论主题id(dicid，文章是1)
+             */
+
+            /*
+             对于根评论来说：
+             comment_id 和 reply_id是一样的(所以只需要找到comment_id就行)；
+             被评论人id(就是评论表的from_id)
+             */
+            showReplyArea($(this));
+        });
+
+
+    }
+
+    //临时保存数据到body
+    function saveDataOnBody($target) {
+
+           //回复的是评论还是回复
+            rpType = $target.data('replytype'),
+
+            //被回复的评论(回复)id
+            rpId = $target.data('replyid'),
+
+            //被回复人id
+            rpUserId = $target.data('replyuser'),
+
+            //哪个类型的回复(可能是文章的回复，也可能是说说的回复)
+            rpDicId = $target.data('dicid'),
+
+            //根评论的id
+            commentId = $target.data('commid')|null;
+
+        //如果回复的是评论
+        if(rpType===4){
+
+            commentId = rpId;
+        }
+
+        $('body').data('reply',{
+            commid: commentId,
+            rptype: rpType,
+            rpid: rpId,
+            rpUserId: rpUserId,
+            rpDicId: rpDicId,
+
+        });
+    }
+
+    //显示评论框
+    function showReplyArea($target) {
+
+        var templ = $('#template').html(),
+            $templ = $(templ);
+
+        $target.closest('.js_comment_body').append($templ);
+        $templ.find('input[type="submit"]').click(function(e){
+
+            var $target = $(this);
+            e.preventDefault();
+            handleReplySubmit($target);
+        });
+        saveDataOnBody($target);
+    }
+
+    //处理回复的事件
+    function handleReplySubmit($target){
+         var content = $target.closest('form').find('textarea').eq(0).val(),
+             replyData = $('body').data('reply'),
+             commid = replyData.commid,
+             rpid = replyData.rpid,
+            touid = replyData.rpUserId,
+             rptype = replyData.rptype,
+            dicid = replyData.rpDicId;
+            console.log('获取body里面存储的临时数据：');
+            console.log(replyData);
+         declareReply(commid,rpid,rptype,content,touid,dicid);
+    }
+
+    //发表评论的逻辑处理
+    function declareReply(commid,rpid,rptype,content,touid,dicid) {
+
+        comm.ajax.commAjax({
+            url: '/reply',
+            type: 'post',
+            data: {
+                commid: commid,
+                replyid: rpid,
+                replytype: rptype,
+                content: content,
+                touid: touid,
+                dicid: dicid
+            },
+            errorFn: function(error){
+                comm.layer.alert('回复失败！');
+            },
+            successFn: function(data){
+                comm.layer.alert(data.data.des);
+                window.location.reload();
+            }
+        });
+
+    }
+
 </script>
 </body>
 </html>

@@ -73,6 +73,44 @@ var comm = {
          var str = objAry.substring(0,objAry.length - 1).toLocaleLowerCase();
          return str||-1;
      },
+     //判断数据类型
+     judge: {
+         //判断是不是空对象
+         isEmptyObject: function(obj){
+             var i = true;
+
+             for(var i in obj){
+                  if(obj.hasOwnProperty(i)){
+                        i = false;
+                        break;
+                  }
+              }
+              return i;
+         }
+     },
+     //继承，复制对象
+     extend: {
+         /**
+          *
+          * @param p 父对象
+          * @param c 子对象(不填默认为{})
+          * @returns 返回一个和父对象一样结构的对象
+          */
+         //深拷贝对象
+         deepCopy: function(p, c){
+
+            var c = c || {};
+            for(let i in p){
+                if(typeof p[i] === 'object'){
+                    c[i] = (p[i].constructor === Array) ?[]:{};
+                    deepCopy(p[i], c[i]);
+                }else {
+                    c[i] = p[i];
+                }
+            }
+            return c;
+        }
+     },
      //随机数
     //产生min到max之间的随机数(包含min，不包含max)
     randomNum: function(min, max) {

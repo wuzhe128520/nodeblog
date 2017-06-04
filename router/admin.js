@@ -66,13 +66,13 @@ router.get('/writearticle',(req, res)=>{
 });
 //upload.single 用来接收一个文件
 router.post('/article',upload.single('uploadfile'),(req,res)=>{
-    console.log(req.file);
-    let title = req.body.title,
+    let summeryContent =  req.body.summery,
+        title = req.body.title,
         tag = req.body.tag,
         author = req.body.author,
         content = req.body.content,
         img = '/image/' + req.file.filename,
-        summery = req.body.summery.substr(0,200) + '...',
+        summery =  summeryContent.length>200?summeryContent.substr(0,200) + '...':summeryContent,
         time = new Date().toLocaleString();
         console.log(time);
         sql('insert into article(title,tags,author,content,time,img,summery) values(?,?,?,?,?,?,?)',[title,tag,author,content,time,img,summery],(err,data)=>{
