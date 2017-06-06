@@ -11,7 +11,7 @@ const express = require('express'),
 
             //以时间倒序显示10条数据
             var p2 = new Promise(function(resolve, reject){
-                sql('select * from article ac , articletype act where ac.typeid = act.type_id order by ac.time desc limit ?,?',[start,length],(err, data) => {
+                sql('select  ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where ac.typeid = act.type_id order by ac.time desc limit ?,?',[start,length],(err, data) => {
                     if(err) {
                         console.log(err);
                         return;
@@ -334,7 +334,7 @@ const express = require('express'),
                                 Promise.all([promise,promise2,promise3,promise4,promise5]).then(function(alldata){
 
                                     //查询出当前文章的所有评论
-                                    sql('select comm.*,us.username from comments comm left join user us on dicid = 1 where comm.topic_id = ? and comm.from_uid = us.id',[id],(err,comments)=>{
+                                    sql('select comm.*,us.username from comments comm left join user us on dicid = 1 where comm.topic_id = ? and comm.from_uid = us.id order by comm.comm_time desc',[id],(err,comments)=>{
 
                                         if(err){
                                             console.log(err);
@@ -502,28 +502,37 @@ const express = require('express'),
         });
 
         //发表评论
-        router.post('/comment/:id.html',(req, res)=>{
-            console.log(req.params.id,req.body.content);
+        router.post('/comment',(req, res)=>{
+            console.log('评论数据：');
+            console.log(req.body);
+            let commentid = req.body.commentid,
+                   content = req.body.content,
+                    userid = req.cookies['login'].id,
+                      time = new Date().toLocaleString();
+            console.log(commentid,content);
             /**
              * form_uid: 评论人id
              *    dicid: 评论类型(1代表文章的评论)
              * topic_id: 评论类型的id(这里代表文章的id)
              *  content: 评论内容
              */
-            let userid = req.cookies['login'].id,
-                time = new Date().toLocaleString();
+
             if(userid){
-                sql('insert into comments (from_uid,dicid,topic_id,content,comm_time) values (?,?,?,?,?)',[userid,1,req.params.id, req.body.content,time],(err,data)=>{
+                sql('insert into comments (from_uid,dicid,topic_id,content,comm_time) values (?,?,?,?,?)',[userid,1,commentid, content,time],(err,data)=>{
 
                     if(err){
                         console.log(err);
                         return;
                     }
 
-                    res.send("评论成功！");
+                    res.json({
+                        des: '评论成功!'
+                    });
                 });
             } else {
-                res.send("评论失败!用户id不存在!");
+                res.json({
+                    des: '评论失败!用户id不存在!'
+                });
             }
 
          });

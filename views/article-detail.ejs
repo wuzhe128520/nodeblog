@@ -46,7 +46,7 @@
                                     <%if(sibling.last!=null){%>
                                         <a href="/article-detail/<%= sibling.last.id %>.html"><%= sibling.last.title %></a>
                                     <%} else {%>
-                                        <a href="javascript:void(0);">没有了</a>
+                                        <span>没有了</span>
                                     <%}%>
                                 </li>
                                 <li>
@@ -54,7 +54,7 @@
                                     <%if(sibling.next!=null){%>
                                     <a href="/article-detail/<%=sibling.next.id%>.html"> <%= sibling.next.title %></a>
                                     <%} else {%>
-                                    <a href="javascript:void(0);">没有了</a>
+                                    <span href="javascript:void(0);">没有了</span>
                                     <%}%>
                                 </li>
                             </ul>
@@ -65,7 +65,7 @@
                     <div class="related-article"></div>
                     <!--相关文章 end-->
                     <!--评论部分 begin-->
-                    <div class="comments-wrap">
+                    <div class="comments-wrap" id="commentsArea">
                         <div class="comments-head clearfix">
                             <a href="/" class="comments-number">
                                 <span class="highlight">6</span>条评论
@@ -82,7 +82,7 @@
                                   length = commentsReply.length;
                                 for(;m < length; m++){
                             %>
-                            <li>
+                            <li <%if(m === 0){%>id="commentfirst" data-id="<%=commentsReply[m].commid%>"<%} else {%> id="<%=commentsReply[m].commid%>" <%}%>>
                                 <!--展示评论 begin-->
                                 <div class="comments">
                                     <div class="user">
@@ -101,8 +101,8 @@
                                         </p>
                                         <div class="comment-footer">
                                             <time><%=locals.dateFormat(commentsReply[m].comm_time,'YYYY-MM-DD HH:mm:ss')%></time>
-                                            <a href="javascript:void(0);" class="js_reply" data-replytype="4" data-replyid="<%=commentsReply[m].commid%>" data-replyuser="<%=commentsReply[m].from_uid%>" data-dicid="<%=commentsReply[m].dicid%>" >
-                                                <i title="回复图标" class="iconfont icon-huifu" ></i>回复
+                                            <a href="javascript:void(0);" data-flag="1" class="js_reply" data-replytype="4" data-replyid="<%=commentsReply[m].commid%>" data-replyuser="<%=commentsReply[m].from_uid%>" data-dicid="<%=commentsReply[m].dicid%>" >
+                                                <i title="回复图标" class="iconfont icon-huifu"></i>回复
                                             </a>
                                         </div>
                                     </div>
@@ -118,14 +118,10 @@
                                    var reply =replys[k];
                                     console.log("当前对象：");
                                     console.log(reply);
-                                    if(reply.replys){
-                                        loop(reply.replys);
-                                        continue;
-                                    } else {
-
+                                    if(reply.hasOwnProperty('rpid')){
                                 %>
                                    <ul class="comment-childs">
-                                                <li>
+                                                <li id="<%=reply.rpid%>">
                                                     <div class="comments">
                                                         <div class="user">
                                                             <a href="javascript:void(0);">
@@ -135,15 +131,15 @@
                                                         <div class="comment-body js_comment_body">
                                                             <div class="comment-name">
                                                                 <a href="javascript:void(0);">
-                                                                    <%=replys[k].from_username%> <span class="reply_text">回复</span> <%=replys[k].to_username%>
+                                                                    <%=reply.from_username%> <span class="reply_text">回复</span> <%=reply.to_username%>
                                                                 </a>
                                                             </div>
                                                             <p class="comment-content">
-                                                                <%=replys[k].reply_content%>
+                                                                <%=reply.reply_content%>
                                                             </p>
                                                             <div class="comment-footer">
                                                                 <time><%=locals.dateFormat(replys[k].reply_time,'YYYY-MM-DD HH:mm:ss')%></time>
-                                                                <a href="javascript:void(0);" class="js_reply" data-replytype="5" data-commid="<%=replys[k].comment_id%>" data-replyid="<%=replys[k].rpid%>" data-replyuser="<%=replys[k].rp_from_uid%>" data-dicid="<%=replys[k].dicid%>">
+                                                                <a href="javascript:void(0);" class="js_reply" data-flag="1" data-replytype="5" data-commid="<%=reply.comment_id%>" data-replyid="<%=reply.rpid%>" data-replyuser="<%=reply.rp_from_uid%>" data-dicid="<%=reply.dicid%>">
                                                                     <i title="回复图标" class="iconfont icon-huifu"></i>回复
                                                                 </a>
                                                             </div>
@@ -152,12 +148,15 @@
                                                 </li>
                                             </ul>
 
-                                  <% }
+                                   <%}%>
+                                    <%
+                                        if(reply.replys){
+                                            loop(reply.replys);
+                                        }
+                                    %>
+                                 <% }%>
 
-
-                                  }%>
-                                  <%}%>
-
+                               <%}%>
                                 <%}%>
                                     <!--表示针对评论的回复-->
 
@@ -179,12 +178,13 @@
                     <!--发表评论 begin-->
                     <div class="declare-comment-wrap">
                         <h3>发表评论</h3>
-                        <form id="commentForm" action="/comment/<%=data[0]['id']%>.html" method="post">
+                        <!--action="/comment/<%=data[0]['id']%>.html"-->
+                        <form id="commentForm" data-commentid="<%=data[0]['id']%>"  method="post">
                             <p>
-                                <textarea name="content" tabindex="4" cols="100%" rows="10"></textarea>
+                                <textarea autocomplete="off" name="content" tabindex="4" cols="100%" rows="10"></textarea>
                             </p>
                             <p>
-                                <input name="submit" value="发表评论" class="declare-btn" type="submit">
+                                <input name="submit" value="发表评论" class="declare-btn" type="submit" id="declareComment">
                             </p>
                         </form>
                     </div>
@@ -248,14 +248,14 @@
 <% include footer.ejs %>
 <script type="text/javascript" src="/js/plugin/highlight/highlight.pack.js"></script>
 <script type="text/template" id="template">
-    <div class="declare-comment-wrap">
-        <h3>发表评论</h3>
+    <div class="declare-comment-wrap js_reply_wrap">
+        <h3>发表回复</h3>
         <form>
             <p>
                 <textarea name="comment" tabindex="4" cols="100%" rows="10"></textarea>
             </p>
             <p>
-                <input name="submit" value="发表评论" class="declare-btn" type="submit" onsubmit="return false;">
+                <input name="submit" value="回复" class="declare-btn" type="submit" onsubmit="return false;">
             </p>
         </form>
     </div>
@@ -298,14 +298,52 @@
              comment_id 和 reply_id是一样的(所以只需要找到comment_id就行)；
              被评论人id(就是评论表的from_id)
              */
-            showReplyArea($(this));
+             var $target = $(this),
+                 flag = parseInt($target.data('flag'));
+            console.log(flag);
+            if(flag){
+                console.log('显示……');
+                //这里是显示回复框
+                showReplyArea($target);
+            } else {
+                console.log('移除……');
+                //移除回复框
+                revmoeReplyArea($target);
+            }
+            /*
+            *   需求分析：
+            *       点击回复/取消回复:
+            *           判断是回复(1)、还是取消回复(0)
+            *
+            *           如果是回复：
+            *               显示回复框，将数据绑定到当前的回复框里；显示"取消回复"
+            *
+            *           如果是取消回复：
+               *           直接移除这个框就好了;显示"回复"
+            *
+            * */
+        });
+
+        //发表评论
+        $('#declareComment').on('click',function(e){
+            var $target = $(this);
+             e.preventDefault();
+            var $commentForm = $target.closest('form'),
+                commentid = $commentForm.data('commentid'),
+                content =$commentForm.find('textarea').val();
+            handleDeclareComment(commentid,content);
         });
 
 
     }
 
-    //临时保存数据到body
-    function saveDataOnBody($target) {
+    //临时保存数据到指定的dom对象
+    /**
+     *
+     * @param $target 回复按钮jquery 对象
+     * @param $store 存储回复信息的jquery对象
+     */
+    function saveDataOnDom($target,$store) {
 
            //回复的是评论还是回复
             rpType = $target.data('replytype'),
@@ -328,7 +366,7 @@
             commentId = rpId;
         }
 
-        $('body').data('reply',{
+        $store.data('reply',{
             commid: commentId,
             rptype: rpType,
             rpid: rpId,
@@ -341,9 +379,12 @@
     //显示评论框
     function showReplyArea($target) {
 
+        var $originReplyDialog = $('#replayDialog');
         var templ = $('#template').html(),
             $templ = $(templ);
-
+        if($originReplyDialog.length > 0){
+            $originReplyDialog.remove();
+        }
         $target.closest('.js_comment_body').append($templ);
         $templ.find('input[type="submit"]').click(function(e){
 
@@ -351,24 +392,33 @@
             e.preventDefault();
             handleReplySubmit($target);
         });
-        saveDataOnBody($target);
+        saveDataOnDom($target,$templ);
+        $target.text('取消回复').data('flag',0);
+
+    }
+
+    //移除评论框
+    function revmoeReplyArea($target) {
+        $target.closest('.js_comment_body').find('.js_reply_wrap').remove();
+        $target.text('回复').data('flag',1);
     }
 
     //处理回复的事件
     function handleReplySubmit($target){
-         var content = $target.closest('form').find('textarea').eq(0).val(),
-             replyData = $('body').data('reply'),
+         var $replyDialog = $target.closest('.js_reply_wrap'),
+             content = $target.closest('form').find('textarea').eq(0).val(),
+             replyData = $replyDialog.data('reply'),
              commid = replyData.commid,
              rpid = replyData.rpid,
             touid = replyData.rpUserId,
              rptype = replyData.rptype,
             dicid = replyData.rpDicId;
-            console.log('获取body里面存储的临时数据：');
+            console.log('获取当前回复框里面存储的临时数据：');
             console.log(replyData);
          declareReply(commid,rpid,rptype,content,touid,dicid);
     }
 
-    //发表评论的逻辑处理
+    //发表回复的逻辑处理
     function declareReply(commid,rpid,rptype,content,touid,dicid) {
 
         comm.ajax.commAjax({
@@ -386,11 +436,47 @@
                 comm.layer.alert('回复失败！');
             },
             successFn: function(data){
-                comm.layer.alert(data.data.des);
-                window.location.reload();
+                comm.layer.alert(data.data.des,null,function(index){
+                    var originUrl = comm.url.getOriginUrl();
+                    layer.close(index);
+                    var id = $("#commentsArea").find('li').eq(0).data('id');
+                    if(rpid === window.parseInt(id)) {
+                        rpid = 'commentfirst'
+                    }
+                    window.location.href = originUrl+'?time='+new Date().getTime()+'#'+rpid;
+                });
+
             }
         });
 
+    }
+
+    //发表评论的逻辑处理
+    function handleDeclareComment(commentid,content){
+        console.log(commentid,content);
+        comm.ajax.commAjax({
+            url: '/comment',
+            type: 'post',
+            data: {
+                commentid: commentid,
+                content: content
+            },
+            successFn: function(data){
+                if(!comm.judge.isEmptyObject(data)){
+                    comm.layer.alert(data.des,null,function(index){
+                        layer.close(index);
+                        var originUrl = comm.url.getOriginUrl();
+                        $('#commentfirst').removeAttr('id');
+                        window.location.href = originUrl+'?time='+new Date().getTime()+'#commentfirst';
+                    });
+                } else {
+                    comm.layer.alert('抱歉，返回数据为空！');
+                }
+            },
+            errorFn: function(err){
+                     comm.layer.alert(err);
+            }
+        });
     }
 
 </script>

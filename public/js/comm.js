@@ -665,6 +665,19 @@ var comm = {
             $("#query").attr("placeholder","搜索").removeClass("search-error");
             $("#query").focus();
         });
+    },
+    //url相关
+    url: {
+        getOriginUrl: function(){
+            var url = window.location.href,
+                originUrl = url.split('?')[0],
+                index = originUrl.lastIndexOf('#');
+
+                if(index !== -1){
+                    originUrl = originUrl.substring(0,index);
+                }
+                return originUrl;
+        }
     }
 };
 

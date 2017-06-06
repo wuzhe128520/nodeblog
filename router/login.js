@@ -46,10 +46,11 @@ router.post('/',(req, res)=>{
                         success: 1
                     });
                 }
-
             }
             else {
-                res.send('登录失败');
+                res.json({
+                    success: 0
+                });
             }
     });
 });
