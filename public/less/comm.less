@@ -36,9 +36,11 @@
   box-shadow:         inset @x @y @blur @spread rgba(0, 0, 0, @alpha);
 }
 //透明度
-.opacity(@int,@float) {
+.opacity(@float,@ints) {
+
+  -moz-opacity: @float;
   opacity: @float;
-  filter: ~"alpha(opacity=@int)";
+  filter: alpha(opacity=@ints);
 }
 //文本阴影
 .text-shadow (@string: 0 1px 3px rgba(0, 0, 0, 0.25)) {
@@ -113,14 +115,16 @@ body {
   width: 100%;
   background-color: rgba(0,0,0,0.5);
   color: #fff;
-  height: 42px;
   padding: 10px 0;
+  height: 50px;
   .head {
     width: 1200px;
     margin: 0 auto;
     height: 100%;
-    line-height: inherit;
-
+    line-height: 30px;
+    .welcome {
+      float: left;
+    }
   }
   .login-reg-wrap {
     float: right;
@@ -158,6 +162,66 @@ body {
       color: #000;
     }
   }
+  /*=====搜索=====*/
+  .search-wrap {
+    float: left;
+    .search-ul {
+      margin: 0;
+      height: 100%;
+      li {
+        float: left;
+      }
+    }
+    .search {
+      margin: 0 0.25em 0 0;
+    }
+    .a-search:before {
+      position: absolute;
+      margin: auto;
+      right: 0;
+      text-indent: 0;
+      width: inherit;
+      text-align: center;
+      cursor: pointer;
+    }
+    .a-search,
+    .search-form {
+      position: relative;
+      float: left;
+    }
+    .a-search {
+
+      display: block;
+      overflow: hidden;
+      width: 2em;
+      height: 100%;
+      font-size: 1.25em;
+      text-indent: -10em;
+      &:hover {
+        .opacity(0.8,80);
+      }
+    }
+    .search-input {
+      height: 2em;
+      font-size: 0.75em;
+      max-width: 0;
+      .opacity(0,0);
+      .transition(all,0.5s);
+    }
+  }
+  /* search begin */
+  .search-input.search {
+    max-width: 96em;
+    .opacity(1,100);
+  }
+  .search-input.search:focus {
+    border: 1px solid black;
+  }
+  .search-input.search.search-error {
+    border: 1px solid red;
+  }
+  /* search end*/
+  /*=====搜索=====*/
 }
 /*=====头部 end=====*/
 /*=====导航 begin=====*/
@@ -244,8 +308,6 @@ body {
 /*=====尾部 end=====*/
 //设置文章详情页面图片的显示
 .article-detail-content img {
-  display: block;
-  margin: 0 auto;
   vertical-align: middle;
   max-width: 100%;
 

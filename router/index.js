@@ -3,17 +3,17 @@
  */
 const express = require('express'),
        router = express.Router(),
-       dateformat = require('moment'),
        sql = require('../module/mysql');
 
         //以时间倒序显示10条数据
         function querytendata(start,length) {
 
             //以时间倒序显示10条数据
-            var p2 = new Promise(function(resolve, reject){
+            let p2 = new Promise(function(resolve, reject){
                 sql('select  ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where ac.typeid = act.type_id order by ac.time desc limit ?,?',[start,length],(err, data) => {
                     if(err) {
                         console.log(err);
+                        reject();
                         return;
                     }
                     resolve(data);
@@ -31,6 +31,7 @@ const express = require('express'),
 
                     if (errs) {
                         console.log(errs);
+                        reject();
                         return;
                     }
                     resolve(topsix);
@@ -42,11 +43,12 @@ const express = require('express'),
         //随机查询10条数据
         function queryRandom() {
 
-            var p5 = new Promise(function(resolve, reject){
+            let p5 = new Promise(function(resolve, reject){
 
                 sql('select id,title from article order by rand() limit 10', (errs, random) => {
 
                     if(errs){
+                        reject();
                         console.log(errs);
                     }
                     resolve(random);
@@ -59,13 +61,14 @@ const express = require('express'),
         //首页数据和首页分页数据公用函数
         function indexQuery(res,start,length,currentPage) {
             //以时间倒序显示10条数据
-            var p2 = querytendata(start,length);
+            let p2 = querytendata(start,length);
 
             //查询总页数
-            var p3 = new Promise(function(resolve, reject) {
+            let p3 = new Promise(function(resolve, reject) {
                 sql('select count(*) as articlenum  from article',(err,counts)=>{
                     console.log(counts);
                     if(err){
+                        reject();
                         console.log(err);
                         return;
                     }
@@ -74,17 +77,18 @@ const express = require('express'),
             });
 
             //查询"顶"最多的6条数据
-            var p4 = queryding();
+            let p4 = queryding();
 
             //随机查询10条博客
-            var p5 = queryRandom();
+            let p5 = queryRandom();
 
             //以时间分组查询
-            var p6 = new Promise(function(resolve, reject) {
-                sql("select time from article group by date_format(time,'%Y%m')", (errs, monthdata) => {
+            let p6 = new Promise(function(resolve, reject) {
+                sql("select time,count(id) as articlenum from article group by date_format(time,'%Y%m')", (errs, monthdata) => {
 
                     if(errs){
                         console.log(err);
+                        reject();
                         return;
                     }
                     resolve(monthdata);
@@ -92,10 +96,11 @@ const express = require('express'),
             });
 
             //查询分类
-            var p7 = new Promise(function(resolve, reject) {
+            let p7 = new Promise(function(resolve, reject) {
                 sql("select * from articletype", function(err, types){
 
                     if(err){
+                        reject();
                         console.log(err);
                         return;
                     }
@@ -104,11 +109,12 @@ const express = require('express'),
             });
 
             //查询标签
-            var p8 = new Promise(function(resolve, reject) {
+            let p8 = new Promise(function(resolve, reject) {
 
                 sql("select * from articletag", function(err, tags){
 
                     if(err){
+                        reject();
                         console.log(err);
                         return;
                     }
@@ -157,14 +163,17 @@ const express = require('express'),
            let fn = function(onedata,i){
                return new Promise(function(resolve,reject){
                    sql('select * from nav where level =2 and navid = ?',[onedata[i]['navid']],(err,twodata)=>{
+
                        onedata[i].child = twodata;
                        resolve();
+
                    });
                });
            };
            sql('select * from nav where level = 1',(err,onedata)=>{
                let arr = [];
-               for(let i in onedata){
+               for(let i = 0; i < onedata.length; i++){
+
                    arr[i] = fn(onedata,i);
                }
                //当arr里面的所有promise执行完后，在执行then()里面的方法
@@ -196,10 +205,74 @@ const express = require('express'),
             });
        });
 
+       //根据分类查询文章
+       router.get('/type/:typeid.html',(req, res) => {
+
+           res.locals.typeid = req.params.typeid;
+           res.render('result.ejs');
+       });
+
+
+       router.post('/type',(req, res) => {
+           let typeid = req.body.typeid,
+
+               //当前页
+               currentPage = parseInt(req.body.currentPage),
+
+               //每页显示条数
+               showPageNum = parseInt(req.body.showPageNum),
+
+               //起始位置
+               startPage = parseInt((currentPage - 1)*showPageNum);
+            console.log(currentPage,showPageNum,startPage);
+           sql('select ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where ac.typeid = ? and ac.typeid = act.type_id order by ac.time desc limit ?,?',[typeid,startPage,showPageNum],(err, data) => {
+               console.log('查询分类');
+
+               if(err){
+                   console.log(err);
+               } else {
+                   sql('select count(*) as counts from article where typeid=?',[typeid],(err,counts) => {
+                    if(err){
+                        console.log(err);
+
+                    } else {
+                        console.log(data);
+                        console.log(counts);
+                        res.json({
+                            pages: {
+                                showPageNum: showPageNum,
+                                currentPage: currentPage,
+                                allPageNum: counts[0].counts,
+                            },
+                            data: data
+                        });
+
+                    }
+                   });
+               }
+
+           });
+       });
+
+       //根据标签查询
+       router.get('/tag/:tagid.html',(req, res) => {
+           let tagid = req.params.tagid;
+           sql(`select ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where ac.tags like '%${tagid}%' and ac.typeid = act.type_id order by ac.time desc limit 0,10`,(err, data) => {
+                console.log('查询标签');
+               if(err){
+                   console.log(err);
+               } else {
+                   res.send(data);
+               }
+
+           });
+       });
+
        //搜索
        router.get('/search',(req,res)=>{
            console.log(req.query.search);
-           sql(`select * from article where title like '%${req.query.search}%'`,(err,data)=>{
+           let keywords = req.query.search;
+           sql(`select ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where (ac.title like '%${keywords}%' or ac.content like '%${keywords}%') and ac.typeid = act.type_id order by ac.time desc limit 0,10`,(err,data)=>{
                console.log(data);
                res.send(data);
            });
@@ -207,13 +280,15 @@ const express = require('express'),
 
         //深拷贝对象
         function deepCopy(p, c){
-            var c = c || {};
+               c = c || {};
             for(let i in p){
-                if(typeof p[i] === 'object'){
-                    c[i] = (p[i].constructor === Array) ?[]:{};
-                    deepCopy(p[i], c[i]);
-                }else {
-                    c[i] = p[i];
+                if(p.hasOwnProperty(i)){
+                    if(typeof p[i] === 'object'){
+                        c[i] = (p[i].constructor === Array) ?[]:{};
+                        deepCopy(p[i], c[i]);
+                    }else {
+                        c[i] = p[i];
+                    }
                 }
             }
             return c;
@@ -221,10 +296,10 @@ const express = require('express'),
 
         //判断是不是空对象
         function isEmptyObject (obj){
-            var i = true;
+            let i = true;
 
-            for(var i in obj){
-                if(obj.hasOwnProperty(i)){
+            for(let j in obj){
+                if(obj.hasOwnProperty(j)){
                     i = false;
                     break;
                 }
@@ -236,7 +311,7 @@ const express = require('express'),
        //:id.html方式接收前端页面传递过来的参数,req.params得到:id的值
         router.get('/article-detail/:id.html',(req, res)=>{
             //req.params 同时接收get，post，其他 提交数据的形式
-                var id = req.params.id;
+                let id = req.params.id;
 
                 sql('select * from article al,articletype at where al.id = ? and al.typeid=at.type_id',[req.params.id],(err,data)=>{
 
@@ -248,10 +323,10 @@ const express = require('express'),
                                 res.status(404).render('404');
                             }else {
                                 //得到标签id
-                                var tagsdata = data[0].tags,
+                                let tagsdata = data[0].tags,
                                      param = null,
                                     sqlStr = null;
-                                if(tagsdata.indexOf(',') != -1){
+                                if(tagsdata.indexOf(',') !== -1){
                                     tagsAry = tagsdata.split(',');
                                     let j = 0,
                                         tLegnth = tagsAry.length,
@@ -279,57 +354,62 @@ const express = require('express'),
 
                                 console.log(sqlStr);
                                 console.log(param);
-                                var promise2 = new Promise(function(resolve,reject){
+                                let promise2 = new Promise(function(resolve,reject){
 
                                    //查询标签
                                    sql(sqlStr,param,(err,tags) => {
 
                                        if(err){
                                            console.log(err);
+                                           reject();
                                            return;
                                        }
                                        resolve(tags);
                                    });
                                 });
 
-                                var promise = new Promise(function(resolve, reject){
+                                let promise = new Promise(function(resolve, reject){
 
                                     //修改浏览量
                                     sql('update article set views = views + 1 where id = ?',[id],(err) => {
                                         if(err){
                                             console.log(err);
+                                            reject();
                                         } else {
                                             console.log('浏览量自增1');
+                                            resolve();
                                         }
-                                        resolve();
                                     });
                                 });
 
                                 //查询上一篇 下一篇
-                                var promise3 = new Promise(function(resolve, reject) {
+                                let promise3 = new Promise(function(resolve, reject) {
 
                                     //查询下一篇
-                                    sql('select id,title from article where id > ? order by time asc limit 1',[id],(err, next) => {
+                                    sql('select id,title from article where id > ? order by time asc limit 1',[id],(errone, next) => {
 
-                                            if(err){
-                                                console.log(err);
+                                            if(errone){
+                                                console.log(errone);
+                                                reject();
+                                            } else {
+                                                //查询上一篇
+                                                sql('select id,title from article where id < ? order by time desc limit 1',[id],(errtwo, last) => {
+
+                                                    if(err){
+                                                        reject();
+                                                        console.log(err);
+                                                    } else {
+                                                        resolve({next: next[0],last: last[0]});
+                                                    }
+                                                });
+
                                             }
-
-                                        //查询上一篇
-                                        sql('select id,title from article where id < ? order by time desc limit 1',[id],(err, last) => {
-
-                                            if(err){
-                                                console.log(err);
-                                            }
-                                            resolve({next: next[0],last: last[0]});
-                                        })
-
                                     });
                                 });
 
-                                var promise4 = querytendata(0,10);
+                                let promise4 = querytendata(0,10);
 
-                                var promise5 = queryding();
+                                let promise5 = queryding();
 
                                 Promise.all([promise,promise2,promise3,promise4,promise5]).then(function(alldata){
 
@@ -356,11 +436,11 @@ const express = require('express'),
                                                 }
 
                                                 //构建回复的数组对象
-                                                var comrep=[];
+                                                let comrep=[];
 
-                                                for(var i = 0; i < comments.length; i++){
+                                                for(let i = 0; i < comments.length; i++){
 
-                                                    var commobj = comments[i],
+                                                    let commobj = comments[i],
                                                         //第一个子对象
                                                         child = {
                                                             commid: commobj.commid,
@@ -372,14 +452,14 @@ const express = require('express'),
                                                         };
 
                                                     //child下的子回复
-                                                    var rpChild = [];
+                                                    let rpChild = [];
 
                                                     //循环回复数据，找到当前评论下的回复
-                                                    for(var j = 0; j < replys.length; j++){
+                                                    for(let j = 0; j < replys.length; j++){
                                                         debugger;
-                                                        var rpobj = replys[j];
+                                                        let rpobj = replys[j];
 
-                                                        var newObj = deepCopy(rpobj);
+                                                        let newObj = deepCopy(rpobj);
 
                                                         //找到当前评论下的所有回复
                                                         if(rpobj.comment_id === commobj.commid ) {
@@ -388,11 +468,11 @@ const express = require('express'),
                                                             if(rpobj.reply_type === 4){
 
                                                                 //回复id
-                                                                var rpid = rpobj.rpid;
+                                                                let rpid = rpobj.rpid;
 
                                                                 //通过递归得到当前回复下所有的子孙回复
                                                                 //debugger;
-                                                                var dg = digui(rpid);
+                                                                let dg = digui(rpid);
                                                                 isEmpty = isEmptyObject(dg);
 
                                                                 if(!isEmpty&&dg['replys'].length > 0){
@@ -419,15 +499,15 @@ const express = require('express'),
                                             function dgs(result,pid) {
 
                                                 debugger;
-                                                var rtn = [];
-                                                for(var i =0;i < result.length; i++){
+                                                let rtn = [];
+                                                for(let i =0;i < result.length; i++){
 
-                                                    var resultObj = result[i];
+                                                    let resultObj = result[i];
 
                                                     if(resultObj.reply_id === pid && resultObj.reply_type === 5){
 
-                                                        var childrpid = result[i].rpid;
-                                                        var dgsData = dgs(result,childrpid);
+                                                        let childrpid = result[i].rpid;
+                                                        let dgsData = dgs(result,childrpid);
                                                         console.log('dgsData:');
                                                         console.log(dgsData);
                                                         if(dgsData.length > 0){
@@ -446,8 +526,8 @@ const express = require('express'),
                                              * @returns {{}}
                                              */
                                                 function digui(rpid) {
-                                                var dgobjs = {};
-                                                var dgsTwoData = dgs( replys,rpid);
+                                                let dgobjs = {};
+                                                let dgsTwoData = dgs( replys,rpid);
                                                 console.log('dgsTwoData:');
                                                 console.log(dgsTwoData);
                                                 if(dgsTwoData.length > 0){
@@ -518,7 +598,7 @@ const express = require('express'),
              */
 
             if(userid){
-                sql('insert into comments (from_uid,dicid,topic_id,content,comm_time) values (?,?,?,?,?)',[userid,1,commentid, content,time],(err,data)=>{
+                sql('insert into comments (from_uid,dicid,topic_id,content,comm_time) values (?,?,?,?,?)',[userid,1,commentid, content,time],(err)=>{
 
                     if(err){
                         console.log(err);
@@ -572,7 +652,7 @@ const express = require('express'),
                 let articleId = req.body.id;
                 console.log('ding:');
                 console.log(articleId);
-                sql('update article set ding = ding + 1 where id = ?',[articleId],(err, data) => {
+                sql('update article set ding = ding + 1 where id = ?',[articleId],(err) => {
                     if (err) {
                         console.log(err);
                     } else {
@@ -597,7 +677,7 @@ const express = require('express'),
         let articleId = req.body.id;
         console.log('ding:');
         console.log(articleId);
-        sql('update article set cai = cai + 1 where id = ?',[articleId],(err, data) => {
+        sql('update article set cai = cai + 1 where id = ?',[articleId],(err) => {
             if (err) {
                 console.log(err);
             } else {

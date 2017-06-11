@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试浏览器端的ejs</title>
+</head>
+<body>
+<div id="output"></div>
+<script src="../public/js/plugin/ejs.min.js"></script>
+<script>
+    ejs.open = '{{';
+    ejs.close = '}}';
+    var people = ['吴哲','薛昌','周恒','梁志远','孙大军'],
+        html = ejs.render('{{=people.join(",")}}', {people: people});
+    document.getElementById('output').innerHTML = html;
+</script>
+</body>
+</html>

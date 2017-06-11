@@ -83,14 +83,21 @@ body {
   width: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   color: #fff;
-  height: 42px;
   padding: 10px 0;
+  height: 50px;
+  /*=====搜索=====*/
+  /* search begin */
+  /* search end*/
+  /*=====搜索=====*/
 }
 .head-wrap .head {
   width: 1200px;
   margin: 0 auto;
   height: 100%;
-  line-height: inherit;
+  line-height: 30px;
+}
+.head-wrap .head .welcome {
+  float: left;
 }
 .head-wrap .login-reg-wrap {
   float: right;
@@ -139,6 +146,73 @@ body {
 .head-wrap .reg-btn:hover {
   background: #fff;
   color: #000;
+}
+.head-wrap .search-wrap {
+  float: left;
+}
+.head-wrap .search-wrap .search-ul {
+  margin: 0;
+  height: 100%;
+}
+.head-wrap .search-wrap .search-ul li {
+  float: left;
+}
+.head-wrap .search-wrap .search {
+  margin: 0 0.25em 0 0;
+}
+.head-wrap .search-wrap .a-search:before {
+  position: absolute;
+  margin: auto;
+  right: 0;
+  text-indent: 0;
+  width: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+.head-wrap .search-wrap .a-search,
+.head-wrap .search-wrap .search-form {
+  position: relative;
+  float: left;
+}
+.head-wrap .search-wrap .a-search {
+  display: block;
+  overflow: hidden;
+  width: 2em;
+  height: 100%;
+  font-size: 1.25em;
+  text-indent: -10em;
+}
+.head-wrap .search-wrap .a-search:hover {
+  -moz-opacity: 0.8;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}
+.head-wrap .search-wrap .search-input {
+  height: 2em;
+  font-size: 0.75em;
+  max-width: 0;
+  -moz-opacity: 0;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  /* Firefox 4 */
+  -webkit-transition: all 0.5s;
+  /* Safari 和 Chrome */
+  -o-transition: all 0.5s;
+  /* Opera */
+}
+.head-wrap .search-input.search {
+  max-width: 96em;
+  -moz-opacity: 1;
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+.head-wrap .search-input.search:focus {
+  border: 1px solid black;
+}
+.head-wrap .search-input.search.search-error {
+  border: 1px solid red;
 }
 /*=====头部 end=====*/
 /*=====导航 begin=====*/
@@ -231,8 +305,6 @@ body {
 }
 /*=====尾部 end=====*/
 .article-detail-content img {
-  display: block;
-  margin: 0 auto;
   vertical-align: middle;
   max-width: 100%;
 }

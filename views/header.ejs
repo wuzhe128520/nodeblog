@@ -24,8 +24,8 @@
 <header>
     <div class="head-wrap">
         <div class="head clearfix">
-            欢迎光临无畏滴青春个人博客网站!
-            <span class="login-reg-wrap">
+            <span class="welcome">欢迎光临无畏滴青春个人博客网站!</span>
+            <div class="login-reg-wrap">
                 <% if(locals.login) {%>
                 欢迎：
                 <% if(locals.admin){%>
@@ -37,7 +37,21 @@
                     <a href="/login?show=1" class="login-btn">登录</a>
                     <a href="/register?show=0" class="reg-btn">注册</a>
                 <%}%>
-            </span>
+            </div>
+            <!--搜索 begin-->
+            <div class="search-wrap">
+                <ul class="search-ul clearfix">
+                    <li class="search clearfix">
+                        <i class="a-search iconfont icon-search" title="搜索文章" id="search-btn">搜索</i>
+                        <form id="search" class="search-form" method="get" action="/search" >
+                            <div class="query-wrap">
+                                <input type="text" id="query" name="search" placeholder="搜索" class="search-input js_water_mark" />
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            <!--搜索 end-->
         </div>
     </div>
     <!--导航begin-->

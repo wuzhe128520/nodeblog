@@ -12,8 +12,65 @@
         </section>
     </div>
 </footer>
+<script src="/js/plugin/ejs.min.js"></script>
 <script type="text/javascript" src="/js/jquery.min.js"></script>
 <script src="/js/plugin/layer/layer.js"></script>
 <script type="text/javascript" src="/js/comm.js"></script>
+<script>
+    $(function(){
+        //点击搜索
+        $("#search-btn").click(function(e){
+            e.stopPropagation();
+            var $query = $("#query");
 
+            if(!$query.hasClass("search")){
+                $query.addClass("search");
+            }
+            console.log(!$query.is(":focus"));
+            if(!$query.is(":focus")){//判断元素是否获取焦点
+                $query.focus();
+            }
 
+            submitForm($query);
+            //绑定全局的点击事件
+            $(document).unbind("click.focus").bind("click.focus",function(e){
+                if(!$(e.target).is(".search-input")){
+                    if(!$(e.target).is("#waterMark")){
+                        $("#waterMark").remove();
+                        $query.attr("placeholder","搜索").val("").
+                        removeClass("search-error search").blur();
+
+                        submitForm.isNotFirst = null;
+                    }
+                }
+            });
+            //绑定input的按钮事件
+            $query.unbind("keydown").bind("keydown",function(e){
+                if($("#waterMark").length > 0){
+                    $("#waterMark").remove();
+                    $query.attr("placeholder","搜索").val("").
+                    removeClass("search-error");
+                }
+                if(e.which == 13){
+                    e.preventDefault();
+                    submitForm($query);
+                    return false;
+                }
+            });
+
+        });
+        //提交表单
+        var submitForm = function($query){
+            if(submitForm.isNotFirst){
+                if($.trim($query.val())){
+                    $("#search").submit();
+                }
+                else {
+                    $query.val("").addClass("search-error");
+                    comm.waterMark();
+                }
+            }
+            submitForm.isNotFirst = true;
+        };
+    });
+</script>

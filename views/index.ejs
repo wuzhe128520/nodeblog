@@ -7,7 +7,11 @@
         <div class="article-list-wrap" id="articles">
             <h2 class="article-recommend h-style">文章<span class="highlight">推荐</span></h2>
             <!--文章列表begin-->
-            <%for(var i = 0;i<data.length;i++){%>
+            <%
+            var i = 0,
+                length = data.length;
+            for(;i<length;i++){
+            %>
             <section>
                 <div class="article js_article" data-articleid ='<%=data[i].id%>'>
                     <h2 class="article-title">
@@ -76,16 +80,17 @@
                             //每页显示几条数据
                             var  showPageNum = parseInt(pages.showPageNum),
                             //总页数
-                            totalPage = Math.ceil(pages.counts[0].articlenum/10),
+                            totalPage = Math.ceil(pages.counts[0].articlenum/showPageNum),
                             //当前页
                             currentPage = parseInt(pages.current);
+
                         %>
 
                         <li class="page">
                             <span><%= currentPage %>/<%= totalPage %></span>
                         </li>
 
-                        <% if(loopPage!== 1){ %>
+                        <% if(currentPage!== 1){ %>
                             <li class="page">
                                 <a href="/list-<%= currentPage - 1 %>.html">
                                     <
@@ -139,7 +144,7 @@
                                     length = typedata.length;
                                 for(;i < length; i ++){
                             %>
-                                    <li class="type"><a href="/type/<%= typedata[i].id%>"><%= typedata[i].typename %></a></li>
+                                    <li class="type"><a href="/type/<%= typedata[i].type_id%>.html"><%= typedata[i].typename %></a></li>
                             <%}%>
                         </ul>
                     </div>
@@ -154,7 +159,7 @@
                                 length = tagdata.length;
                             for(; j < length; j++) {
                         %>
-                            <a class="tag"  href="/tag/<%= tagdata[j].id %>"><%= tagdata[j].tagname%></a>
+                            <a class="tag"  href="/tag/<%= tagdata[j].tag_id %>.html"><%= tagdata[j].tagname %></a>
                         <%}%>
                         <a href="javascript:void(0);" class="tag" id="moreTag">更多</a>
                     </div>
@@ -214,7 +219,7 @@
                                         length = monthdata.length;
                                    for(; m < length ; m++) {
                                 %>
-                                <li><a href="/querybymonth/<%=locals.dateFormat(monthdata[m].time,'YYYYMM')%>.html"><%=locals.dateFormat(monthdata[m].time,'YYYY年MM月')%></a></li>
+                                <li><a href="/querybymonth/<%=locals.dateFormat(monthdata[m].time,'YYYYMM')%>.html"><%=locals.dateFormat(monthdata[m].time,'YYYY年MM月')%>(<%=monthdata[m].articlenum%>)</a></li>
                                 <%}%>
                                 <%if(length > 10){%>
                                 <li><a href="" class="">查看更多</a></li>

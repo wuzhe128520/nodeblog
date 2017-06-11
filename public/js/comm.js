@@ -101,12 +101,15 @@ var comm = {
 
             var c = c || {};
             for(let i in p){
-                if(typeof p[i] === 'object'){
-                    c[i] = (p[i].constructor === Array) ?[]:{};
-                    deepCopy(p[i], c[i]);
-                }else {
-                    c[i] = p[i];
+                if(p.hasOwnProperty(i)){
+                    if(typeof p[i] === 'object'){
+                        c[i] = (p[i].constructor === Array) ?[]:{};
+                        deepCopy(p[i], c[i]);
+                    }else {
+                        c[i] = p[i];
+                    }
                 }
+
             }
             return c;
         }
@@ -115,9 +118,8 @@ var comm = {
     //产生min到max之间的随机数(包含min，不包含max)
     randomNum: function(min, max) {
         if(max < min) return;
-        var num =Math.floor(Math.random()*(max - min) + min);
-        //console.log(Math.ceil(num));
-        return num;
+
+        return Math.floor(Math.random()*(max - min) + min);
     },
      //公用ajax请求
      ajax: {
@@ -133,7 +135,7 @@ var comm = {
          ajaxError: function(callback){
              $(document).ajaxError(callback);
          },
-         commAjax: function(config,extendObj){
+         commAjax: function(config){
              comm.ajax.ajaxComplete(function(){console.log("ajax请求完成！")});
              comm.ajax.ajaxStart(function(){console.log("ajax开始请求！")});
              comm.ajax.ajaxError(function(){console.log("亲，请求出错了噢！");});
@@ -160,9 +162,10 @@ var comm = {
                     //请求成功的回调函数
                     success: config.successFn,
                  };
-             if(extendObj){
-                 $.extend(defaultObj, extendObj);
+             if(config){
+                 $.extend(defaultObj, config);
              }
+             console.log(defaultObj);
              $.ajax(defaultObj);
          }
      },
@@ -644,7 +647,9 @@ var comm = {
 
     //添加水印
     waterMark: function() {
-        if($("#waterMark").length > 0){
+        var $waterMark = $("#waterMark"),
+            $query = $("#query");
+        if($waterMark.length > 0){
             return false;
         }
         var $water = $("input.js_water_mark"),
@@ -660,10 +665,10 @@ var comm = {
         css({"position":"absolute","paddingLeft": "3px","left": target.x,"top": target.y,"height": target.outerHeight,"width": target.outerWidth,"lineHeight": target.outerHeight + "px"})
             .appendTo("body");
 
-        $("#waterMark").click(function(){
+        $waterMark.click(function(){
             $(this).remove();
-            $("#query").attr("placeholder","搜索").removeClass("search-error");
-            $("#query").focus();
+            $query.attr("placeholder","搜索").removeClass("search-error");
+            $query.focus();
         });
     },
     //url相关
@@ -678,6 +683,134 @@ var comm = {
                 }
                 return originUrl;
         }
+    },
+    //分页
+    page: {
+        /**
+         *
+         * @param url: 后端分页请求地址
+         * @param currentPage: 当前页
+         * @param showPageNum: 每页显示条数
+         * @param $container: 分页组件的父元素(jQuery对象)
+         * @param pageTmplId: 分页组件模板id
+         * @param dataTmplId: 分页数据模板id
+         * @param dataId:  分页数据的父元素id
+         *
+         */
+        pagesData: [],
+        typeid: null,
+        options: {
+            url: null,
+            $container: null,
+            pageTmplId: '',
+            dataTmplId: '',
+            dataId: '',
+            postData: {
+                currentPage: 1,
+                showPageNum: 5,
+            }
+        },
+        //显示分页组件
+        /**
+         *
+         * @param templateUrl: 模板的地址
+         * @param pageId： 显示分页组件的父元素id
+         * @param data:  分页组件的数据
+         *  url: '../../views/pages.ejs'
+         */
+        init: function(options){
+
+            var options = $.extend(comm.page.options,options,true),
+                pagesData = this.getPageData(options.url,options.postData);
+
+             comm.page.showPageData(comm.page.options.dataId,comm.page.options.dataTmplId,pagesData.data);
+             comm.page.showPage(options,pagesData.pages,comm.page.options.pageTmplId);
+
+        },
+        showPage: function(options,pages,pageTmplId){
+
+            options.$container.html('');
+            debugger;
+            var html = comm.page.render(pageTmplId,{pages: pages});
+            options.$container.append(html);
+            comm.page.bindPageClick(options.$container,options.postData.showPageNum);
+        },
+        //展示数据
+        showPageData: function(articlesId,dataTmplId,articleData){
+
+            $('#'+ articlesId).html('');
+            var html = comm.page.render(dataTmplId,{data: articleData});
+            $('#'+ articlesId).append(html);
+
+        },
+        /**
+         *
+         * @param tmplId
+         * @param tmplData 键值对 {pages: }
+         * @returns {string}
+         */
+        render: function(tmplId, tmplData){
+
+            //渲染ejs模板
+            var template = $('#'+tmplId).html(),
+                html = '';
+
+            ejs.delimiter = '$';
+            html = ejs.render(template,tmplData);
+            return html;
+        },
+
+        bindPageClick: function($container){
+
+            $container.off('click').on('click','.page',function(e){
+
+                handlePageClick($(this));
+
+            });
+
+            var handlePageClick = function($pageli){
+            debugger;
+            comm.page.options.postData.currentPage = parseInt($pageli.children().text());
+            console.log(comm.page.options);
+             var  pagesData = comm.page.getPageData(comm.page.options.url,comm.page.options.postData);
+                comm.page.showPageData(comm.page.options.dataId,comm.page.options.dataTmplId,pagesData.data)
+                comm.page.showPage(comm.page.options,pagesData.pages,comm.page.options.pageTmplId);
+                comm.scrollToTop();
+            }
+        },
+        //获取分页数据
+        /**
+         *
+         * @param url 后端分页请求地址
+         * @param data 传递给后端的数据,对象形式
+         */
+        getPageData: function(url, postData){
+           debugger;
+            var pagesData = null;
+
+            comm.ajax.commAjax({
+                url: url,
+                async: false,
+                type: 'post',
+                data: postData,
+                successFn: function(data){
+                    debugger;
+                    console.log('打印data：');
+                    console.log(data);
+                    pagesData = data;
+
+                },
+                errorFn: function(err){
+                    console.log(err);
+                }
+            });
+
+            comm.page.pagesData = pagesData;
+            return pagesData;
+
+
+        }
+
     }
 };
 
