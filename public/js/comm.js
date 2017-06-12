@@ -75,17 +75,47 @@ var comm = {
      },
      //判断数据类型
      judge: {
+
+         //安全整数
+         MAX_SAFE_INTEGER: 9007199254740991,
+
          //判断是不是空对象
          isEmptyObject: function(obj){
              var i = true;
 
-             for(var i in obj){
-                  if(obj.hasOwnProperty(i)){
+             for(var j in obj){
+                  if(obj.hasOwnProperty(j)){
                         i = false;
                         break;
                   }
               }
               return i;
+         },
+
+         //判断是不是对象
+         isObject: function(value){
+             var type = typeof value;
+
+             return !!value&&(type == 'object' || type == 'function');
+         },
+
+         //判断是不是类似对象
+         isObjectLike: function() {
+
+             return !!value && typeof value == 'object';
+         },
+
+         //是否是长度
+         isLength: function(value){
+
+             return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= this.MAX_SAFE_INTEGER;
+         },
+
+         //判断是不是数组
+         isArray: function(){
+             var isArray = nativeIsArray || function(value) {
+                     return this.isObjectLike(value) && this.isLength(value.length) && comm.type(value) == 'array';
+                 };
          }
      },
      //继承，复制对象
@@ -722,11 +752,12 @@ var comm = {
 
             var options = $.extend(comm.page.options,options,true),
                 pagesData = this.getPageData(options.url,options.postData);
-
+                debugger;
              comm.page.showPageData(comm.page.options.dataId,comm.page.options.dataTmplId,pagesData.data);
              comm.page.showPage(options,pagesData.pages,comm.page.options.pageTmplId);
 
         },
+        //展示分页组件
         showPage: function(options,pages,pageTmplId){
 
             options.$container.html('');
@@ -737,7 +768,7 @@ var comm = {
         },
         //展示数据
         showPageData: function(articlesId,dataTmplId,articleData){
-
+            debugger;
             $('#'+ articlesId).html('');
             var html = comm.page.render(dataTmplId,{data: articleData});
             $('#'+ articlesId).append(html);
@@ -760,6 +791,7 @@ var comm = {
             return html;
         },
 
+        //绑定每一页的点击事件
         bindPageClick: function($container){
 
             $container.off('click').on('click','.page',function(e){
@@ -769,11 +801,18 @@ var comm = {
             });
 
             var handlePageClick = function($pageli){
-            debugger;
-            comm.page.options.postData.currentPage = parseInt($pageli.children().text());
+                var nowPage = comm.page.options.postData.currentPage,
+                    newPage = parseInt($pageli.data('pagenum'));
+
+                //如果是当前页则不请求新数据
+                if(nowPage === newPage){
+                    return false;
+                }
+                comm.page.options.postData.currentPage = newPage;
+
             console.log(comm.page.options);
              var  pagesData = comm.page.getPageData(comm.page.options.url,comm.page.options.postData);
-                comm.page.showPageData(comm.page.options.dataId,comm.page.options.dataTmplId,pagesData.data)
+                comm.page.showPageData(comm.page.options.dataId,comm.page.options.dataTmplId,pagesData.data);
                 comm.page.showPage(comm.page.options,pagesData.pages,comm.page.options.pageTmplId);
                 comm.scrollToTop();
             }

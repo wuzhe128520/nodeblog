@@ -64,7 +64,7 @@
                         </span>
                             <!--分类-->
                             <span class="article-type">
-                            分类:[<a href="/type/<%= data[i].typeid %>.html" class=""><%=data[i].typename %></a>]
+                            分类:[<a href="/type/<%= data[i].typeid %>.html?typename=<%= data[i].typename %>" class=""><%=data[i].typename %></a>]
                         </span>
                             <!--分类-->
                         </div>
@@ -144,7 +144,7 @@
                                     length = typedata.length;
                                 for(;i < length; i ++){
                             %>
-                                    <li class="type"><a href="/type/<%= typedata[i].type_id%>.html"><%= typedata[i].typename %></a></li>
+                                    <li class="type"><a href="/type/<%= typedata[i].type_id%>.html?typename=<%= typedata[i].typename %>"><%= typedata[i].typename %></a></li>
                             <%}%>
                         </ul>
                     </div>
@@ -159,7 +159,7 @@
                                 length = tagdata.length;
                             for(; j < length; j++) {
                         %>
-                            <a class="tag"  href="/tag/<%= tagdata[j].tag_id %>.html"><%= tagdata[j].tagname %></a>
+                            <a class="tag"  href="/tag/<%= tagdata[j].tag_id %>.html?tagname=<%= tagdata[j].tagname %>"><%= tagdata[j].tagname %></a>
                         <%}%>
                         <a href="javascript:void(0);" class="tag" id="moreTag">更多</a>
                     </div>

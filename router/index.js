@@ -5,6 +5,35 @@ const express = require('express'),
        router = express.Router(),
        sql = require('../module/mysql');
 
+        //深拷贝对象
+        function deepCopy(p, c){
+            c = c || {};
+            for(let i in p){
+                if(p.hasOwnProperty(i)){
+                    if(typeof p[i] === 'object'){
+                        c[i] = (p[i].constructor === Array) ?[]:{};
+                        deepCopy(p[i], c[i]);
+                    }else {
+                        c[i] = p[i];
+                    }
+                }
+            }
+            return c;
+        }
+
+        //判断是不是空对象
+        function isEmptyObject (obj){
+            let i = true;
+
+            for(let j in obj){
+                if(obj.hasOwnProperty(j)){
+                    i = false;
+                    break;
+                }
+            }
+            return i;
+        }
+
         //以时间倒序显示10条数据
         function querytendata(start,length) {
 
@@ -149,6 +178,61 @@ const express = require('express'),
             sql('select id,title from article where typeid = 2 order by rand() limit 3; ');
         }
 
+        //通用分页
+        /**
+         *
+         * @param currentPage: 当前页
+         * @param showPageNum: 每页显示几条数据
+         * @param sqlone: 第一条sql语句  sqlparam: sql对应的参数
+         * @param sqltwo 第二条sql语句  sqlparam2: sql对应的参数
+         *
+         * /
+        /*
+        * 根据 分类 搜索 标签 查询并分页
+        *
+        *
+        * */
+        function page(currentPage,showPageNum,sqlone,sqlparam,sqltwo,sqlparam2,topic,topicname,res) {
+
+                    //分页起始位置
+                    let startPage = parseInt((currentPage - 1) * showPageNum);
+
+                    sqlparam.push(startPage);
+                    sqlparam.push(showPageNum);
+                    sql(sqlone,sqlparam,(err, data) => {
+
+                        console.log('通用分页查询');
+
+                        if(err){
+                            console.log(err);
+                        } else {
+
+                            sql(sqltwo,sqlparam2,(err,counts) => {
+                                if(err){
+                                    console.log(err);
+
+                                } else {
+
+                                    let allDataNum = counts[0].counts;
+
+                                    res.json({
+                                        pages: {
+                                            showPageNum: showPageNum,
+                                            currentPage: currentPage,
+                                            allPageNum: allDataNum,
+                                        },
+                                        data: {
+                                            tl: topic + '<span class="highlight">'+topicname+'</span>的文章总共有'+ allDataNum + '篇:',
+                                            pageData: data
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+         }
+
        //首页
        router.get('/',(req, res)=>{
 
@@ -205,16 +289,20 @@ const express = require('express'),
             });
        });
 
-       //根据分类查询文章
+       //根据分类查询文章 跳转到目标页面
        router.get('/type/:typeid.html',(req, res) => {
 
-           res.locals.typeid = req.params.typeid;
+           res.locals.type = {
+               topicid: req.params.typeid,
+               topicname: req.query.typename,
+               typename: 'type'
+           };
            res.render('result.ejs');
        });
 
-
+       //分类查询文章并分页
        router.post('/type',(req, res) => {
-           let typeid = req.body.typeid,
+           let typeid = req.body.topicid,
 
                //当前页
                currentPage = parseInt(req.body.currentPage),
@@ -222,9 +310,22 @@ const express = require('express'),
                //每页显示条数
                showPageNum = parseInt(req.body.showPageNum),
 
+               topicname = req.body.topicname;
+
+           page(
+               currentPage,
+               showPageNum,
+               'select ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where ac.typeid = ? and ac.typeid = act.type_id order by ac.time desc limit ?,?',
+               [typeid],
+               'select count(*) as counts from article where typeid = ?',
+               [typeid],
+               '类别',
+               topicname,
+               res
+           );
                //起始位置
-               startPage = parseInt((currentPage - 1)*showPageNum);
-            console.log(currentPage,showPageNum,startPage);
+            /*   startPage = parseInt((currentPage - 1) * showPageNum);
+           console.log(currentPage,showPageNum,startPage);
            sql('select ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where ac.typeid = ? and ac.typeid = act.type_id order by ac.time desc limit ?,?',[typeid,startPage,showPageNum],(err, data) => {
                console.log('查询分类');
 
@@ -244,20 +345,28 @@ const express = require('express'),
                                 currentPage: currentPage,
                                 allPageNum: counts[0].counts,
                             },
-                            data: data
+                            data: {
+                                tl: '类别为<span class="highlight">'+topicname+'</span>的文章总共有'+counts[0].counts+'篇:',
+                                pageData: data
+                            }
                         });
 
                     }
                    });
                }
 
-           });
+           });*/
        });
 
        //根据标签查询
        router.get('/tag/:tagid.html',(req, res) => {
-           let tagid = req.params.tagid;
-           sql(`select ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where ac.tags like '%${tagid}%' and ac.typeid = act.type_id order by ac.time desc limit 0,10`,(err, data) => {
+           res.locals.type = {
+               topicid:  req.params.tagid,
+               topicname: req.query.tagname,
+               typename: 'tag'
+           };
+           res.render('result.ejs');
+           /*sql(`select ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where ac.tags like '%${tagid}%' and ac.typeid = act.type_id order by ac.time desc limit 0,10`,(err, data) => {
                 console.log('查询标签');
                if(err){
                    console.log(err);
@@ -265,49 +374,66 @@ const express = require('express'),
                    res.send(data);
                }
 
-           });
+           });*/
+       });
+
+       router.post('/tag',(req, res) => {
+           let tagid = req.body.topicid,
+
+               //当前页
+               currentPage = parseInt(req.body.currentPage),
+
+               //每页显示条数
+               showPageNum = parseInt(req.body.showPageNum),
+
+               topicname = req.body.topicname;
+
+           page(
+               currentPage,
+               showPageNum,
+               `select ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where ac.tags like '%${tagid}%' and ac.typeid = act.type_id order by ac.time desc limit ?,?`,
+               [],
+               `select count(*) as counts from article where tags like '%${tagid}%'`,
+               [],
+               '标签',
+               topicname,
+               res
+           );
+       });
+
+       router.get('/search', (req, res) => {
+           res.locals.type = {
+               topicname: req.query.search,
+               typename: 'search'
+           };
+           res.render('result.ejs');
        });
 
        //搜索
-       router.get('/search',(req,res)=>{
-           console.log(req.query.search);
-           let keywords = req.query.search;
-           sql(`select ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where (ac.title like '%${keywords}%' or ac.content like '%${keywords}%') and ac.typeid = act.type_id order by ac.time desc limit 0,10`,(err,data)=>{
-               console.log(data);
-               res.send(data);
-           });
+       router.post('/search',(req,res)=>{
+                //当前页
+           let currentPage = parseInt(req.body.currentPage),
+
+               //每页显示条数
+               showPageNum = parseInt(req.body.showPageNum),
+
+               topicname = req.body.topicname;
+
+           page(
+               currentPage,
+               showPageNum,
+               `select ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where (ac.title like '%${topicname}%' or ac.content like '%${topicname}%') and ac.typeid = act.type_id order by ac.time desc limit ?,?`,
+               [],
+               `select count(*) as counts from article where title like '%${topicname}%' or content like '%${topicname}%'`,
+               [],
+               '搜索',
+               topicname,
+               res
+           );
+
        });
 
-        //深拷贝对象
-        function deepCopy(p, c){
-               c = c || {};
-            for(let i in p){
-                if(p.hasOwnProperty(i)){
-                    if(typeof p[i] === 'object'){
-                        c[i] = (p[i].constructor === Array) ?[]:{};
-                        deepCopy(p[i], c[i]);
-                    }else {
-                        c[i] = p[i];
-                    }
-                }
-            }
-            return c;
-        }
-
-        //判断是不是空对象
-        function isEmptyObject (obj){
-            let i = true;
-
-            for(let j in obj){
-                if(obj.hasOwnProperty(j)){
-                    i = false;
-                    break;
-                }
-            }
-            return i;
-        }
-
-//文章详情
+        //文章详情
        //:id.html方式接收前端页面传递过来的参数,req.params得到:id的值
         router.get('/article-detail/:id.html',(req, res)=>{
             //req.params 同时接收get，post，其他 提交数据的形式
@@ -647,6 +773,7 @@ const express = require('express'),
                         }
                  });
         });
+
           //顶
         router.post('/ding', (req, res) => {
                 let articleId = req.body.id;
@@ -703,10 +830,13 @@ const express = require('express'),
            //网址重定向
            res.redirect('/');
         });
+
         //后台管理
         router.use('/admin',require('./admin'));
+
         //注册
         router.use('/register',require('./register'));
+
         //登录
         router.use('/login',require('./login'));
 

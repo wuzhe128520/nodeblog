@@ -9,13 +9,13 @@
         </div>
         <div id="pages"></div>
     </div>
-
 </main>
-<input type="hidden" value="<%=locals.typeid%>" id="typeid"/>
-
+<input type="hidden" value="<%=locals.type.topicid%>" id="topicid"/>
+<input type="hidden" value="<%=locals.type.topicname%>" id="topicname"/>
 <%include footer.ejs%>
+<script type="text/javascript" src="/js/plugin/moment.js"></script>
 <script type="text/template" id="template">
-    <div class="pages">
+    <div class="pages clearfix">
         <ul class="page-wrap">
             <$
             //每页显示几条数据
@@ -31,7 +31,7 @@
             </li>
 
             <$ if(currentPage!== 1){ $>
-            <li class="page">
+            <li class="page" data-pagenum="<$= currentPage - 1 $>">
                 <a href="javascript:void(0);">
                     <
                 </a>
@@ -44,7 +44,7 @@
             var loopPage = i + 1;
             $>
 
-            <li class="page">
+            <li class="page" data-pagenum="<$=loopPage$>">
                 <a  <$ if(loopPage === currentPage) { $>
                 class="active" href="javascript:void(0);"
                 <$ } else { $>
@@ -59,12 +59,12 @@
 
             <$if(currentPage !== totalPage){$>
 
-            <li class="page">
+            <li class="page" data-pagenum="<$= currentPage + 1 $>">
                 <a href="javascript:void(0);">
                     >
                 </a>
             </li>
-            <li class="page">
+            <li class="page" data-pagenum="<$=totalPage$>">
                 <a href="javascript:void(0);">尾页</a>
             </li>
             <$}$>
@@ -72,28 +72,31 @@
     </div>
 </script>
 <script type="text/template" id="articleTmpl">
+    <h2 class="article-recommend h-style"><$-data.tl$></h2>
     <!--文章列表begin-->
     <$
        var i = 0,
-           length = data.length;
+           pagedata = data.pageData,
+           length = pagedata.length;
        for(; i < length; i++){
+          var data = pagedata[i];
     $>
     <section>
-        <div class="article js_article" data-articleid ='<$=data[i].id$>'>
+        <div class="article js_article" data-articleid ='<$=data.id$>'>
             <h2 class="article-title">
-                <a href="/article-detail/<$=data[i].id$>.html" title="文章标题" class="js_article_title"><$=data[i].title$></a>
+                <a href="/article-detail/<$=data.id$>.html" title="文章标题" class="js_article_title"><$=data.title$></a>
             </h2>
             <article>
                 <div class="article-summary-wrap">
-                    <$if(data[i].img){$>
-                    <a href="/article-detail/<$=data[i].id$>.html" class="article-img-wrap">
-                        <img src="<$=data[i].img$>" />
+                    <$if(data.img){$>
+                    <a href="/article-detail/<$=data.id$>.html" class="article-img-wrap">
+                        <img src="<$=data.img$>" />
                     </a>
                     <$}$>
                     <p class="article-content">
-                        <$=data[i].summery$>
+                        <$=data.summery$>
                     </p>
-                    <a href="/article-detail/<$=data[i].id$>.html" class="read-more">阅读全文</a>
+                    <a href="/article-detail/<$=data.id$>.html" class="read-more">阅读全文</a>
                 </div>
             </article>
             <footer>
@@ -101,55 +104,61 @@
                         <span>
                             <a href="javascript:void(0);" class="iconfont-wrap">
                                 <i title="日期图标" class="iconfont icon-time"></i>
-                                <time><$=data[i].time$></time>
+                                <time><$=moment(data.time).format('YYYY-MM-DD HH:mm:ss')$></time>
                             </a>
                         </span>
                     <span>
                                 <a href="javascript:void(0);" class="iconfont-wrap">
                                     <i title="浏览量图标" class="iconfont icon-eye"></i>
-                                    浏览<$=data[i].views|0$>次
+                                    浏览<$=data.views|0$>次
                                 </a>
-                        </span>
+                    </span>
                     <span>
                                 <a href="javascript:void(0);" class="iconfont-wrap js_ding">
                                     <i title="顶一个图标" class="iconfont icon-ding" ></i>
-                                    顶(<span class="js_ding_text"><$=data[i].ding|0$></span>)
+                                    顶(<span class="js_ding_text"><$=data.ding|0$></span>)
                                 </a>
-                        </span>
+                    </span>
                     <span>
                                 <a href="javascript:void(0);" class="iconfont-wrap js_cai">
                                         <i title="踩一个图标" class="iconfont icon-iconfontcai js_cai"></i>
-                                        踩(<span class="js_cai_text"><$=data[i].cai|0$></span>)
+                                        踩(<span class="js_cai_text"><$=data.cai|0$></span>)
                                 </a>
-                        </span>
+                    </span>
                     <span>
-                                <a href="/article-detail/<$=data[i].id$>.html#commentsArea" class="iconfont-wrap">
+                                <a href="/article-detail/<$=data.id$>.html#commentsArea" class="iconfont-wrap">
                                     <i title="评论图标" class="iconfont icon-comments"></i>
-                                    评论(<$=data[i].comment_count|0$>)
+                                    评论(<$=data.comment_count|0$>)
                                 </a>
-                        </span>
+                    </span>
                     <!--分类-->
                     <span class="article-type">
-                            分类:[<a href="/type/<$= data[i].typeid $>.html" class=""><$=data[i].typename $></a>]
-                        </span>
+                            分类:[<a href="/type/<$= data.typeid $>.html" class=""><$= data.typename $></a>]
+                    </span>
                     <!--分类-->
                 </div>
             </footer>
         </div>
     </section>
-    <$}$>
-    <!--文章列表end-->
-
+    <$ } $>
 </script>
 <script type="text/javascript">
     $(init);
     function init() {
 
-        $('.js_list').css('width','100%');
-
+        $('.js_list').css({width: "100%",float: "none"});
+        var requestType = '<%=locals.type.typename%>';
+        var action = null;
+        if(requestType === 'type'){
+            action = '/type';
+        } else if(requestType === 'search') {
+            action = '/search';
+        } else if(requestType === 'tag'){
+            action = '/tag';
+        }
         //使用分页组件
         comm.page.init({
-            url: '/type',
+            url: action,
             $container: $('#pages'),
             pageTmplId: 'template',
             dataTmplId: 'articleTmpl',
@@ -157,7 +166,8 @@
             postData: {
                 currentPage: 1,
                 showPageNum: 5,
-                typeid: parseInt($('#typeid').val())
+                topicid: parseInt($('#topicid').val()),
+                topicname: $('#topicname').val()
             }
         });
 
