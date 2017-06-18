@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>添加文章</title>
-    <link rel="stylesheet" href="/css/reset.css">
-    <link rel="stylesheet" href="/font/iconfont.css" />
-    <link rel="stylesheet" href="/css/admin.css">
-    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
-    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.min.js"> </script>
-    <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"> </script>
+    <title>发表文章</title>
+    <link rel="stylesheet" href="../public/css/reset.css">
+    <link rel="stylesheet" href="../public/font/iconfont.css" />
+    <link rel="stylesheet" href="../public/css/admin.css">
+    <script type="text/javascript" charset="utf-8" src="../public/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../public/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="../public/ueditor/lang/zh-cn/zh-cn.js"> </script>
 </head>
 <body>
 <main>
@@ -20,80 +20,82 @@
             </div>
             <p class="subtitle">作者</p>
             <div class="comm-wrap">
-                <input type="text" class="author formatInput" name="author" autocomplete="off" />
+                <input type="text" class="author formatInput" name="author" />
             </div>
             <p class="subtitle">文章内容</p>
             <div class="comm-wrap">
                 <input class="content formatInput" value="" name="content" type="hidden"></input>
                 <script id="editor" type="text/plain" style="width:100%;height:500px;"></script>
-             </div>
+            </div>
             <fieldset class="article-img-wrap">
                 <legend>选择文章封面图</legend>
-                <input type="file" name="uploadfile" autocomplete="off" />
+                <input type="file" name="uploadfile"/>
             </fieldset>
-             <p class="subtitle">文章标签</p>
-             <div class="comm-wrap tag-wrap">
+            <p class="subtitle">文章标签</p>
+            <div class="comm-wrap tag-wrap">
                 <div id="addTag" class="addtag"></div>
-                <input type="text" class="tag formatInput" id="tagInput" autocomplete="off" />(最多添加5个标签，多个标签之间用","分隔)
-                <input type="hidden" name="newTags" value="" id="newTags" />
-                <input type="hidden" name="oldTagIds" value="" id="oldTagIds" />
+                <input class="tag formatInput" id="tagInput" name="tag" />(最多添加5个标签，多个标签之间用",")
                 <div class="hastag js_has_tag hidden" id="hasTag">
                     <ul class="clearfix">
-                        <%let i = 0,
-                              length = tags.length;
-                            for(; i < length; i++){
-                        %>
-                            <li>
-                                <input id="chek_tag_<%=tags[i].tag_id%>" type="checkbox" data-tagid = "<%=tags[i].tag_id%>" autocomplete="off" />
-                                <label for="chek_tag_<%=tags[i].tag_id%>"><%=tags[i].tagname%></label>
-                            </li>
-                        <%}%>
+                        <li>
+                            <input id="chek_tag_" type="checkbox" />
+                            <label for="chek_tag_">html</label>
+                        </li>
+                        <li>
+                            <input id="chek_tag_1" type="checkbox" />
+                            <label for="chek_tag_1">css</label>
+                        </li>
+                        <li>
+                            <input id="chek_tag_2" type="checkbox" />
+                            <label for="chek_tag_2">随笔</label>
+                        </li>
+                        <li>
+                            <input id="chek_tag_3" type="checkbox" />
+                            <label for="chek_tag_3">文学</label>
+                        </li>
+                        <li>
+                            <input id="chek_tag_4" type="checkbox" />
+                            <label for="chek_tag_4">打酱油</label>
+                        </li>
                     </ul>
                 </div>
-             </div>
-             <p class="subtitle">分类[<a href="javascript:void(0);" class="addlink" id="addTypeLink">添加分类</a>]</p>
-             <div class="comm-wrap types">
-                     <div class="hastype">
-                         <ul class="clearfix">
-                             <% let j = 0,
-                                    jlength = types.length;
-                                for(; j < jlength; j++){
-                             %>
-                                <li>
-                                    <input type="radio" name="type" value="<%=types[j].type_id%>" autocomplete="off"><%=types[j].typename%>
-                                 </li>
-                             <%}%>
-                        </ul>
-                    </div>
-              </div>
-              <input type="hidden" value="" name="summery" id="summery">
-              <div class="declare-wrap">
+            </div>
+            <p class="subtitle">分类[<a href="javascript:void(0);" class="addlink" id="addTypeLink">添加分类</a>]</p>
+            <div class="comm-wrap types">
+                <input class="formatInput" autocomplete="off" name="type" />
+                <div class="hastype">
+                    <ul class="clearfix">
+                        <li><input type="radio" name="type">分类01</li>
+                        <li><input type="radio" name="type">分类02</li>
+                        <li><input type="radio" name="type">分类03</li>
+                        <li><input type="radio" name="type">分类04</li>
+                        <li><input type="radio" name="type">分类05</li>
+                    </ul>
+                </div>
+            </div>
+            <input type="hidden" value="" name="summery" id="summery">
+            <div class="declare-wrap">
                 <button id="declare" class="declare">发布文章</button>
-              </div>
-        </form>
-     </div>
-            </main>
-
-<script type="text/javascript" src="/js/jquery.min.js"></script>
-<script type="text/javascript" src="/js/plugin/layer/layer.js"></script>
-<script type="text/javascript" src="/js/comm.js"></script>
-<script type="text/template" id="addType">
-    <div class="add-type-wrap" id="addTypeWrap">
-        <form>
-            <input type="text" class="type-input" autocomplete="off"/>
-            <p class="errTip hidden"></p>
+            </div>
         </form>
     </div>
+</main>
+<script type="text/javascript" src="../public/js/jquery.min.js"></script>
+<script type="text/javascript" src="../public/js/plugin/layer/layer.js"></script>
+<script type="text/template" id="addType">
+<div class="add-type-wrap" id="addTypeWrap">
+    <form>
+        <input type="text" class="type-input" />
+        <p class="errTip hidden"></p>
+    </form>
+</div>
 </script>
+<script type="text/javascript" src="../public/js/comm.js"></script>
 <script>
 
     $(function(){
 
-        var ue = UE.getEditor('editor'),
-
-            //存储已经有的标签文本
-            storeTag = [],
-            newTag = [];
+        var ue = UE.getEditor('editor');
 
         $('#tagInput').on('blur', function(e){
             var $target = $(this);
@@ -121,9 +123,10 @@
 
         //显示标签(同时给input设置向左的padding)
         function showTag(containerId,$spans) {
+            debugger;
             $('#' + containerId).empty().append($spans);
-            setInputPadding();
-            //给每个标签绑定删除事件
+           setInputPadding();
+           //给每个标签绑定删除事件
             //给每个标签绑定点击事件 删除自己
             $('#addTag').off('click').on('click','span',function(){
                 handleClickEvent($(this));
@@ -135,22 +138,30 @@
             $('#tagInput').css('paddingLeft',$('#addTag').width());
         }
 
+        //如果输入的标签和选择的标签有相同的 以选择的为准
+
+        //存储已经有的标签文本
+        var storeTag = [],
+            newTag = [];
+
         //删除存储标签数组里指定值
         function deleteTagByValue(ary, value) {
 
-            return comm.ary.deleteByValue(ary,value);
+           return comm.ary.deleteByValue(ary,value);
         }
 
         //连接tag字符串 inputValAry：input输入的值(数组)
         function pushTag(inputValAry) {
 
             var  i = 0,
-                length = storeTag.length,
-                j = 0,
+                 length = storeTag.length,
+                 j = 0,
                 jLength = inputValAry.length,
-
                 //新添加的标签是否已经存在了,true表示已存在
-                flag = true;
+                 flag = true;
+
+            debugger;
+
 
             if(length >= 5 || jLength < 1){
 
@@ -160,18 +171,14 @@
 
             if(length + jLength > 5){
                 jLength = 5 - length;
-
-                //将多余的标签放入giveup里，然后取消勾选
-                var giveup = inputValAry.slice(jLength - 1);
-                debugger;
-                for(var g = 0, l = giveup.length; g < l; g++){
-                    cancelChecked(giveup[g]);
-                }
             }
 
             for(;j < jLength; j++){
 
                 var spanStr = comm.exp.trimAllSpace(inputValAry[j]);
+
+                console.log('去除空格');
+                console.log(spanStr);
 
                 //如果字符串不为空
                 if(!!spanStr&&"," !== spanStr){
@@ -184,7 +191,7 @@
                     }
                 }
             }
-            return flag;
+                return flag;
         }
 
         //生成标签的字符串
@@ -194,6 +201,7 @@
                 $spans = "",
                 length = storeTag.length;
 
+            debugger;
             for(; i < length; i++){
 
                 var $span = createTag(storeTag[i]);
@@ -234,29 +242,10 @@
                     setInputPadding();
                 }
             }
-            if(!!$delObj){
-                cancelChecked($delObj.text());
-            }
             return $delObj;
         }
 
-        //当勾选的tag被移除后，取消勾选状态
-        function cancelChecked (tagStr){
-
-            var $inputs = $('#hasTag').find('input:checked');
-            debugger;
-            $inputs.each(function(i, current){
-                var $label = $(this).siblings('label'),
-                    inputText = $label.text();
-
-                if(tagStr === inputText){
-                    $(this).get(0).checked = false;
-                    return false;
-                }
-            });
-        }
-
-        //显示已经有的标签,绑定checkbox的事件
+        //显示已经有的标签
         function showHasTags() {
 
             var $target = $('#hasTag');
@@ -268,22 +257,17 @@
                         tagTitle = $this.siblings('label').eq(0).text(),
                         checked = this.checked;
 
-                    //如果选中，同时选择的个数不超过5个，则创建标签
-                    debugger;
+                    //如果选中，则创建标签
                     if(checked){
+                        //choosedTag.push(tagTitle);
+                        var isSelected = pushTag([tagTitle]);
 
-                        if(limitSelectNum()){
-                            var isSelected = pushTag([tagTitle]);
-
-                            //如果添加了新标签到数组，则创建新标签
-                            if(!isSelected) {
-                                createTagStr();
-                            }
-                        } else {
-                            this.checked = false;
+                        //如果添加了新标签到数组，则创建新标签
+                        if(!isSelected) {
+                            createTagStr();
                         }
-
                     } else{
+                        debugger;
                         //删除标签数据
                         storeTag = deleteTagByValue(storeTag, tagTitle);
 
@@ -301,6 +285,7 @@
 
             var inputValAry = null,
                 $spans = null;
+            debugger;
 
             //先清除掉input绑定的keyup事件
             $target.off('keyup');
@@ -311,10 +296,20 @@
 
             //首先把中文的逗号，转换为英文的逗号,将多余的逗号去除(包括头尾的)
             inputVal = inputVal.replace(/，/g,',').replace(/,{2,}/g,',').replace(/(^\s*)|(\s*$)/g,"");
+            console.log(inputVal);
             inputValAry = inputVal.split(',');
-
             //数组去重
             inputValAry = comm.ary.removeDuplicated(inputValAry);
+            console.log(inputValAry);
+            /*        var j = 0,
+                length = inputValAry.length;
+
+           for(; j < length; j++){
+                if(""=== inputValAry[j] ){
+                    inputValAry.splice(j, 1);
+                }
+            }*/
+
             pushTag(inputValAry);
             createTagStr();
             $target.val('');
@@ -324,21 +319,24 @@
         function handleFocusEvent($target,event) {
 
             //记录input值的长度
-            var inputVal = $target.val();
-
+            var count = $target.val().length,
+                inputVal = $target.val();
+            console.log('count:'+count);
             //给input绑定退格 事件(删除离光标最近的标签)
             $target.off('keyup').on('keyup', function(event){
 
-                //如果值为空
-                if(inputVal.length === 0){
 
-                    //如果input为空，按键是退格键，则直接删除tag
-                    if(event.keyCode === 8 ){
-                        del();
+                    //如果值为空
+                    if(inputVal.length === 0){
+
+                        //如果input为空，按键是退格键，则直接删除tag
+                        if(event.keyCode === 8 ){
+                                del();
+                        }
                     }
-                }
 
-                inputVal =  $.trim($target.val());
+                  inputVal =  $.trim($target.val());
+
             });
 
             //显示已经有的标签
@@ -353,20 +351,11 @@
             setInputPadding();
         }
 
-        //限制checkbox选择的个数,最多5个
-        function limitSelectNum() {
-            debugger;
-            var checkedNum = $('#hasTag').find("input[type='checkbox']:checked").length ,
-                newTagNum = getNewTag().length + 1;
-
-            return newTagNum + checkedNum > 5 ? false : true;
-        }
-
         //获取新添加的标签
         function getNewTag() {
 
             var oldTag = getOldTag(),
-                i = 0,
+                 i = 0,
                 allTag = comm.ary.cloneAry(storeTag),
                 length = oldTag.length;
 
@@ -375,20 +364,9 @@
                 allTag.splice(index, 1);
             }
 
+
             return allTag;
-        }
 
-        //获取已选择的旧标签
-        function getOldTagIds() {
-
-            //获取已选择的checkbox
-            var $checkedInputs = $('#hasTag').find('input:checked'),
-                oldTag = [];
-            $checkedInputs.each(function(index,current){
-
-                oldTag.push(parseInt($(this).data('tagid')));
-            });
-            return oldTag;
         }
 
         //获取已选择的旧标签
@@ -396,12 +374,13 @@
 
             //获取已选择的checkbox
             var $checkedInputs = $('#hasTag').find('input:checked'),
-                oldTag = [];
+                 oldTag = [];
             $checkedInputs.each(function(index,current){
 
-                oldTag.push(parseInt($(this).siblings('label').text()));
+                oldTag.push($(this).siblings('label').text());
             });
             return oldTag;
+
         }
 
         //弹出添加分类框
@@ -425,62 +404,54 @@
 
         //验证类别input是否为空
         function validateType() {
-            var $input = $('#addTypeWrap').find('.type-input').eq(0),
+           var $input = $('#addTypeWrap').find('.type-input').eq(0),
                 inputVal = $input.val(),
                 length = inputVal.length,
                 newInputValue = $.trim(inputVal);
 
             $input.val(newInputValue);
-            if(!newInputValue){
-                $('.errTip').text('类别不能为空').show();
-                $input.focus();
-                return false;
-            }
+           if(!newInputValue){
+               $('.errTip').text('类别不能为空').show();
+               $input.focus();
+               return false;
+           }
 
-            if(!(length > 0 && length <= 10)){
-                $('.errTip').text('长度不能大于10').show();
-                return false;
-            }
+           if(!(length > 0 && length <= 10)){
+               $('.errTip').text('长度不能大于10').show();
+               return false;
+           }
 
-            $('.errTip').hide();
-            return true;
+           $('.errTip').hide();
+           return true;
         }
-
-        //
-
-
         //提交数据
         $('#declare').on('click', function(e){
 
-            var content = ue.getContent(),
-                summery = ue.getContentTxt(),
-                newTags = getNewTag(),
-                oldTagIds = getOldTagIds();
-            console.log(newTags,oldTagIds);
+            var content = ue.getContent();
+            var summery = ue.getContentTxt();
             e.preventDefault();
+
             $("#summery").val(summery);
             $(".content").val(content);
-            $('#newTags').val(newTags.join(','));
-            $('#oldTagIds').val(oldTagIds.join(','));
-
-            $("#form").submit();
+            console.log(content);
+           // $("#form").submit();
         });
 
     });
     /*
-     *绑定input的事件
-     *   点击 backspace 的事件(删除标签)
+    *绑定input的事件
+    *   点击 backspace 的事件(删除标签)
      *  离开焦点事件(将输入框的文字转换为 一个个的标签)
-     *
-     * */
+      *
+    * */
     /*
-     生成标签
-     创建span标签并追加到addTag容器中
-     为每一个创造的标签绑定 删除事件
-     */
+        生成标签
+          创建span标签并追加到addTag容器中
+          为每一个创造的标签绑定 删除事件
+    */
     /*
-     *  保存标签对应的 标签id
-     * */
+    *  保存标签对应的 标签id
+    * */
 </script>
 </body>
 </html>

@@ -7,6 +7,7 @@ const express = require('express'),
         //上传文件模块
         upload = require('../module/upload'),
         fs = require('fs');
+
 //get post 任何形式的访问都会走这一条路由
 router.use((req,res,next)=>{
      if(req.session.admin){
@@ -15,9 +16,12 @@ router.use((req,res,next)=>{
          res.send('请用管理员账号登陆');
      }
 });
+
+//进入后台
 router.get('/',(req,res) => {
     res.render('admin/admin');
 });
+
 //用户管理
 router.get('/user',(req, res)=> {
     sql('select * from user',(err,data)=>{
@@ -28,6 +32,7 @@ router.get('/user',(req, res)=> {
             res.render('admin/user',{data: data});
     });
 });
+
 //删除用户
 router.post('/user/delete',(req, res)=> {
     console.log(req.body.userid);
@@ -41,6 +46,7 @@ router.post('/user/delete',(req, res)=> {
     });
 
 });
+
 //查询要修改的那条数据
 router.get('/user/updateuser',(req,res)=>{
     console.log(req.query);
@@ -48,6 +54,7 @@ router.get('/user/updateuser',(req,res)=>{
             res.render('admin/updateuser', {data: data});
     });
 });
+
 //执行修改
 router.get('/user/update',(req, res)=> {
     console.log("修改用户",req.query);
@@ -60,22 +67,95 @@ router.get('/user/update',(req, res)=> {
             res.send("修改成功");
    });
 });
-//发表文章后台页面
+
+//跳转到发表文章后台页面
 router.get('/writearticle',(req, res)=>{
-    res.render('admin/article');
+
+    //查询所有标签
+    sql('select * from articletag',(err, tags) =>{
+
+        if(err){
+            console.log(err);
+        } else {
+
+            //查询所有分类
+            sql('select * from articletype', (err, types) => {
+
+                if(err){
+                    console.log(err);
+                } else {
+                    res.render('admin/article', {
+                        tags: tags,
+                        types: types
+                    });
+                }
+            });
+        }
+
+    });
+    //查询分类
 });
+
 //upload.single 用来接收一个文件
 router.post('/article',upload.single('uploadfile'),(req,res)=>{
     let summeryContent =  req.body.summery,
         title = req.body.title,
-        tag = req.body.tag,
+
+        //新标签名字
+        newTags = req.body.newTags,
+        //旧标签id
+        oldTagIds = req.body.oldTagIds,
+
+        //所属的类别
+        typeId = parseInt(req.body.type),
         author = req.body.author,
         content = req.body.content,
         img = '/image/' + req.file.filename,
         summery =  summeryContent.length>200?summeryContent.substr(0,200) + '...':summeryContent,
         time = new Date().toLocaleString();
-        console.log(time);
-        sql('insert into article(title,tags,author,content,time,img,summery) values(?,?,?,?,?,?,?)',[title,tag,author,content,time,img,summery],(err,data)=>{
+        debugger;
+        console.log(req.body.type);
+        console.log(title,newTags,oldTagIds,typeId,author,content,img,summery,time);
+
+        if(!!newTags) {
+            let tagsAry = newTags.split(','),
+                arr = [],
+                fn = function(tag){
+
+                    return new Promise(function(resolve,reject){
+                        sql('insert into articletag(tagname) values (?)',[tag],(err) => {
+
+                            if(err){
+                                 console.log();
+                            } else {
+                                sql('select tag_id from articletag where tagname = ?',[tag],(err, tagdata) => {
+                                    if(err){
+                                        console.log(err);
+                                        reject();
+                                    } else {
+                                        resolve(tagdata[0]);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                };
+
+            for(let i = 0, j = tagsAry.length; i < j; i++){
+                arr.push(fn(tagsAry[i]));
+            }
+            Promise.all(arr).then(function(finaldata){
+                debugger;
+                console.log('打印新添加的标签id：');
+                console.log(finaldata);
+                executQuery();
+            });
+        } else {
+                executQuery();
+        }
+
+        function executQuery() {
+            sql('insert into article(title,tags,author,content,time,img,summery,typeid) values(?,?,?,?,?,?,?,?)',[title,oldTagIds,author,content,time,img,summery,typeId],(err,data)=>{
                 if(err){
                     console.log(err);
                     res.send('添加文章失败！');
@@ -83,8 +163,10 @@ router.post('/article',upload.single('uploadfile'),(req,res)=>{
                 }
                 res.send("添加文章成功！");
 
-        });
+            });
+        }
 });
+
 router.get('/nav',(req,res)=>{
     //查询父级
     sql('select distinct navid,title  from nav where level = 1',(err,data)=>{
@@ -92,6 +174,8 @@ router.get('/nav',(req,res)=>{
             console.log(data);
     });
 });
+
+//导航
 router.post('/nav',(req,res)=>{
     var navParam =req.body,
         title = navParam.onetitle,

@@ -37,7 +37,7 @@ router.post('/',(req, res) => {
                                     des: err
                                 });
                                 } else {
-                                sendMail(email,'欢迎您注册无畏滴青春博客网站！点此<a style="color:red;" href="http://wuzhe128520.xicp.net:27936/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。');
+                                sendMail(email,'欢迎您注册无畏滴青春博客网站！点此<a style="color:red;" href="http://wzblog.tt.w3cmark.com/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。');
                                 res.json({
                                     status: 1,
                                     des: '发送邮件成功！',

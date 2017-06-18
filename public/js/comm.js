@@ -62,6 +62,7 @@
     }]
 };*/
 var comm = {
+
      /*数据类型判断*/
      /*
      * 判断是函数、数组、对象、布尔值、数值、Null、undefined的通用方法
@@ -73,7 +74,8 @@ var comm = {
          var str = objAry.substring(0,objAry.length - 1).toLocaleLowerCase();
          return str||-1;
      },
-     //判断数据类型
+
+    //判断数据类型
      judge: {
 
          //安全整数
@@ -118,6 +120,7 @@ var comm = {
                  };
          }
      },
+
      //继承，复制对象
      extend: {
          /**
@@ -127,30 +130,30 @@ var comm = {
           * @returns 返回一个和父对象一样结构的对象
           */
          //深拷贝对象
-         deepCopy: function(p, c){
+         deepCopy: function(p, c, isDeep){
 
             var c = c || {};
             for(let i in p){
                 if(p.hasOwnProperty(i)){
                     if(typeof p[i] === 'object'){
                         c[i] = (p[i].constructor === Array) ?[]:{};
-                        deepCopy(p[i], c[i]);
+                        deepCopy(p[i], c[i], true);
                     }else {
                         c[i] = p[i];
                     }
                 }
-
             }
             return c;
-        }
+          }
      },
-     //随机数
+
     //产生min到max之间的随机数(包含min，不包含max)
     randomNum: function(min, max) {
         if(max < min) return;
 
         return Math.floor(Math.random()*(max - min) + min);
     },
+
      //公用ajax请求
      ajax: {
          //在ajax请求发送之前要执行的函数
@@ -199,38 +202,68 @@ var comm = {
              $.ajax(defaultObj);
          }
      },
-     /**
-      * 弹框插件
-      *
-      *
-      * */
-     layer: {
-          dialog: function(config, extendObj){
+
+      // 弹框插件
+    /**
+     * options参数说明：
+     *   type: 0(信息框) 1(页面层) 2(iframe层) 3(加载层) 4(tip层)
+     *   title: 标题
+     *   content: 内容
+     *      1、content可以传入：1、普通文本或html内容 2、指定dom $('#id')
+     *      2、如果是用layer.open执行tips层，则 content: ['内容', '#id'] //数组第二项即吸附元素选择器或者dom
+     *    area: 宽高
+     *    offset: 坐标
+     *    icon: 图标。信息框和加载层的私有参数(alert,msg,load)
+     *    btn: 按钮。 信息框模式时，btn默认是一个按钮，其它层类型则默认不显示，加载层和tips则无效。
+     *    closeBtn: 关闭按钮，可通过配置1和2来展示，如果不显示，则closeBtn: 0
+     *    shade: 遮罩。 默认0.3透明度的黑色背景('#000)。shade: 0 不显示遮罩
+     *    tips: tips层的私有参数。支持 上 右 下 左，通过1 - 4进行方向设定。设置颜色 tips: [1,'#c00']
+     *    zIndex: 层叠顺序
+     *    scrollbar: 是否允许浏览器出现滚动条
+     *    resize: 是否允许拉伸
+     *    maxmin: 最大 最小化 (只对 页面层 iframe层有效)
+     *    fixed: 鼠标滚动时，层是否固定在可视区域。
+     *    anim: 弹出动画 0-6
+     *    isOutAnim: 关闭动画。设置false 关闭这个动画
+     *    move: 触发拖动的元素。默认是触发标题区域拖曳。指定DOM可以单独定义。设置false禁止拖动。
+     *    success: 层弹出后的成功回调方法
+     *    end: 层销毁后触发的回调
+     * layer方法：
+     *     layer.ready(): 当你在页面一打开就要执行弹出层时，最好是将弹层放入ready方法中。
+     */
+    layer: {
+          dialog: function(config){
                 var defaultObj = {
                     type: config.type,
                     title: config.title,
                     content: config.content,
                     closeBtn: 1,
                     scrollbar: false,
+                    area: config.area|['200px','200px']
                 };
-                if(config.buttons&&config.methods){
+                if(config.btn&&config.methods){
                     //如果是数组
-                    if(comm.type(config.buttons === 'array')){
-                            if(comm.type(config.methods) === 'function'){
-                                var length = config.buttons.length;
+                    debugger;
+                    if(comm.type(config.btn === 'array')){
+                            defaultObj['btn'] = config.btn;
+                            if(comm.type(config.methods) === 'array'){
+                                var length = config.btn.length,
+                                    methods = config.methods;
                                 for(var i =0;i < length; i++){
                                     //如果是第一个按钮，键值为yes
                                     if(i == 0){
-                                        defaultObj[yes]  = method[0];
+                                        defaultObj['yes']  = methods[0];
                                     }
                                     else {
-                                        defaultObj['btn'+i] = method[i];
+                                        defaultObj['btn'+(i+1)] = methods[i];
                                     }
                                 }
                             }
                         }
                 }
-                $.extend(defaultObj, extendObj);
+                $.extend(defaultObj, config);
+                console.log('弹框的参数：');
+                console.log(defaultObj);
                 layer.open(defaultObj);
           },
 
@@ -252,6 +285,10 @@ var comm = {
          tips: function(content,follow,options) {
               layer.tips(content,follow,options);
          },
+         //关闭弹层
+        close: function(index) {
+               layer.close(index);
+        },
           /*
           * type: 0表示id，type：1表示url
           * 如果是id：
@@ -302,10 +339,8 @@ var comm = {
               }
           }
      },
-     /*
-      *   去除html标签:
-      *
-     */
+
+    //   去除html标签:
      escapeHTML: function(str){
         return str.replace(/<[\/\!]*[^<>]*>/ig,"");
      },
@@ -314,7 +349,7 @@ var comm = {
      * id: 目标元素
      * num: 生成的验证码有几个数字或文字
      */
-     validateCode: function(id,num) {
+    validateCode: function(id,num) {
 
         //canvas的id
         var $canvas = $('#'+id),
@@ -494,6 +529,7 @@ var comm = {
         }
 
     },
+
     scrollEvent: function(){
         console.log($(this).scrollTop());
         var $target = $(this);
@@ -504,10 +540,12 @@ var comm = {
             $("#scrollTop").fadeOut();
         }
     },
+
     //绑定全局的滚动事件
     scroll: function(){
         $(window).bind("scroll.scrollTop",comm.debounce(comm.scrollEvent,300));
     },
+
     //滚动到顶部。(在滚动到顶部的时候会触发全局的滚动事件)-
     scrollToTop: function(){
         $(window).unbind("scroll.scrollTop");
@@ -517,6 +555,7 @@ var comm = {
             $(window).bind("scroll.scrollTop",comm.debounce(comm.scrollEvent,300));
         });
     },
+
     //返回 function 函数的防反跳版本, 将延迟函数的执行(真正的执行)在函数最后一次调用时刻的 wait 毫秒之后.
     debounce: function(func, wait, immediate) {
         var timeout, args, context, timestamp, result;
@@ -552,6 +591,7 @@ var comm = {
     now: Date.now || function() {
         return new Date().getTime();
     },
+
     //创建并返回一个像节流阀一样的函数，当重复调用函数的时候，最多每隔 wait毫秒调用一次该函数。
     throttle: function(func, wait, options) {
         var context, args, result;
@@ -584,6 +624,8 @@ var comm = {
             return result;
         };
     },
+
+    //window滚动事件
     scrollEvent: function(){
         console.log($(this).scrollTop());
         var $target = $(this);
@@ -594,10 +636,12 @@ var comm = {
             $("#scrollTop").fadeOut();
         }
     },
+
     //绑定全局的滚动事件
     scroll: function(){
         $(window).bind("scroll.scrollTop",comm.debounce(comm.scrollEvent,300));
     },
+
     //滚动到顶部。(在滚动到顶部的时候会触发全局的滚动事件)-
     scrollToTop: function(){
         $(window).unbind("scroll.scrollTop");
@@ -607,6 +651,7 @@ var comm = {
             $(window).bind("scroll.scrollTop",comm.debounce(comm.scrollEvent,300));
         });
     },
+
     //返回 function 函数的防反跳版本, 将延迟函数的执行(真正的执行)在函数最后一次调用时刻的 wait 毫秒之后.
     debounce: function(func, wait, immediate) {
         var timeout, args, context, timestamp, result;
@@ -642,6 +687,7 @@ var comm = {
     now: Date.now || function() {
         return new Date().getTime();
     },
+
     //创建并返回一个像节流阀一样的函数，当重复调用函数的时候，最多每隔 wait毫秒调用一次该函数。
     throttle: function(func, wait, options) {
         var context, args, result;
@@ -701,6 +747,7 @@ var comm = {
             $query.focus();
         });
     },
+
     //url相关
     url: {
         getOriginUrl: function(){
@@ -714,6 +761,7 @@ var comm = {
                 return originUrl;
         }
     },
+
     //分页
     page: {
         /**
@@ -848,6 +896,63 @@ var comm = {
             return pagesData;
 
 
+        }
+
+    },
+
+    //正则匹配
+    exp: {
+
+        //去除所有空格
+        trimAllSpace: function(str){
+            return str.replace(/\s/g,"");
+        }
+
+    },
+
+    //数组操作
+    ary: {
+
+        //根据值删除
+        deleteByValue: function(ary, value, isDeleteAll){
+
+            var i = 0,
+                length = ary.length;
+
+            for(; i < length; i++){
+
+                if(value === ary[i]){
+                    ary.splice(i,1);
+
+                    //是否删除所有跟value一样的值,默认只删除最近的一个
+                    if(!isDeleteAll){
+                        break;
+                    }
+                }
+
+            }
+
+            return ary;
+        },
+
+        //克隆数组
+        cloneAry: function(ary){
+
+            return ary.concat();
+        },
+
+        //数组去重
+        removeDuplicated: function(ary){
+
+            var noDuplicateAry = [];
+
+            for(var i = 0, j = ary.length; i < j; i++) {
+                if(noDuplicateAry.indexOf(ary[i]) === -1){
+                    noDuplicateAry.push(ary[i]);
+                }
+            }
+
+            return noDuplicateAry;
         }
 
     }

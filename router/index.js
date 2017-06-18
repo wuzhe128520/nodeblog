@@ -5,17 +5,17 @@ const express = require('express'),
        router = express.Router(),
        sql = require('../module/mysql');
 
-        //深拷贝对象
-        function deepCopy(p, c){
+        //浅拷贝对象
+        function copy(p, c){
             c = c || {};
             for(let i in p){
                 if(p.hasOwnProperty(i)){
-                    if(typeof p[i] === 'object'){
+                   /* if(typeof p[i] === 'object'){
                         c[i] = (p[i].constructor === Array) ?[]:{};
                         deepCopy(p[i], c[i]);
-                    }else {
+                    }else {*/
                         c[i] = p[i];
-                    }
+                   /* }*/
                 }
             }
             return c;
@@ -585,7 +585,7 @@ const express = require('express'),
                                                         debugger;
                                                         let rpobj = replys[j];
 
-                                                        let newObj = deepCopy(rpobj);
+                                                        let newObj = copy(rpobj);
 
                                                         //找到当前评论下的所有回复
                                                         if(rpobj.comment_id === commobj.commid ) {

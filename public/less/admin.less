@@ -1,0 +1,115 @@
+@import 'comm.less';
+body {
+  background: none;
+}
+.main {
+  width: 960px;
+  margin: 0 auto;
+  padding: 20px 10px 20px 10px;
+}
+.article-admin {
+  .subtitle {
+    margin: 6px 0;
+    padding: 12px 4px 2px 4px;
+    color: #999;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .formatInput {
+    width: 576px;
+    height: 30px;
+    border: 1px solid #ccc;
+    &.author {
+      width: 225px;
+    }
+  }
+  .hastag {
+    width: 576px;
+    border: solid 1px #ffcccc;
+    .radius(4px);
+    padding: 10px;
+    margin-top: 1px;
+  }
+  .hastag,
+  .hastype {
+    li {
+      float: left;
+      margin: 0 8px 0 0;
+    }
+  }
+  .hastype {
+    margin: 6px 0;
+  }
+  .declare-wrap {
+    margin: 25px 0 0 0;
+    padding-right: 384px;
+    text-align: center;
+  }
+  .declare {
+    width: 120px;
+    height: 30px;
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+    background: #0099FF;
+  }
+  .article-img-wrap {
+    height: 70px;
+    font-size: 14px;
+    color: #999;
+    padding: 4px 10px 10px 10px;
+    line-height: 24px;
+    border: 1px solid #ccc;
+  }
+}
+.tag-wrap {
+  position: relative;
+  .addtag {
+    position: absolute;
+    z-index: 1;
+    float: left;
+    left: 4px;
+    top: 2px;
+  }
+}
+.addtag {
+  span {
+    cursor: default;
+    display: inline-block;
+    border: 1px solid #ccc;
+    background-color: #ffffcc;
+    .radius(5px);
+    padding: 2px 4px;
+    margin-right: 4px;
+    font-size: 14px;
+  }
+}
+.addlink {
+  color: #888;
+}
+.add-type-wrap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-align: center;
+  height: 30px;
+  padding: 0 15px 0 15px;
+  input {
+    width: 160px;
+    height: 30px;
+    display: block;
+    margin: 0 auto;
+
+  }
+  .errTip {
+    color: red;
+    text-align: left;
+    font-size: 12px;
+    margin: 3px 0 0 0;
+  }
+}
+
