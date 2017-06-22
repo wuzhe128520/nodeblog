@@ -4,12 +4,14 @@
 @headerColor: #0D0D0D;
 //背景色主色调、文字副色调、
 @bgColor: #F24429;
+
 //计算宽度
 .calc-width(@num) {
   width: -moz-calc(@num);
   width: -webkit-calc(@num);
   width: calc(@num);
 }
+
 //过渡
 .transition(@attr,@time) {
   transition: @attr @time;
@@ -17,35 +19,39 @@
   -webkit-transition: @attr @time; /* Safari 和 Chrome */
   -o-transition: @attr @time; /* Opera */
 }
+
 //边框圆角
 .radius(@size){
   -webkit-border-radius: @size;
   -moz-border-radius: @size;
   border-radius: @size;
 }
-//阴影
 
-.boxshadow(@h-shadow,@v-shadow,@blur,@color) {
-  -moz-box-shadow: @h-shadow @v-shadow @blur @color; /* 老的 Firefox */
-  box-shadow: @h-shadow @v-shadow @blur @color;
+//阴影
+.boxshadow(@h-shadow,@v-shadow,@blur,@color,@spread:0) {
+  -moz-box-shadow: @h-shadow @v-shadow @blur @spread @color; /* 老的 Firefox */
+  box-shadow: @h-shadow @v-shadow @blur @spread @color;
 }
+
 //内阴影
-.inner-shadow (@x: 0, @y: 1px, @blur: 2px, @spread: 0, @alpha: 0.25) {
-  -webkit-box-shadow: inset @x @y @blur @spread rgba(0, 0, 0, @alpha);
-  -moz-box-shadow:    inset @x @y @blur @spread rgba(0, 0, 0, @alpha);
-  box-shadow:         inset @x @y @blur @spread rgba(0, 0, 0, @alpha);
+.inner-shadow (@x: 0, @y: 1px, @blur: 2px, @spread: 0,@red:0,@green:0,@blue:0, @alpha: 0.25) {
+  -webkit-box-shadow: inset @x @y @blur @spread rgba(@red, @green, @blue, @alpha);
+  -moz-box-shadow:    inset @x @y @blur @spread rgba(@red, @green, @blue, @alpha);
+  box-shadow:         inset @x @y @blur @spread rgba(@red, @green, @blue, @alpha);
 }
+
 //透明度
 .opacity(@float,@ints) {
-
   -moz-opacity: @float;
   opacity: @float;
   filter: alpha(opacity=@ints);
 }
+
 //文本阴影
 .text-shadow (@string: 0 1px 3px rgba(0, 0, 0, 0.25)) {
   text-shadow: @string;
 }
+
 //缩放
 .scale (@factor) {
   -webkit-transform: scale(@factor);
@@ -53,6 +59,33 @@
   -ms-transform:       scale(@factor);
   -o-transform:        scale(@factor);
   transform:           scale(@factor);
+}
+
+//旋转
+.rotate (@deg) {
+  -webkit-transform: rotate(@deg);
+  -moz-transform:      rotate(@deg);
+  -ms-transform:       rotate(@deg);
+  -o-transform:        rotate(@deg);
+  transform:           rotate(@deg);
+}
+
+//2d 位移
+.translate (@x, @y:0) {
+  -webkit-transform:       translate(@x, @y);
+  -moz-transform:      translate(@x, @y);
+  -ms-transform:       translate(@x, @y);
+  -o-transform:        translate(@x, @y);
+  transform:           translate(@x, @y);
+}
+
+//3d位移
+.translate3d (@x, @y: 0, @z: 0) {
+  -webkit-transform:       translate3d(@x, @y, @z);
+  -moz-transform:      translate3d(@x, @y, @z);
+  -ms-transform:       translate3d(@x, @y, @z);
+  -o-transform:        translate3d(@x, @y, @z);
+  transform:           translate3d(@x, @y, @z);
 }
 //禁止选中文本
 .disable-select(@str) {
@@ -64,12 +97,61 @@
   user-select: @str;
 }
 
+//选项卡样式
+.tab-comm (@tab_width: 960px,@border_color: #ccc,@tab_box_bg: #fff,@tab_bg: #EEE,@selectedBg: #fff,@selectedColor: #333,@selectedBm: @tab_box_bg) {
+  .tab{
+    width: @tab_width;
+    margin: 0 auto;
+
+    .tab_menu,.tab_box {
+      width: 100%;
+      border-left: 1px solid @border_color;
+    }
+
+    .tab_menu {
+      ul {
+
+        border-bottom: 1px solid @border_color;
+
+        li {
+          padding: 0 15px;
+          float: left;
+          border: 1px solid @border_color;
+          margin-right: 15px;
+          margin-bottom: -1px;  /*避免父元素ul的下边框覆盖当前li的下边框*/
+          cursor: pointer;
+          overflow: hidden;
+          background: @tab_bg;
+          &:first-child {
+            border-left: none;
+          }
+          &.selected {
+            background: @selectedBg;
+            color: @selectedColor;
+            border-bottom: 1px solid @selectedBm;
+          }
+        }
+      }
+    }
+
+    .tab_box {
+      text-indent: 1.5em;
+      word-wrap:break-word;
+      word-break:break-all;
+      border: 1px solid @border_color;
+      border-top: none;
+      background: @tab_box_bg;
+    }
+
+  }
+}
+
 .h-style {
   position: relative;
   padding: 10px;
   border-bottom: 1px solid #bbb;
   font-size: 16px;
-  background: rgba(255,255,255,0.5);
+  background: #fff;
   &:before {
     content: '';
     display: block;
@@ -132,7 +214,7 @@ body {
     .logout {
       margin: 0 0 0 10px;
       font-size: 12px;
-      color: #888;
+      color: #999;
       &:hover {
         color: #fff;
       }
@@ -256,12 +338,12 @@ body {
 .site-description {
   width: 1200px;
   margin: 0 auto;
-  padding: 52px 0 0 0;
+  padding: 16px 0 0 0;
   position: relative;
   .logo {
     position: absolute;
     left: 0;
-    top: 52px;
+    top: 16px;
     display: block;
     vertical-align: baseline;
     img {
@@ -521,3 +603,17 @@ footer {
   }
 }
 /*=====分页 end=====*/
+.more {
+  width: 100%;
+  text-align: center;
+  background: #fff;
+  color: #000;
+  height: 30px;
+  line-height: 30px;
+}
+.border {
+  border: 1px solid #fff;
+}
+.marginb {
+  margin-bottom: 10px;
+}

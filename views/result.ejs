@@ -24,6 +24,7 @@
             totalPage = Math.ceil(pages.allPageNum/showPageNum),
             //当前页
             currentPage = parseInt(pages.currentPage);
+            if(totalPage > 1){
             $>
 
             <li class="page">
@@ -68,6 +69,7 @@
                 <a href="javascript:void(0);">尾页</a>
             </li>
             <$}$>
+            <$}$>
         </ul>
     </div>
 </script>
@@ -88,15 +90,19 @@
             </h2>
             <article>
                 <div class="article-summary-wrap">
-                    <$if(data.img){$>
-                    <a href="/article-detail/<$=data.id$>.html" class="article-img-wrap">
-                        <img src="<$=data.img$>" />
-                    </a>
-                    <$}$>
-                    <p class="article-content">
-                        <$=data.summery$>
-                    </p>
-                    <a href="/article-detail/<$=data.id$>.html" class="read-more">阅读全文</a>
+                    <div class="clearfix">
+                        <$if(data.img){$>
+                        <a href="/article-detail/<$=data.id$>.html" class="article-img-wrap">
+                            <img src="<$=data.img$>" />
+                        </a>
+                        <$}$>
+                        <p class="article-content">
+                            <$=data.summery$>
+                        </p>
+                    </div>
+                    <div class="read-more-wrap">
+                        <a href="/article-detail/<$=data.id$>.html" class="read-more">阅读全文</a>
+                    </div>
                 </div>
             </article>
             <footer>
@@ -159,7 +165,7 @@
         //使用分页组件
         comm.page.init({
             url: action,
-            $container: $('#pages'),
+            container: 'pages',
             pageTmplId: 'template',
             dataTmplId: 'articleTmpl',
             dataId: 'articles',

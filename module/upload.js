@@ -13,14 +13,7 @@ let storage = multer.diskStorage({
         callback(null, `${Date.now()}.${filename[filename.length - 1]}`);
     }
 });
-/*let fileFilter = function(req,file,callback){
-    if(file.mimetype === 'image/gif'||file.mimetype === 'image/jpeg'||file.mimetype === 'image/png'){
-            callback(null,false);
-    }
-    else {
-        callback(null,false);
-    }
-};*/
+
 let upload = multer({
     storage: storage,
     limits: {

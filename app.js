@@ -12,7 +12,6 @@ const http = require('http'),
        session = require('express-session'),
        utils = require('./module/utils'),
        path = require('path'),
-       flash = require('connect-flash'),
        ws = require('socket.io');
        module.exports = app;
        //全局时间格式化
@@ -26,13 +25,12 @@ const http = require('http'),
        //在访问静态文件时，必须使加上bc这个路径
        //app.use('/article-detail',express.static(__dirname + '/article-detail/public'));
 
-       app.use(flash());
        //用来接收json的数据
        app.use(bodyParser.json());
        app.use(bodyParser.urlencoded({extended: true}));
        app.use(cookieParser('wuzhe128520'));//密钥
-       app.use(session({secret:'wuzhe128520'}));//设置密钥
-       app.use(flash());
+       app.use(session({secret:'wuzhe128520',resave: false, saveUninitialized: true}));//设置密钥
+
        //configdata 没有暴露出去任何内容  引入所有代码
        require('./module/configdata');
        let fs = require('fs');
@@ -53,36 +51,7 @@ const http = require('http'),
                   });
        });
         //拦截器
-        app.use(function(req,res,next){
 
-            var include = ['/comment/*'];
-
-            if(req.cookies['login']){
-
-                next();
-
-            } else {
-                // 解析用户请求的路径
-                var arr = req.url.split('/');
-                // 去除 GET 请求路径上携带的参数
-                for (var i = 0, length = arr.length; i < length; i++) {
-                    arr[i] = arr[i].split('?')[0];
-                }
-                // 判断请求路径是否为根、登录、注册、登出，如果是不做拦截
-                if (arr.length > 1 && arr[1] == '') {
-                    next();
-                } else if (arr.length >= 2  && (arr[1] == 'register' || arr[1] == 'login' || arr[1] == 'logout')) {
-                    next();
-                } else {  // 登录拦截
-
-                    console.log('拦截请求…………');
-                    console.log(arr[1]);
-                    req.session.originalUrl = req.originalUrl ? req.originalUrl : null;  // 记录用户原始请求路径
-                    //req.flash('error', '请先登录');
-                    res.redirect('/login?show=1');  // 将用户重定向到登录页面
-                }
-            }
-        });
        //访问当前路径的时候，交给index文件里的路由方法来处理
        app.use('/',require('./router/index'));
        //配置富文本编辑器路由

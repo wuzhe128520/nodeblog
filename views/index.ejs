@@ -19,15 +19,19 @@
                     </h2>
                     <article>
                         <div class="article-summary-wrap">
-                            <%if(data[i].img){%>
-                            <a href="/article-detail/<%=data[i].id%>.html" class="article-img-wrap">
-                                <img src="<%=data[i].img%>" />
-                            </a>
-                            <%}%>
-                            <p class="article-content">
-                                <%=data[i].summery%>
-                            </p>
-                            <a href="/article-detail/<%=data[i].id%>.html" class="read-more">阅读全文</a>
+                            <div class="clearfix">
+                                <%if(data[i].img){%>
+                                <a href="/article-detail/<%=data[i].id%>.html" class="article-img-wrap">
+                                    <img src="<%=data[i].img%>" />
+                                </a>
+                                <%}%>
+                                <p class="article-content">
+                                    <%=data[i].summery%>
+                                </p>
+                            </div>
+                            <div class="read-more-wrap">
+                                <a href="/article-detail/<%=data[i].id%>.html" class="read-more">阅读全文</a>
+                            </div>
                         </div>
                     </article>
                     <footer>
@@ -83,7 +87,7 @@
                             totalPage = Math.ceil(pages.counts[0].articlenum/showPageNum),
                             //当前页
                             currentPage = parseInt(pages.current);
-
+                            if(totalPage > 1) {
                         %>
 
                         <li class="page">
@@ -128,6 +132,7 @@
                                 <a href="/list-<%= totalPage %>.html">尾页</a>
                             </li>
                         <%}%>
+                        <%}%>
                     </ul>
                 </div>
             </div>
@@ -136,7 +141,7 @@
             <div class="article-relation-wrap">
                 <!--文章分类begin-->
                 <section>
-                    <div class="article-type-wrap">
+                    <div class="article-type-wrap marginb" id="articleTypesWrap">
                         <h3 class="h-style title">文章<span class="highlight">分类</span></h3>
                         <ul class="type-wrap clearfix">
                             <%
@@ -147,12 +152,15 @@
                                     <li class="type"><a href="/type/<%= typedata[i].type_id%>.html?typename=<%= typedata[i].typename %>"><%= typedata[i].typename %></a></li>
                             <%}%>
                         </ul>
+                        <%if(length > 9){%>
+                            <button class="more">更多...</button>
+                        <%}%>
                     </div>
                 </section>
                 <!--文章分类end-->
                 <!--标签云begin-->
                 <section>
-                    <div class="article-tags">
+                    <div class="article-tags marginb" id="articleTagWrap">
                         <h3 class="h-style title">标签<span class="highlight">云</span></h3>
                         <%
                             var j = 0,
@@ -161,14 +169,16 @@
                         %>
                             <a class="tag"  href="/tag/<%= tagdata[j].tag_id %>.html?tagname=<%= tagdata[j].tagname %>"><%= tagdata[j].tagname %></a>
                         <%}%>
-                        <a href="javascript:void(0);" class="tag" id="moreTag">更多</a>
+                        <%if(length > 16){%>
+                            <button href="javascript:void(0);" class="more" id="moreTag">更多...</button>
+                        <%}%>
                     </div>
                 </section>
                 <!--标签云end-->
                 <!--热门文章begin-->
                 <section>
-                    <div class="article-hot article-hot-random">
-                        <h3 class="h-style title">热门<span class="highlight">文章</span></h3>
+                    <div class="article-hot article-hot-random marginb border article-aside-signle">
+                        <h3 class="h-style">热门<span class="highlight">文章</span></h3>
                         <ul class="hot-wrap hot-random-wrap pl30 pr30">
                             <% for(var i = 0; i < topsix.length; i++){%>
                                 <li class="ellipsis">
@@ -195,8 +205,8 @@
                 <!--热门文章end-->
                 <!--随机文章begin-->
                 <section>
-                    <div class="article-random article-hot-random">
-                        <h3 class="h-style title">随机<span class="highlight">文章</span></h3>
+                    <div class="article-random article-hot-random marginb border article-aside-signle">
+                        <h3 class="h-style">随机<span class="highlight">文章</span></h3>
                         <ul class="random-wrap hot-random-wrap pl30 pr30">
                             <% for(var i = 0; i < random.length; i++) {%>
                                 <li class="ellipsis">
@@ -210,19 +220,19 @@
                 <!--随机文章end-->
                 <!--文章存档begin-->
                 <section>
-                    <div class="article-archive">
-                        <h3 class="h-style title">文章<span class="highlight">存档</span></h3>
-                        <div class="pl30 pr30">
-                            <ul class="archive-wrap clearfix">
+                    <div class="article-archive marginb border article-aside-signle">
+                        <h3 class="h-style">文章<span class="highlight">存档</span></h3>
+                        <div class="archive-wrap" id="archiveWrap">
+                            <ul class="archive-wrap hot-random-wrap clearfix">
                                 <%
                                    var m = 0,
                                         length = monthdata.length;
                                    for(; m < length ; m++) {
                                 %>
-                                <li><a href="/querybymonth/<%=locals.dateFormat(monthdata[m].time,'YYYYMM')%>.html"><%=locals.dateFormat(monthdata[m].time,'YYYY年MM月')%>(<%=monthdata[m].articlenum%>)</a></li>
+                                <li class="archive"><a href="/querybymonth/<%=locals.dateFormat(monthdata[m].time,'YYYYMM')%>.html"><%=locals.dateFormat(monthdata[m].time,'YYYY年MM月')%>(<%=monthdata[m].articlenum%>)</a></li>
                                 <%}%>
                                 <%if(length > 10){%>
-                                <li><a href="" class="">查看更多</a></li>
+                                <button class="more">更多...</button>
                                 <%}%>
                             </ul>
                         </div>
@@ -259,7 +269,9 @@
                     comm.layer.msg('顶操作失败！');
                 },
                 successFn: function(data){
-                    $self.find('.js_ding_text').text(data.dm[0].ding);
+                    if(data.dm){
+                        $self.find('.js_ding_text').text(data.dm[0].ding);
+                    }
                 }
             });
 
@@ -285,7 +297,43 @@
                 }
             });
         }
-    };
+
+        //初始化显示效果
+        /**
+         *
+         * @param wrapId
+         * @param classname: "更多" 的class名字
+         * @param maxnum : 最初最多显示几个
+         * @returns {boolean}
+         */
+        function initShow(wrapId, classname, maxnum) {
+            //分类默认只显示9个，点击查看更多，显示更多分类
+            debugger;
+            var $target = $('#' + wrapId),
+                $types = $target.find('.' + classname),
+                $more = $target.find('.more'),
+                $gt = $target.find('.' + classname + ':gt('+(maxnum - 1)+')');
+            if($types.length <= maxnum){
+                $more.hide();
+                return false;
+            }
+
+            //大于九个，默认只显示9个
+            $gt.hide();
+            $more.eq(0).on('click',function(){
+                $gt.toggle();
+                if($gt.eq(0).is(':hidden')){
+                    $more.text('更多...');
+                } else {
+                    $more.text('收起');
+                }
+            });
+        }
+        initShow("articleTypesWrap","type",9);
+        initShow("articleTagWrap","tag",16);
+        initShow("archiveWrap","archive",16);
+
+    }
     window._bd_share_config={
         "common":{
             "bdSnsKey":{},

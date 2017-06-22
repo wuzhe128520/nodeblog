@@ -66,7 +66,7 @@
                     <!--相关文章 end-->
                     <!--评论部分 begin-->
                     <div class="comments-wrap" id="commentsArea">
-                        <div class="comments-head clearfix">
+                        <!--<div class="comments-head clearfix">
                             <a href="/" class="comments-number">
                                 <span class="highlight">6</span>条评论
                             </a>
@@ -75,7 +75,7 @@
                                 <a href="/">最早</a>
                                 <a href="/">最热</a>
                             </div>
-                        </div>
+                        </div>-->
                         <ul class="comments-all">
 
                             <%var m=0,
@@ -101,9 +101,11 @@
                                         </p>
                                         <div class="comment-footer">
                                             <time><%=locals.dateFormat(commentsReply[m].comm_time,'YYYY-MM-DD HH:mm:ss')%></time>
-                                            <a href="javascript:void(0);" data-flag="1" class="js_reply" data-replytype="4" data-replyid="<%=commentsReply[m].commid%>" data-replyuser="<%=commentsReply[m].from_uid%>" data-dicid="<%=commentsReply[m].dicid%>" >
-                                                <i title="回复图标" class="iconfont icon-huifu"></i>回复
-                                            </a>
+                                            <% if(locals.login) {%>
+                                                <a href="javascript:void(0);" data-flag="1" class="js_reply" data-replytype="4" data-replyid="<%=commentsReply[m].commid%>" data-replyuser="<%=commentsReply[m].from_uid%>" data-dicid="<%=commentsReply[m].dicid%>" >
+                                                    <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                                                </a>
+                                            <%}%>
                                         </div>
                                     </div>
                                 </div>
@@ -139,9 +141,11 @@
                                                             </p>
                                                             <div class="comment-footer">
                                                                 <time><%=locals.dateFormat(replys[k].reply_time,'YYYY-MM-DD HH:mm:ss')%></time>
-                                                                <a href="javascript:void(0);" class="js_reply" data-flag="1" data-replytype="5" data-commid="<%=reply.comment_id%>" data-replyid="<%=reply.rpid%>" data-replyuser="<%=reply.rp_from_uid%>" data-dicid="<%=reply.dicid%>">
-                                                                    <i title="回复图标" class="iconfont icon-huifu"></i>回复
-                                                                </a>
+                                                                <% if(locals.login) {%>
+                                                                    <a href="javascript:void(0);" class="js_reply" data-flag="1" data-replytype="5" data-commid="<%=reply.comment_id%>" data-replyid="<%=reply.rpid%>" data-replyuser="<%=reply.rp_from_uid%>" data-dicid="<%=reply.dicid%>">
+                                                                        <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                                                                    </a>
+                                                                <%}%>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -165,7 +169,7 @@
                             </li>
                            <%}%>
                         </ul>
-                        <div  class="comments-pages-wrap clearfix">
+                       <!-- <div  class="comments-pages-wrap clearfix">
                             <ul>
                                 <li><a href="/" class="current-page">1</a></li>
                                 <li><a href="/">2</a></li>
@@ -173,8 +177,10 @@
                                 <li><a href="/">4</a></li>
                                 <li><a href="/">5</a></li>
                             </ul>
-                        </div>
+                        </div>-->
                     </div>
+                    <div>是否登录：<%=locals.login%></div>
+                    <% if(locals.login) {%>
                     <!--发表评论 begin-->
                     <div class="declare-comment-wrap">
                         <h3>发表评论</h3>
@@ -189,6 +195,7 @@
                         </form>
                     </div>
                     <!--发表评论 end-->
+                    <%}%>
                 </div>
             </article>
         </div>
@@ -231,14 +238,9 @@
                 <section>
                     <div class="hot-article-wrap aside-content-wrap">
                         <h2>热评文章</h2>
-                        <ul>
-                            <li><i class="icon icon-diy icon-black">1</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="icon icon-diy icon-red">2</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="icon icon-diy icon-green">3</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="icon icon-diy icon-orange">4</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="icon icon-diy icon-blue">5</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                            <li><i class="icon icon-diy icon-gray">6</i><a href="">织梦CMS文章标题显示不全解决方法</a></li>
-                        </ul>
+                        <div id="mostCommentWrap">
+
+                        </div>
                     </div>
                 </section>
             </aside>
@@ -259,6 +261,19 @@
             </p>
         </form>
     </div>
+</script>
+<script type="text/template" id="mostcomment">
+    <ul class="number-wrap">
+        <$
+        var j = 0,
+                length = mostcomment.length;
+        for(j; j < length; j++) {
+        $>
+        <li>
+            <i class="number ls3"><$= (j + 1) $></i>
+            <a href="/article-detail/<$= mostcomment[j].id $>.html" title="共有<$=mostcomment[j].counts$>条评论"><$=mostcomment[j].title$></a></li>
+        <$}$>
+    </ul>
 </script>
 <script>
     hljs.initHighlightingOnLoad();
@@ -334,7 +349,22 @@
             handleDeclareComment(commentid,content);
         });
 
-
+        //请求评论数最多的数据
+        function getMostComment() {
+            comm.ajax.commAjax({
+                url: '/getmostcomment',
+                successFn: function(data){
+                    console.log(data);
+                    if(data){
+                        comm.tmpl.render('mostcomment',{mostcomment: data},'mostCommentWrap');
+                    }
+                },
+                errorFn: function(err){
+                    console.log(err);
+                }
+            })
+        }
+        getMostComment();
     }
 
     //临时保存数据到指定的dom对象

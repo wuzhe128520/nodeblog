@@ -37,7 +37,7 @@
   padding: 10px;
   border-bottom: 1px solid #bbb;
   font-size: 16px;
-  background: rgba(255, 255, 255, 0.5);
+  background: #fff;
 }
 .h-style:before {
   content: '';
@@ -106,7 +106,7 @@ body {
 .head-wrap .login-reg-wrap .logout {
   margin: 0 0 0 10px;
   font-size: 12px;
-  color: #888;
+  color: #999;
 }
 .head-wrap .login-reg-wrap .logout:hover {
   color: #fff;
@@ -255,13 +255,13 @@ body {
 .site-description {
   width: 1200px;
   margin: 0 auto;
-  padding: 52px 0 0 0;
+  padding: 16px 0 0 0;
   position: relative;
 }
 .site-description .logo {
   position: absolute;
   left: 0;
-  top: 52px;
+  top: 16px;
   display: block;
   vertical-align: baseline;
 }
@@ -519,6 +519,20 @@ footer {
   cursor: default;
 }
 /*=====分页 end=====*/
+.more {
+  width: 100%;
+  text-align: center;
+  background: #fff;
+  color: #000;
+  height: 30px;
+  line-height: 30px;
+}
+.border {
+  border: 1px solid #fff;
+}
+.marginb {
+  margin-bottom: 10px;
+}
 body {
   background: none;
 }
@@ -526,6 +540,11 @@ body {
   width: 960px;
   margin: 0 auto;
   padding: 20px 10px 20px 10px;
+}
+.article-admin h1.title {
+  font-size: 26px;
+  text-align: center;
+  font-weight: 500;
 }
 .article-admin .subtitle {
   margin: 6px 0;
@@ -552,10 +571,17 @@ body {
   padding: 10px;
   margin-top: 1px;
 }
+.article-admin .hastag li {
+  width: 130px;
+}
 .article-admin .hastag li,
 .article-admin .hastype li {
   float: left;
-  margin: 0 8px 0 0;
+  margin: 0 8px 3px 0;
+}
+.article-admin .hastag li input[type="radio"],
+.article-admin .hastype li input[type="radio"] {
+  margin-right: 3px;
 }
 .article-admin .hastype {
   margin: 6px 0;
@@ -629,3 +655,47 @@ body {
   font-size: 12px;
   margin: 3px 0 0 0;
 }
+.tips {
+  font-size: 14px;
+}
+/*=====选项卡样式 begin=====*/
+.tab {
+  width: 960px;
+  margin: 0 auto;
+}
+.tab .tab_menu,
+.tab .tab_box {
+  width: 100%;
+  border-left: 1px solid #ccc;
+}
+.tab .tab_menu ul {
+  border-bottom: 1px solid #ccc;
+}
+.tab .tab_menu ul li {
+  padding: 0 15px;
+  float: left;
+  border: 1px solid #ccc;
+  margin-right: 15px;
+  margin-bottom: -1px;
+  /*避免父元素ul的下边框覆盖当前li的下边框*/
+  cursor: pointer;
+  overflow: hidden;
+  background: #EEE;
+}
+.tab .tab_menu ul li:first-child {
+  border-left: none;
+}
+.tab .tab_menu ul li.selected {
+  background: #fff;
+  color: #333;
+  border-bottom: 1px solid #fff;
+}
+.tab .tab_box {
+  text-indent: 1.5em;
+  word-wrap: break-word;
+  word-break: break-all;
+  border: 1px solid #ccc;
+  border-top: none;
+  background: #fff;
+}
+/*=====选项卡样式 end=====*/

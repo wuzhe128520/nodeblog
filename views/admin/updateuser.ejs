@@ -10,6 +10,7 @@
     <% for(let i in data) {%>
     id: <input type="text" name="ids" value="<%=data[i].id%>" />
         用户名：<input type="text" name="username"  value="<%=data[i].username%>" />
+        邮箱：  <input type="text" name="email"  value="<%=data[i].email%>" />
     是否管理员：<input type="radio" name="isadmin" value="1" <%=data[i].admin?"checked":""%> />是
                 <input type="radio" name="isadmin" value="0" <%=data[i].admin?"":"checked"%> />否
     <br/>

@@ -162,6 +162,7 @@ var comm = {
          },
          //当Ajax请求完成后注册一个回调函数,callback(event,XMLHttpRequest,ajaxOptions)
          ajaxComplete: function(callback){
+
             $(document).ajaxComplete(callback);
          },
          //当Ajax请求出错时注册一个回调函数,callback(event,jqXHR,ajaxSettings,thrownError);
@@ -169,7 +170,25 @@ var comm = {
              $(document).ajaxError(callback);
          },
          commAjax: function(config){
-             comm.ajax.ajaxComplete(function(){console.log("ajax请求完成！")});
+             comm.ajax.ajaxComplete(function(event,xhr,settins){
+                 console.log("ajax请求完成！");
+
+                 //将json字符串转为js对象
+                 var data = eval("(" + xhr.responseText + ")");
+                 console.log(data);
+                 if(!!data.status && data.status === "nologin"){
+                     comm.layer.confirm(
+                         '您还未登录，是否跳转到登录界面？',
+                         null,
+                         function(index){
+                             comm.layer.close(index);
+                             setTimeout(function(){
+                                 window.location.href = "/login?show=1";
+                             },1000);
+                         });
+
+                 }
+             });
              comm.ajax.ajaxStart(function(){console.log("ajax开始请求！")});
              comm.ajax.ajaxError(function(){console.log("亲，请求出错了噢！");});
              //给请求地址加上随机参数
@@ -330,7 +349,6 @@ var comm = {
                        layer.photos(defaultObj);
                       }
                    });
-
               }
               else if(config.id){
 
@@ -769,7 +787,7 @@ var comm = {
          * @param url: 后端分页请求地址
          * @param currentPage: 当前页
          * @param showPageNum: 每页显示条数
-         * @param $container: 分页组件的父元素(jQuery对象)
+         * @param container: 分页组件的父元素id
          * @param pageTmplId: 分页组件模板id
          * @param dataTmplId: 分页数据模板id
          * @param dataId:  分页数据的父元素id
@@ -779,7 +797,7 @@ var comm = {
         typeid: null,
         options: {
             url: null,
-            $container: null,
+            container: null,
             pageTmplId: '',
             dataTmplId: '',
             dataId: '',
@@ -807,42 +825,24 @@ var comm = {
         },
         //展示分页组件
         showPage: function(options,pages,pageTmplId){
-
-            options.$container.html('');
             debugger;
-            var html = comm.page.render(pageTmplId,{pages: pages});
-            options.$container.append(html);
-            comm.page.bindPageClick(options.$container,options.postData.showPageNum);
+
+            comm.tmpl.render(pageTmplId, {pages: pages},options.container);
+            comm.page.bindPageClick(options.container,options.postData.showPageNum);
         },
         //展示数据
         showPageData: function(articlesId,dataTmplId,articleData){
             debugger;
-            $('#'+ articlesId).html('');
-            var html = comm.page.render(dataTmplId,{data: articleData});
-            $('#'+ articlesId).append(html);
+            /*$('#'+ articlesId).html('');
+             var html = comm.page.render(dataTmplId,{data: articleData});
+             $('#'+ articlesId).append(html);*/
+            comm.tmpl.render(dataTmplId,{data: articleData},articlesId);
 
         },
-        /**
-         *
-         * @param tmplId
-         * @param tmplData 键值对 {pages: }
-         * @returns {string}
-         */
-        render: function(tmplId, tmplData){
-
-            //渲染ejs模板
-            var template = $('#'+tmplId).html(),
-                html = '';
-
-            ejs.delimiter = '$';
-            html = ejs.render(template,tmplData);
-            return html;
-        },
-
         //绑定每一页的点击事件
-        bindPageClick: function($container){
+        bindPageClick: function(container){
 
-            $container.off('click').on('click','.page',function(e){
+            $('#' + container).off('click').on('click','.page',function(e){
 
                 handlePageClick($(this));
 
@@ -894,10 +894,7 @@ var comm = {
 
             comm.page.pagesData = pagesData;
             return pagesData;
-
-
         }
-
     },
 
     //正则匹配
@@ -955,6 +952,27 @@ var comm = {
             return noDuplicateAry;
         }
 
+    },
+
+    //模板操作
+    tmpl: {
+        //渲染模板
+        /**
+         *
+         * @param tmplId: 模板的id
+         * @param tmplData: 模板填充的数据,对象形式: { data: dataName}
+         * @param appendId: 模板填充数据后，追加到哪个dom下？
+         */
+        render: function(tmplId, tmplData, appendId){
+
+            //渲染ejs模板
+            var template = $('#'+tmplId).html(),
+                html = '';
+
+            ejs.delimiter = '$';
+            html = ejs.render(template,tmplData);
+            $('#' + appendId).html('').append(html);
+        }
     }
 };
 

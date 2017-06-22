@@ -10,6 +10,7 @@
     <% for(let i in data) {%>
     id: <%=data[i].id%>
     用户名： <%=data[i].username%>
+    邮箱： <%=data[i].email%>
     是否管理员：<%=data[i].admin?"是":"否"%>
     操作：<a href="javascript:void(0);" data-userid='<%=data[i].id%>' class='delete'>删除</a>
           <a href="/admin/user/updateuser?id=<%=data[i].id%>" data-userid='<%=data[i].id%>'>修改</a>

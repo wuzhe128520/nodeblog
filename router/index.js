@@ -116,7 +116,6 @@ const express = require('express'),
                 sql("select time,count(id) as articlenum from article group by date_format(time,'%Y%m')", (errs, monthdata) => {
 
                     if(errs){
-                        console.log(err);
                         reject();
                         return;
                     }
@@ -175,8 +174,24 @@ const express = require('express'),
 
         //查询相关文章
         function queryRelative() {
-            sql('select id,title from article where typeid = 2 order by rand() limit 3; ');
+            sql('select id,title from article where typeid = 2 order by rand() limit 3');
         }
+
+        //查询评论最多的前10条文章
+        function queryMostComment(res) {
+            sql('select *,count(comm.commid) counts from article art , comments comm where  art.id = comm.topic_id and comm.dicid = 1 group by art.id order by counts desc limit 10', (err, data) => {
+                    if(err){
+                        console.log(err);
+                    } else {
+                        res.json(data);
+                    }
+            });
+        }
+
+        //
+        router.get('/getmostcomment',function(req, res){
+              queryMostComment(res);
+        });
 
         //通用分页
         /**

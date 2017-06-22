@@ -8,6 +8,13 @@ body {
   padding: 20px 10px 20px 10px;
 }
 .article-admin {
+  h1 {
+    &.title {
+      font-size: 26px;
+      text-align: center;
+      font-weight: 500;
+    }
+  }
   .subtitle {
     margin: 6px 0;
     padding: 12px 4px 2px 4px;
@@ -30,12 +37,18 @@ body {
     .radius(4px);
     padding: 10px;
     margin-top: 1px;
+    li {
+      width: 130px;
+    }
   }
   .hastag,
   .hastype {
     li {
       float: left;
-      margin: 0 8px 0 0;
+      margin: 0 8px 3px 0;
+      input[type="radio"] {
+        margin-right: 3px;
+      }
     }
   }
   .hastype {
@@ -112,4 +125,11 @@ body {
     margin: 3px 0 0 0;
   }
 }
+.tips {
+  font-size: 14px;
+}
+
+/*=====选项卡样式 begin=====*/
+.tab-comm();
+/*=====选项卡样式 end=====*/
 

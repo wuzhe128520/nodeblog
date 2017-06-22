@@ -68,6 +68,35 @@ router.get('/user/update',(req, res)=> {
    });
 });
 
+
+/*function getTypesInfo(){
+    //查询所有分类
+   return new Promise(function(resolve, reject){
+       sql('select * from articletype', (err, types) => {
+
+           if(err){
+               reject();
+               console.log(err);
+           } else {
+               resolve(types);
+           }
+       });
+   });
+}*/
+
+//获取分类信息
+router.get('/gettypes', (req, res) => {
+    console.log('ajax查询分类中……');
+    sql('select * from articletype', (err, types) => {
+
+        if(err){
+            console.log(err);
+        } else {
+            res.json(types)
+        }
+    });
+});
+
 //跳转到发表文章后台页面
 router.get('/writearticle',(req, res)=>{
 
@@ -77,24 +106,32 @@ router.get('/writearticle',(req, res)=>{
         if(err){
             console.log(err);
         } else {
-
-            //查询所有分类
-            sql('select * from articletype', (err, types) => {
-
-                if(err){
-                    console.log(err);
-                } else {
-                    res.render('admin/article', {
-                        tags: tags,
-                        types: types
-                    });
-                }
-            });
+                res.render('admin/article', {
+                    tags: tags
+                });
         }
-
     });
-    //查询分类
+
 });
+
+//添加分类
+router.post('/addtype', (req, res) => {
+
+    let typename = req.body.typename;
+console.log(typename);
+    sql('insert into articletype(typename) values(?)', [typename], (err) => {
+            if(err){
+                console.log(err);
+            } else {
+                res.json({
+                    status: 1,
+                    des: '添加分类成功！'
+                });
+            }
+    });
+
+});
+
 
 //upload.single 用来接收一个文件
 router.post('/article',upload.single('uploadfile'),(req,res)=>{
@@ -133,7 +170,7 @@ router.post('/article',upload.single('uploadfile'),(req,res)=>{
                                         console.log(err);
                                         reject();
                                     } else {
-                                        resolve(tagdata[0]);
+                                        resolve(tagdata[0].tag_id);
                                     }
                                 });
                             }
@@ -148,21 +185,33 @@ router.post('/article',upload.single('uploadfile'),(req,res)=>{
                 debugger;
                 console.log('打印新添加的标签id：');
                 console.log(finaldata);
-                executQuery();
+                let finalTag = '';
+                if(finaldata.length > 1) {
+                    finalTag = finaldata.join(',');
+                } else {
+                    finalTag = finaldata[0];
+                }
+                executQuery(finalTag);
             });
         } else {
                 executQuery();
         }
 
-        function executQuery() {
-            sql('insert into article(title,tags,author,content,time,img,summery,typeid) values(?,?,?,?,?,?,?,?)',[title,oldTagIds,author,content,time,img,summery,typeId],(err,data)=>{
+        function executQuery(finalTag) {
+
+            if(!finalTag){
+               finalTag = oldTagIds;
+            }
+
+            sql('insert into article(title,tags,author,content,time,img,summery,typeid) values(?,?,?,?,?,?,?,?)',[title,finalTag,author,content,time,img,summery,typeId],(err,data)=>{
                 if(err){
                     console.log(err);
                     res.send('添加文章失败！');
                     return;
                 }
-                res.send("添加文章成功！");
-
+                console.log('存入数据库后返回的值：');
+                console.log(data);
+                res.redirect('/article-detail/'+data.insertId+'.html')
             });
         }
 });
@@ -175,9 +224,28 @@ router.get('/nav',(req,res)=>{
     });
 });
 
+//发表说说
+router.post('/writesay',(req, res) => {
+    let userid = req.body.userid,
+        content = req.body.content,
+        time = new Date().toLocaleString(),
+
+        //这里是说说附带的图片(可能有多张图片)
+        imgs = '';
+
+    sql('insert into say(userid,content,time,dicid,imgs) values (?,?,?,?,?)',(err) => {
+        if(err){
+            return;
+        } else {
+            res.send('发表说说成功！');
+        }
+    });
+
+});
+
 //导航
 router.post('/nav',(req,res)=>{
-    var navParam =req.body,
+    let navParam =req.body,
         title = navParam.onetitle,
          url = navParam.oneurl,
         navid = navParam.oneid;
@@ -195,7 +263,7 @@ router.get('/views',(req, res)=>{
 
     //递归读取某个目录里面的所有文件
     function readDir(path){
-        var dirAry = [];
+        let dirAry = [];
         function loop(path){
             //当前要读取的路径
             let rootPath =path;

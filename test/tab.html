@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>jquery选项卡</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link href="../public/css/reset.css" rel="stylesheet">
+    <link href="../public/css/admin.css" rel="stylesheet">
+</head>
+<body>
+<div class="main article-admin ">
+    <h1 class="title">博客后台管理</h1>
+    <div class="tab">
+        <div class="tab_menu">
+            <ul class="clearfix">
+                <li class="selected">用户管理</li>
+                <li>文章管理</li>
+                <li>说说管理</li>
+                <li>类别管理</li>
+                <li>发表文章</li>
+                <li>发表说说</li>
+            </ul>
+        </div>
+        <div class="tab_box">
+            <div>
+                习马会15点登场 两岸领导人时隔66年首次会面
+                全程直击 探访会面酒店:安检严格 专题
+                新浪锐见:“先生”造势，势造未来 习马会8大细节
+                李克强经济公开课：到中央党校讲解经济形势
+                宁夏首虎!自治区副主席白雪山被查 十八大后仅京沪无虎
+            </div>
+            <div  class="hidden">
+                美媒称中美若冲突战场将是中国沿海城市
+                美称东风5B可破美反导系统 中国基洛潜艇逼近美航母
+                日朝野反对派舰巡航南海称菲越自己都不去 最新动态
+                美防长登航母绕南沙航行200英里 是否会深入12海里
+                卡特在南海登航母当日 美最新核潜艇突现中国周边(图
+            </div>
+            <div  class="hidden">
+                关之琳买醉 陈泰铭友人疑否认没给赡养费
+                发文称百毒不侵 林青霞61岁生日明艳照人 继女为其庆生(图) 许晴夜会男友人热聊 周杰大方搂美女合影 王宝强娇妻蒙面带儿女游玩 获帅哥相陪(图) 歌仔戏巨星柳青去世 生前仅重35公斤
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../public/js/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        //将当前点击的li元素设置选中的样式，并得到索引。然后根据这个索引显示相应的内容并隐藏兄弟元素的内容。
+        $(".tab_menu ul li").click(function(){
+            $(this).addClass('selected').siblings('li').removeClass('selected');
+            var currIndex=$(this).index();
+            $(".tab_box>div").eq(currIndex).show().siblings("div").hide();
+        });
+    });
+</script>
+</body>
+</html>
+

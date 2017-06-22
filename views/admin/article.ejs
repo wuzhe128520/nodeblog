@@ -13,6 +13,7 @@
 <body>
 <main>
     <div class="main article-admin">
+        <h1 class="title">发表新文章</h1>
         <form enctype="multipart/form-data" action="/admin/article" id="form" method="post">
             <p class="subtitle">文章标题</p>
             <div class="comm-wrap">
@@ -34,7 +35,7 @@
              <p class="subtitle">文章标签</p>
              <div class="comm-wrap tag-wrap">
                 <div id="addTag" class="addtag"></div>
-                <input type="text" class="tag formatInput" id="tagInput" autocomplete="off" />(最多添加5个标签，多个标签之间用","分隔)
+                <input type="text" class="tag formatInput" id="tagInput" autocomplete="off" /><span class="tips">(最多添加5个标签，多个标签之间用","分隔)</span>
                 <input type="hidden" name="newTags" value="" id="newTags" />
                 <input type="hidden" name="oldTagIds" value="" id="oldTagIds" />
                 <div class="hastag js_has_tag hidden" id="hasTag">
@@ -51,19 +52,10 @@
                     </ul>
                 </div>
              </div>
-             <p class="subtitle">分类[<a href="javascript:void(0);" class="addlink" id="addTypeLink">添加分类</a>]</p>
+             <p class="subtitle">分类[<a href="javascript:void(0);" class="addlink" id="addTypeLink">添加分类</a>](如需添加新分类，请先添加后，再勾选分类)</p>
              <div class="comm-wrap types">
-                     <div class="hastype">
-                         <ul class="clearfix">
-                             <% let j = 0,
-                                    jlength = types.length;
-                                for(; j < jlength; j++){
-                             %>
-                                <li>
-                                    <input type="radio" name="type" value="<%=types[j].type_id%>" autocomplete="off"><%=types[j].typename%>
-                                 </li>
-                             <%}%>
-                        </ul>
+                     <div class="hastype" id="hastype">
+
                     </div>
               </div>
               <input type="hidden" value="" name="summery" id="summery">
@@ -72,18 +64,30 @@
               </div>
         </form>
      </div>
-            </main>
-
+ </main>
+<script src="/js/plugin/ejs.min.js"></script>
 <script type="text/javascript" src="/js/jquery.min.js"></script>
 <script type="text/javascript" src="/js/plugin/layer/layer.js"></script>
 <script type="text/javascript" src="/js/comm.js"></script>
 <script type="text/template" id="addType">
     <div class="add-type-wrap" id="addTypeWrap">
         <form>
-            <input type="text" class="type-input" autocomplete="off"/>
+            <input type="text" class="type-input js_addtype_input" autocomplete="off"/>
             <p class="errTip hidden"></p>
         </form>
     </div>
+</script>
+<script type="text/template" id="addTypeTmpl">
+    <ul class="clearfix">
+        <$ let j = 0,
+                jlength = types.length;
+        for(; j < jlength; j++){
+        $>
+        <li>
+            <input type="radio" name="type" value="<$=types[j].type_id$>" autocomplete="off"><$=types[j].typename$>
+        </li>
+        <$}$>
+    </ul>
 </script>
 <script>
 
@@ -94,7 +98,7 @@
             //存储已经有的标签文本
             storeTag = [],
             newTag = [];
-
+        getTypes();
         $('#tagInput').on('blur', function(e){
             var $target = $(this);
 
@@ -364,7 +368,7 @@
 
         //获取新添加的标签
         function getNewTag() {
-
+            debugger;
             var oldTag = getOldTag(),
                 i = 0,
                 allTag = comm.ary.cloneAry(storeTag),
@@ -378,7 +382,7 @@
             return allTag;
         }
 
-        //获取已选择的旧标签
+        //获取已选择的旧标签ids
         function getOldTagIds() {
 
             //获取已选择的checkbox
@@ -393,13 +397,13 @@
 
         //获取已选择的旧标签
         function getOldTag() {
-
+            debugger;
             //获取已选择的checkbox
             var $checkedInputs = $('#hasTag').find('input:checked'),
                 oldTag = [];
             $checkedInputs.each(function(index,current){
 
-                oldTag.push(parseInt($(this).siblings('label').text()));
+                oldTag.push($(this).siblings('label').eq(0).text());
             });
             return oldTag;
         }
@@ -415,7 +419,9 @@
                 methods: [function(index){
                     var isPassed = validateType();
                     if(isPassed){
+                        var typename = $.trim($('#addTypeWrap').find('.js_addtype_input').eq(0).val());
                         comm.layer.close(index);
+                        addType(typename);
                     }
                 },function(index){}],
                 move: false,
@@ -441,13 +447,52 @@
                 $('.errTip').text('长度不能大于10').show();
                 return false;
             }
+            if(!$('.errTip').is(":hidden")){
+                $('.errTip').hide();
+            }
 
-            $('.errTip').hide();
             return true;
         }
 
-        //
+        //提交添加分类的 ajax 请求
+        function addType(typename) {
 
+            comm.ajax.commAjax({
+                url: '/admin/addtype',
+                type: 'post',
+                data: {
+                    typename: typename
+                },
+                successFn: function(data){
+                    if(data.status){
+                        getTypes();
+                        comm.layer.msg(data.des);
+                    }
+
+                },
+                errorFn: function(err){
+                    comm.layer.alert(err);
+                }
+
+            });
+
+        }
+
+        //ajax获取分类信息
+        function getTypes() {
+
+            comm.ajax.commAjax({
+                url: '/admin/gettypes',
+                successFn: function(types){
+                    if(types) {
+                        comm.tmpl.render('addTypeTmpl', {types: types}, "hastype");
+                    }
+                },
+                errorFn: function(err){
+                    comm.layer.msg('查询分类失败' + err);
+                }
+            });
+        }
 
         //提交数据
         $('#declare').on('click', function(e){
@@ -462,7 +507,6 @@
             $(".content").val(content);
             $('#newTags').val(newTags.join(','));
             $('#oldTagIds').val(oldTagIds.join(','));
-
             $("#form").submit();
         });
 

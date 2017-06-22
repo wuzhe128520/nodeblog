@@ -37,7 +37,7 @@
   padding: 10px;
   border-bottom: 1px solid #bbb;
   font-size: 16px;
-  background: rgba(255, 255, 255, 0.5);
+  background: #fff;
 }
 .h-style:before {
   content: '';
@@ -106,7 +106,7 @@ body {
 .head-wrap .login-reg-wrap .logout {
   margin: 0 0 0 10px;
   font-size: 12px;
-  color: #888;
+  color: #999;
 }
 .head-wrap .login-reg-wrap .logout:hover {
   color: #fff;
@@ -255,13 +255,13 @@ body {
 .site-description {
   width: 1200px;
   margin: 0 auto;
-  padding: 52px 0 0 0;
+  padding: 16px 0 0 0;
   position: relative;
 }
 .site-description .logo {
   position: absolute;
   left: 0;
-  top: 52px;
+  top: 16px;
   display: block;
   vertical-align: baseline;
 }
@@ -519,6 +519,20 @@ footer {
   cursor: default;
 }
 /*=====分页 end=====*/
+.more {
+  width: 100%;
+  text-align: center;
+  background: #fff;
+  color: #000;
+  height: 30px;
+  line-height: 30px;
+}
+.border {
+  border: 1px solid #fff;
+}
+.marginb {
+  margin-bottom: 10px;
+}
 .mood-wrap {
   width: 1200px;
   margin: 20px auto 20px;
@@ -575,9 +589,9 @@ footer {
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
-  -moz-box-shadow: 0 0 2px #FE5187;
+  -moz-box-shadow: 0 0 2px 0 #FE5187;
   /* 老的 Firefox */
-  box-shadow: 0 0 2px #FE5187;
+  box-shadow: 0 0 2px 0 #FE5187;
   z-index: 1;
 }
 .moods li:after {
@@ -640,9 +654,9 @@ footer {
   margin: 0 150px 0 200px;
   color: #333;
   border: 1px solid #ddd;
-  -moz-box-shadow: 0 0 10px #000;
+  -moz-box-shadow: 0 0 10px 0 #000;
   /* 老的 Firefox */
-  box-shadow: 0 0 10px #000;
+  box-shadow: 0 0 10px 0 #000;
   background-color: #f1f1f1;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -663,9 +677,9 @@ footer {
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
-  -moz-box-shadow: 0 0 2px #FE5187;
+  -moz-box-shadow: 0 0 2px 0 #FE5187;
   /* 老的 Firefox */
-  box-shadow: 0 0 2px #FE5187;
+  box-shadow: 0 0 2px 0 #FE5187;
 }
 .moods .mood-content:after {
   position: absolute;
