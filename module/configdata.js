@@ -5,36 +5,41 @@ const app = require('../app'),
        sql = require('./mysql'),
         navdata = require('./nav');
 
-
         //全局拦截器
         app.use(function(req,res,next){
-           /* console.log('刷新：');
-            console.log(req.fresh);
-            console.log('打印方法名：');
-            console.log(req.path);
-        console.log('进入拦截器……111：');
-        */
-                debugger;
             if(req.cookies['login']){
                 console.log(req.cookies['login']);
                 res.locals.login = req.cookies.login.name;
                 res.cookie('login', req.cookies['login'],{maxAge: 1000*60*60*0.5});
-                if(res.locals.login&&!req.session.admin){
-                    sql('select admin from user where username = ?',[res.locals.login],(err,data)=> {
 
-                        console.log(data);
-                        req.session.admin = Number(data[0]);
+                //如果是已经登录的状态，设置是否是管理员
+                if(res.locals.login){
+                    let promise = new Promise(function(resolve, reject){
+                        sql('select admin from user where username = ?',[res.locals.login],(err,data)=> {
+
+                            if(err){
+                                console.log(err);
+                                reject();
+                            } else {
+                                req.session.admin = Number(data[0].admin);
+                                resolve(data);
+                            }
+                        });
 
                     });
+                    promise.then(function(){
+                        next();
+                    });
+                } else {
+                    next();
                 }
-                next();
             }  else {
 
                 // 获取请求的方法
                 let arr = req.path.split('/'),
 
-                    //拦截的请求包括：评论、回复、点赞、踩
-                    include = ['comment','reply','ding','cai'];
+                    //拦截的请求包括：评论、回复、点赞、踩、后台
+                    include = ['comment','reply','ding','cai','admin'];
 
                 // 去除 GET 请求路径上携带的参数
                 for (let i = 0, length = arr.length; i < length; i++) {
@@ -56,7 +61,7 @@ const app = require('../app'),
                     //如果是ajax请求，则使用json返回数据
                     if(req.xhr){
                         res.json({
-                            status: 'nologin',
+                            status: 'nologin'
                         });
                     } else {
                         res.redirect('/login?show=1');  // 将用户重定向到登录页面

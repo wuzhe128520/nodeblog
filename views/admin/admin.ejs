@@ -8,12 +8,202 @@
     <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
-<h1>这里是博客后台</h1>
-<a href="admin/user">用户管理</a>
+<div class="main article-admin ">
+    <h1 class="title">博客后台管理</h1>
+    <div class="tab" id="admin">
+        <div class="tab_menu">
+            <ul class="clearfix">
+                <li class="selected js_tab_single" data-action="/admin/user" data-target = "userManage">用户管理</li>
+                <li class="js_tab_single" data-action="/admin/article" data-target = "articleManage">文章管理</li>
+                <li class="js_tab_single" data-action="/admin/say" data-target = "sayManage">说说管理</li>
+                <li class="js_tab_single" data-action="/admin/type" data-target = "typeManage">类别管理</li>
+                <li class="js_tab_single" data-action="/admin/writearticle" data-target = "declareArticle">发表文章</li>
+                <li class="js_tab_single" data-action="/admin/writesay" data-target = "declareSay">发表说说</li>
+            </ul>
+        </div>
+        <div class="tab_box">
+            <div id="userManage">
+                用户管理
+            </div>
+            <div id="articleManage" class="hidden">
+                文章管理
+            </div>
+            <div id="sayManage" class="hidden">
+                说说管理
+            </div>
+            <div id="typeManage" class="hidden">
+                类别管理
+            </div>
+            <div id="declareArticle" class="hidden">
+                发表文章
+            </div>
+            <div id="declareSay" class="hidden">
+                发表说说
+            </div>
+        </div>
+    </div>
+</div>
 <script src="/js/plugin/ejs.min.js"></script>
+<script src="/js/loadStaticFile.js"></script>
 <script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.min.js"> </script>
+<script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"> </script>
 <script type="text/javascript" src="/js/plugin/layer/layer.js"></script>
 <script type="text/javascript" src="/js/comm.js"></script>
-<script type="text/javascript"></script>
+<script type="text/template" id="userTmpl"></script>
+<script type="text/template" id="articleTmpl"></script>
+<script type="text/template" id="sayTmpl"></script>
+<script type="text/template" id="typeTmpl"></script>
+<script type="text/template" id="declareArticleTmpl">
+        <div class="main article-admin">
+            <form enctype="multipart/form-data" action="/admin/article" id="form" method="post">
+                <p class="subtitle">文章标题</p>
+                <div class="comm-wrap">
+                    <input type="text" class="formatInput" name="title" autocomplete="off" id="title"  />
+                </div>
+                <p class="subtitle">作者</p>
+                <div class="comm-wrap">
+                    <input type="text" class="author formatInput" name="author" autocomplete="off" id="author" />
+                </div>
+                <p class="subtitle">文章内容</p>
+                <div class="comm-wrap" id="editorWrap">
+                    <input class="content formatInput" value="" name="content" type="hidden">
+                </div>
+                <fieldset class="article-img-wrap">
+                    <legend>选择文章封面图</legend>
+                    <div class="upload-wrap">
+                        <p>图片预览</p>
+                        <img src="/image/zw.png" id="preview" width="200">
+                        <div class="clearfix upload-btn-group">
+                            <div class="choose-file cf">
+                                <a class="new-file-btn" id="chooseFile" href="javascript:void(0);">选择文件</a>
+                                <input type="file" name="pic" id="file" autocomplete="off" onchange="comm.upload.previewImg()" />
+                            </div>
+                            <input type="button" value="上传" class="upload-btn" onclick="comm.upload.h5AjaxUpload()"/>
+                        </div>
+                        <div id="progressbar" class="hidden"><div id="progress">0%</div></div>
+                    </div>
+                    <div class="tips">
+                        <ul>
+                            <li>1、图片大小不能超过2M</li>
+                            <li>2、支持格式：.jpg .gif .bmp</li>
+                        </ul>
+                    </div>
+                </fieldset>
+                <p class="subtitle">文章标签</p>
+                <div class="comm-wrap tag-wrap">
+                    <div id="addTag" class="addtag"></div>
+                    <input type="text" class="tag formatInput" id="tagInput" autocomplete="off" /><span class="tips">(最多添加5个标签，多个标签之间用","分隔)</span>
+                    <input type="hidden" name="newTags" value="" id="newTags" />
+                    <input type="hidden" name="oldTagIds" value="" id="oldTagIds" />
+                    <div class="hastag js_has_tag hidden" id="hasTag">
+                        <ul class="clearfix">
+                            <$ let i = 0,
+                            length = data.tags.length;
+                            for(; i < length; i++){
+                            tag = data.tags[i];
+                            $>
+                            <li>
+                                <input id="chek_tag_<$=tag.tag_id$>" type="checkbox" data-tagid = "<$=tag.tag_id$>" autocomplete="off" />
+                                <label for="chek_tag_<$=tag.tag_id$>"><$=tag.tagname$></label>
+                            </li>
+                            <$}$>
+                        </ul>
+                    </div>
+                </div>
+                <p class="subtitle">分类[<a href="javascript:void(0);" class="addlink" id="addTypeLink">添加分类</a>](如需添加新分类，请先添加后，再勾选分类)</p>
+                <div class="comm-wrap types">
+                    <div class="hastype" id="hastype">
+                        <ul class="clearfix">
+                            <$ let j = 0,
+                            jlength = data.types.length;
+                            for(; j < jlength; j++){
+                            type = data.types[j];
+                            $>
+                            <li>
+                                <input type="radio" name="type" value="<$=type.type_id$>" autocomplete="off"><$=type.typename$>
+                            </li>
+                            <$}$>
+                        </ul>
+                    </div>
+                </div>
+                <input type="hidden" value="" name="summery" id="summery" />
+                <div class="declare-wrap">
+                    <button id="declare" class="declare">发布文章</button><span class="hidden admin-success">发表成功！<em id="seconds"></em>秒后跳转到文章详情页……</span>
+                </div>
+            </form>
+        </div>
+</script>
+<script type="text/template" id="declareSayTmpl"></script>
+<script type="text/template" id="addType">
+    <div class="add-type-wrap" id="addTypeWrap">
+        <form>
+            <input type="text" class="type-input js_addtype_input" autocomplete="off"/>
+            <p class="errTip hidden"></p>
+        </form>
+    </div>
+</script>
+<script type="text/template" id="addTypeTmpl">
+    <ul class="clearfix">
+        <$ let j = 0,
+        jlength = types.length;
+        for(; j < jlength; j++){
+        $>
+        <li>
+            <input type="radio" name="type" value="<$=types[j].type_id$>" autocomplete="off"><$=types[j].typename$>
+        </li>
+        <$}$>
+    </ul>
+</script>
+<script type="text/javascript">
+    $(init);
+    function init(){
+
+        //显示tab
+        tab();
+
+        //点击某个tab，请求对应tab的数据
+        $('#admin').on("click.admin",'.js_tab_single',function(event){
+            console.log("点击了！");
+            var $target = $(this);
+            handleAdminClick($target);
+        });
+    }
+
+    function handleAdminClick($target) {
+        var action = $target.data('action'),
+            target = $target.data('target');
+
+        //如果当前点击的tab数据已经加载过，则不请求数据
+        if(!$target.data("ajaxData")){
+            getData(action,function(data){
+                console.log('handleAdminClick-------------------------------------');
+                console.log(data);
+                $target.data("ajaxData",data);
+                //渲染模板，并填充
+                comm.tmpl.render('declareArticleTmpl',{data: data},target);
+                $("#editorWrap").append('<script id="editor" type="text/plain" style="width:100%;height:500px;"><\/script>');
+                loadStaticFile('/js/writearticle.js');
+            });
+        }
+
+    }
+
+    function getData(action,callback) {
+        //如何等待异步操作后的 结果，将数据结果 返回
+
+        $.when(comm.ajax.commAjax({url: action})).done(callback);
+    }
+
+    function tab() {
+        //将当前点击的li元素设置选中的样式，并得到索引。然后根据这个索引显示相应的内容并隐藏兄弟元素的内容。
+        $(".tab_menu").on('click.tab','li', function(){
+            var currIndex=$(this).index();
+            $(this).addClass('selected').siblings('li').removeClass('selected');
+            $(".tab_box>div").eq(currIndex).show().siblings("div").hide();
+        });
+    }
+</script>
 </body>
 </html>

@@ -29,9 +29,9 @@
                 <% if(locals.login) {%>
                 欢迎：
                 <% if(locals.admin){%>
-                管理员 &nbsp;<a href="/admin/writearticle" style="marign-left: 15px;color: #eee;">写文章</a>
+                管理员
                 <%}%>
-                <%=locals.login%>
+                <%=locals.login%>&nbsp;<a href="/admin" style="marign-left: 15px;color: #eee;">进入后台</a>
                 <a href="/logout" class="logout">退出</a>
                 <%}else {%>
                     <a href="/login?show=1" class="login-btn">登录</a>

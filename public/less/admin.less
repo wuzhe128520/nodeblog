@@ -56,7 +56,6 @@ body {
   }
   .declare-wrap {
     margin: 25px 0 0 0;
-    padding-right: 384px;
     text-align: center;
   }
   .declare {
@@ -68,12 +67,37 @@ body {
     background: #0099FF;
   }
   .article-img-wrap {
-    height: 70px;
+    min-height: 70px;
     font-size: 14px;
     color: #999;
     padding: 4px 10px 10px 10px;
     line-height: 24px;
     border: 1px solid #ccc;
+    .upload-wrap {
+      position: relative;
+      float: left;
+      width: 300px;
+      &>img {
+        display: block;
+      }
+    }
+    .tips {
+      float: right;
+      border: solid 1px #999;
+      background-color: #f0f0f0;
+      font-size: 12px;
+      padding: 10px;
+      margin: 69px 35px 0 0;
+    }
+    .upload-btn {
+      float: left;
+      color: #000;
+      background: #EDEDED;
+      width: 98px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+    }
   }
 }
 .tag-wrap {
@@ -133,3 +157,14 @@ body {
 .tab-comm();
 /*=====选项卡样式 end=====*/
 
+.admin-success {
+  color: red;
+}
+
+.cf {
+  float: left;
+  margin: 0 4px 10px 0;
+}
+.upload-btn-group {
+  margin: 5px 0 0 0;
+}

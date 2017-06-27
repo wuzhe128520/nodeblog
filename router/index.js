@@ -3,6 +3,8 @@
  */
 const express = require('express'),
        router = express.Router(),
+       //上传文件模块
+       upload = require('../module/upload'),
        sql = require('../module/mysql');
 
         //浅拷贝对象
@@ -838,6 +840,17 @@ const express = require('express'),
 
         });
     });
+
+        //上传文件
+        router.post('/upload', upload.single('file'),function(req, res, next){
+            console.log("上传文件……");
+            console.log(req.file);
+            res.json({
+                status: 1,
+                des: "上传成功！",
+                pic: req.file.filename
+            });
+        });
 
         //退出
         router.get('/logout',(req, res)=>{

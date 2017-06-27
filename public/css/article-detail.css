@@ -533,6 +533,89 @@ footer {
 .marginb {
   margin-bottom: 10px;
 }
+/*=====选择文件按钮美化 begin=====*/
+.choose-file {
+  position: relative;
+  width: 98px;
+  height: 30px;
+  line-height: 30px;
+  overflow: hidden;
+}
+.choose-file .new-file-btn,
+.choose-file input[type='file'] {
+  width: 100%;
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  cursor: pointer;
+}
+.choose-file .new-file-btn {
+  text-align: center;
+  color: #000;
+  background: #EDEDED;
+  z-index: 1;
+}
+.choose-file input[type='file'] {
+  opacity: 0;
+}
+/*=====选择文件按钮美化 end=====*/
+/*=====进度条 begin=====*/
+#progressbar {
+  position: relative;
+  height: 20px;
+  width: 300px;
+  border: 1px solid #63B8FF;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 0.8em;
+}
+#progress {
+  position: absolute;
+  /*  border:1px solid;*/
+  height: 100%;
+  width: 0;
+  background: #BFEFFF;
+  border-radius: 5px;
+}
+#progress {
+  background-size: 30px 30px;
+  background-image: -webkit-linear-gradient(-45deg, #63B8FF, #63B8FF 25%, #BFEFFF 25%, #BFEFFF 50%, #63B8FF 50%, #63B8FF 75%, #BFEFFF 75%, #BFEFFF);
+  background-image: -moz-linear-gradient(-45deg, #63B8FF, #63B8FF 25%, #BFEFFF 25%, #BFEFFF 50%, #63B8FF 50%, #63B8FF 75%, #BFEFFF 75%, #BFEFFF);
+  background-image: linear-gradient(-45deg, #63B8FF, #63B8FF 25%, #BFEFFF 25%, #BFEFFF 50%, #63B8FF 50%, #63B8FF 75%, #BFEFFF 75%, #BFEFFF);
+  -webkit-animation: animate 1.5s linear infinite;
+  -moz-animation: animate 1.5s linear infinite;
+  animation: animate 1.5s linear infinite;
+}
+@-webkit-keyframes animate {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 30px;
+  }
+}
+@-moz-keyframes animate {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 30px;
+  }
+}
+@keyframes animate {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 30px;
+  }
+}
+/*=====进度条 end=====*/
 .main-wrap {
   margin-top: 15px;
   background: #F1F0EE;

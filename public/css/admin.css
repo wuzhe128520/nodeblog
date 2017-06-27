@@ -533,6 +533,89 @@ footer {
 .marginb {
   margin-bottom: 10px;
 }
+/*=====选择文件按钮美化 begin=====*/
+.choose-file {
+  position: relative;
+  width: 98px;
+  height: 30px;
+  line-height: 30px;
+  overflow: hidden;
+}
+.choose-file .new-file-btn,
+.choose-file input[type='file'] {
+  width: 100%;
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  cursor: pointer;
+}
+.choose-file .new-file-btn {
+  text-align: center;
+  color: #000;
+  background: #EDEDED;
+  z-index: 1;
+}
+.choose-file input[type='file'] {
+  opacity: 0;
+}
+/*=====选择文件按钮美化 end=====*/
+/*=====进度条 begin=====*/
+#progressbar {
+  position: relative;
+  height: 20px;
+  width: 300px;
+  border: 1px solid #63B8FF;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 0.8em;
+}
+#progress {
+  position: absolute;
+  /*  border:1px solid;*/
+  height: 100%;
+  width: 0;
+  background: #BFEFFF;
+  border-radius: 5px;
+}
+#progress {
+  background-size: 30px 30px;
+  background-image: -webkit-linear-gradient(-45deg, #63B8FF, #63B8FF 25%, #BFEFFF 25%, #BFEFFF 50%, #63B8FF 50%, #63B8FF 75%, #BFEFFF 75%, #BFEFFF);
+  background-image: -moz-linear-gradient(-45deg, #63B8FF, #63B8FF 25%, #BFEFFF 25%, #BFEFFF 50%, #63B8FF 50%, #63B8FF 75%, #BFEFFF 75%, #BFEFFF);
+  background-image: linear-gradient(-45deg, #63B8FF, #63B8FF 25%, #BFEFFF 25%, #BFEFFF 50%, #63B8FF 50%, #63B8FF 75%, #BFEFFF 75%, #BFEFFF);
+  -webkit-animation: animate 1.5s linear infinite;
+  -moz-animation: animate 1.5s linear infinite;
+  animation: animate 1.5s linear infinite;
+}
+@-webkit-keyframes animate {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 30px;
+  }
+}
+@-moz-keyframes animate {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 30px;
+  }
+}
+@keyframes animate {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 30px;
+  }
+}
+/*=====进度条 end=====*/
 body {
   background: none;
 }
@@ -588,7 +671,6 @@ body {
 }
 .article-admin .declare-wrap {
   margin: 25px 0 0 0;
-  padding-right: 384px;
   text-align: center;
 }
 .article-admin .declare {
@@ -600,12 +682,37 @@ body {
   background: #0099FF;
 }
 .article-admin .article-img-wrap {
-  height: 70px;
+  min-height: 70px;
   font-size: 14px;
   color: #999;
   padding: 4px 10px 10px 10px;
   line-height: 24px;
   border: 1px solid #ccc;
+}
+.article-admin .article-img-wrap .upload-wrap {
+  position: relative;
+  float: left;
+  width: 300px;
+}
+.article-admin .article-img-wrap .upload-wrap > img {
+  display: block;
+}
+.article-admin .article-img-wrap .tips {
+  float: right;
+  border: solid 1px #999;
+  background-color: #f0f0f0;
+  font-size: 12px;
+  padding: 10px;
+  margin: 69px 35px 0 0;
+}
+.article-admin .article-img-wrap .upload-btn {
+  float: left;
+  color: #000;
+  background: #EDEDED;
+  width: 98px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
 }
 .tag-wrap {
   position: relative;
@@ -691,7 +798,6 @@ body {
   border-bottom: 1px solid #fff;
 }
 .tab .tab_box {
-  text-indent: 1.5em;
   word-wrap: break-word;
   word-break: break-all;
   border: 1px solid #ccc;
@@ -699,3 +805,13 @@ body {
   background: #fff;
 }
 /*=====选项卡样式 end=====*/
+.admin-success {
+  color: red;
+}
+.cf {
+  float: left;
+  margin: 0 4px 10px 0;
+}
+.upload-btn-group {
+  margin: 5px 0 0 0;
+}

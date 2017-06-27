@@ -10,6 +10,8 @@ const express = require('express'),
 
 //get post 任何形式的访问都会走这一条路由
 router.use((req,res,next)=>{
+    console.log('进入后台通用方法：');
+    console.log(req.session.admin);
      if(req.session.admin){
          next();
      }else {
@@ -69,22 +71,6 @@ router.get('/user/update',(req, res)=> {
 });
 
 
-/*function getTypesInfo(){
-    //查询所有分类
-   return new Promise(function(resolve, reject){
-       sql('select * from articletype', (err, types) => {
-
-           if(err){
-               reject();
-               console.log(err);
-           } else {
-               resolve(types);
-           }
-       });
-   });
-}*/
-
-//获取分类信息
 router.get('/gettypes', (req, res) => {
     console.log('ajax查询分类中……');
     sql('select * from articletype', (err, types) => {
@@ -101,14 +87,24 @@ router.get('/gettypes', (req, res) => {
 router.get('/writearticle',(req, res)=>{
 
     //查询所有标签
-    sql('select * from articletag',(err, tags) =>{
-
-        if(err){
-            console.log(err);
+    sql('select * from articletag',(error, tags) =>{
+        if(error){
+            console.log(error);
         } else {
-                res.render('admin/article', {
-                    tags: tags
-                });
+            sql('select * from articletype', (err, types) => {
+
+                if(err){
+                    console.log(err);
+                } else {
+                   res.json({
+                        types: types,
+                        tags: tags
+                    });
+                  /* res.render('admin/article.ejs',{
+                       tags: tags
+                   });*/
+                }
+            });
         }
     });
 
@@ -132,14 +128,14 @@ console.log(typename);
 
 });
 
-
-//upload.single 用来接收一个文件
-router.post('/article',upload.single('uploadfile'),(req,res)=>{
+// 发表文章  upload.single 用来接收一个文件 ,upload.single('uploadfile')
+router.post('/article',(req,res)=>{
     let summeryContent =  req.body.summery,
         title = req.body.title,
 
         //新标签名字
         newTags = req.body.newTags,
+
         //旧标签id
         oldTagIds = req.body.oldTagIds,
 
@@ -147,7 +143,8 @@ router.post('/article',upload.single('uploadfile'),(req,res)=>{
         typeId = parseInt(req.body.type),
         author = req.body.author,
         content = req.body.content,
-        img = '/image/' + req.file.filename,
+        //img = '/image/' + req.file.filename,
+        img = '',
         summery =  summeryContent.length>200?summeryContent.substr(0,200) + '...':summeryContent,
         time = new Date().toLocaleString();
         debugger;
@@ -206,12 +203,21 @@ router.post('/article',upload.single('uploadfile'),(req,res)=>{
             sql('insert into article(title,tags,author,content,time,img,summery,typeid) values(?,?,?,?,?,?,?,?)',[title,finalTag,author,content,time,img,summery,typeId],(err,data)=>{
                 if(err){
                     console.log(err);
-                    res.send('添加文章失败！');
+
+                    res.json({
+                        status: 0,
+                        des: '添加文章失败！'
+                    });
                     return;
                 }
                 console.log('存入数据库后返回的值：');
                 console.log(data);
-                res.redirect('/article-detail/'+data.insertId+'.html')
+                res.json({
+                    status: 1,
+                    des: '添加文章成功！',
+                    insertId: data.insertId
+                });
+               // res.redirect('/article-detail/'+data.insertId+'.html')
             });
         }
 });

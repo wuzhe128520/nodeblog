@@ -259,6 +259,7 @@
             ding($target,articleId);
         }
         $("#articles").on('click','.js_ding',handleClick);
+
         //顶的业务逻辑
         function ding($self,articleId) {
             comm.ajax.commAjax({
@@ -277,8 +278,8 @@
 
         }
         function handleCaiClick() {
-            var $target = $(this);
-            var articleId = $target.closest('.js_article').data('articleid');
+            var $target = $(this),
+                articleId = $target.closest('.js_article').data('articleid');
             cai($target,articleId);
         }
         $("#articles").on('click','.js_cai',handleCaiClick);
@@ -293,7 +294,9 @@
                     comm.layer.msg('踩失败！');
                 },
                 successFn: function(data){
-                    $self.find('.js_cai_text').text(data.c[0].cai);
+                    if(data.c){
+                        $self.find('.js_cai_text').text(data.c[0].cai);
+                    }
                 }
             });
         }

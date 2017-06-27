@@ -172,9 +172,10 @@ var comm = {
          commAjax: function(config){
              comm.ajax.ajaxComplete(function(event,xhr,settins){
                  console.log("ajax请求完成！");
+                 console.log(JSON.stringify(xhr.responseText));
 
                  //将json字符串转为js对象
-                 var data = eval("(" + xhr.responseText + ")");
+                 var data = eval("(" + JSON.stringify(xhr.responseText) + ")");
                  console.log(data);
                  if(!!data.status && data.status === "nologin"){
                      comm.layer.confirm(
@@ -190,7 +191,7 @@ var comm = {
                  }
              });
              comm.ajax.ajaxStart(function(){console.log("ajax开始请求！")});
-             comm.ajax.ajaxError(function(){console.log("亲，请求出错了噢！");});
+             comm.ajax.ajaxError(function(event,xhr,options,exc){console.log("请求出错了噢！"+exc);});
              //给请求地址加上随机参数
              var num = new Date()*comm.randomNum(1,10);
              if(config.url){
@@ -218,7 +219,7 @@ var comm = {
                  $.extend(defaultObj, config);
              }
              console.log(defaultObj);
-             $.ajax(defaultObj);
+             return $.ajax(defaultObj);
          }
      },
 
@@ -262,7 +263,6 @@ var comm = {
                 };
                 if(config.btn&&config.methods){
                     //如果是数组
-                    debugger;
                     if(comm.type(config.btn === 'array')){
                             defaultObj['btn'] = config.btn;
                             if(comm.type(config.methods) === 'array'){
@@ -392,9 +392,9 @@ var comm = {
         //随机颜色
         function randomColor(min,max){
 
-            var _r = randomNum(min,max);
-            var _g = randomNum(min,max);
-            var _b = randomNum(min,max);
+            var _r = randomNum(min,max),
+                _g = randomNum(min,max),
+                _b = randomNum(min,max);
 
             return "rgb("+_r+","+_g+","+_b+")";
         }
@@ -818,21 +818,19 @@ var comm = {
 
             var options = $.extend(comm.page.options,options,true),
                 pagesData = this.getPageData(options.url,options.postData);
-                debugger;
+
              comm.page.showPageData(comm.page.options.dataId,comm.page.options.dataTmplId,pagesData.data);
              comm.page.showPage(options,pagesData.pages,comm.page.options.pageTmplId);
 
         },
         //展示分页组件
         showPage: function(options,pages,pageTmplId){
-            debugger;
 
             comm.tmpl.render(pageTmplId, {pages: pages},options.container);
             comm.page.bindPageClick(options.container,options.postData.showPageNum);
         },
         //展示数据
         showPageData: function(articlesId,dataTmplId,articleData){
-            debugger;
             /*$('#'+ articlesId).html('');
              var html = comm.page.render(dataTmplId,{data: articleData});
              $('#'+ articlesId).append(html);*/
@@ -872,7 +870,6 @@ var comm = {
          * @param data 传递给后端的数据,对象形式
          */
         getPageData: function(url, postData){
-           debugger;
             var pagesData = null;
 
             comm.ajax.commAjax({
@@ -881,9 +878,6 @@ var comm = {
                 type: 'post',
                 data: postData,
                 successFn: function(data){
-                    debugger;
-                    console.log('打印data：');
-                    console.log(data);
                     pagesData = data;
 
                 },
@@ -972,6 +966,92 @@ var comm = {
             ejs.delimiter = '$';
             html = ejs.render(template,tmplData);
             $('#' + appendId).html('').append(html);
+        }
+    },
+
+    //前端效果
+    effect: {
+
+        //倒计时，多少秒之后 做什么
+        /**
+         *
+         * @param targetId: 显示秒
+         * @param seconds： 多少秒之后
+         * @param callback: 回调函数
+         */
+        countDown: function(targetId, seconds, callback){
+
+                var target = document.getElementById(targetId),
+                    i = seconds,
+                    index = 0;
+
+                target.innerHTML = seconds;
+                index= setInterval(function(){
+                    target.innerHTML = --i;
+                    if(i === 1){
+                        clearInterval(index);
+                        callback&&callback();
+                    }
+                },1000);
+        }
+    },
+    //上传
+    upload:  {
+
+        //预览图片
+        previewImg: function(){
+            var pic = $('#file').get(0).files[0];
+            $('#preview').prop("src", window.URL.createObjectURL(pic));
+            return pic;
+        },
+
+        //使用html5 单文件ajax上传
+        h5AjaxUpload: function(){
+            debugger;
+            var pic = $('#file').get(0).files[0],
+                formData = new FormData(),
+                that = this;
+
+            formData.append("file", pic);
+
+            comm.ajax.commAjax({
+                url: '/upload',
+                type: 'post',
+                data: formData,
+                processData: false,
+                //必须false才会自动加上正确的Content-Type
+                contentType: false,
+                xhr: function(){
+                    var xhr = $.ajaxSettings.xhr();
+                    if(xhr.upload){
+                        xhr.upload.addEventListener('progress', that.onprogress, false);
+                        return xhr;
+                    }
+                }
+            })
+        },
+
+        //进度条事件
+        onprogress: function(evt) {
+            var loaded = evt.loaded, //已经上传大小情况
+                total = evt.total,    //附件总大小
+                $progress = $('#progress'),
+                $progressbar = $('#progressbar'),
+                per = Math.round(100 * loaded / total);   //已经上传的百分比
+            if($progressbar.is(":hidden")){
+                $progressbar.show();
+            }
+            $progress.html(per + '%').css('width' , per + '%');
+           if(per >= 1){
+                setTimeout(
+                        function(){
+                            $progress.html('0%').css('width' , 0);
+                            $progressbar.hide();
+                        },
+                        2000
+                    );
+
+            }
         }
     }
 };

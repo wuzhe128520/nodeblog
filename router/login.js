@@ -2,9 +2,9 @@
  * Created by Administrator on 2017/3/21.
  */
 const express = require('express'),
-            sql = require('../module/mysql'),
-         crypto = require('crypto'),
-         router = express.Router();
+       sql = require('../module/mysql'),
+       crypto = require('crypto'),
+       router = express.Router();
 
 router.get('/',(req, res)=>{
     console.log('cookies是否存在：');
@@ -26,7 +26,7 @@ router.post('/',(req, res)=>{
            md5 = crypto.createHash('md5'),
            newpass = md5.update(pass).digest('hex');
 
-    sql("select id,status from user where username = ? and password = ?",[user,newpass],(err,data)=>{
+    sql("select id,status,admin from user where username = ? and password = ?",[user,newpass],(err,data)=>{
 
             if(data.length === 1){
 

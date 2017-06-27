@@ -179,22 +179,23 @@
                             </ul>
                         </div>-->
                     </div>
-                    <div>是否登录：<%=locals.login%></div>
                     <% if(locals.login) {%>
-                    <!--发表评论 begin-->
-                    <div class="declare-comment-wrap">
-                        <h3>发表评论</h3>
-                        <!--action="/comment/<%=data[0]['id']%>.html"-->
-                        <form id="commentForm" data-commentid="<%=data[0]['id']%>"  method="post">
-                            <p>
-                                <textarea autocomplete="off" name="content" tabindex="4" cols="100%" rows="10"></textarea>
-                            </p>
-                            <p>
-                                <input name="submit" value="发表评论" class="declare-btn" type="submit" id="declareComment">
-                            </p>
-                        </form>
-                    </div>
-                    <!--发表评论 end-->
+                        <!--发表评论 begin-->
+                        <div class="declare-comment-wrap">
+                            <h3>发表评论</h3>
+                            <!--action="/comment/<%=data[0]['id']%>.html"-->
+                            <form id="commentForm" data-commentid="<%=data[0]['id']%>"  method="post">
+                                <p>
+                                    <textarea autocomplete="off" name="content" tabindex="4" cols="100%" rows="10"></textarea>
+                                </p>
+                                <p>
+                                    <input name="submit" value="发表评论" class="declare-btn" type="submit" id="declareComment">
+                                </p>
+                            </form>
+                        </div>
+                        <!--发表评论 end-->
+                    <%} else {%>
+                        <p>您还未登录，暂不能评论……</p>
                     <%}%>
                 </div>
             </article>
