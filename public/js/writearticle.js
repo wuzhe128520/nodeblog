@@ -408,9 +408,10 @@
 
     //提交数据
     $('#declare').on('click', function(e){
-
+        debugger;
         var content = ue.getContent(),
             summery = ue.getContentTxt(),
+            imgSrc = $('#imgSrc').val().replace(/\\/g,'/'),
             newTags = getNewTag(),
             oldTagIds = getOldTagIds();
 
@@ -429,13 +430,14 @@
                 newTags: newTags.join(','),
                 oldTagIds: oldTagIds.join(','),
                 type: $('#hastype').find('input:checked').eq(0).val(),
-                author: $('author').val(),
+                author: $('#author').val(),
                 summery: summery,
                 content: content,
+                imgSrc: imgSrc
             },
             successFn: function(data) {
                 if(data.status){
-                    $("#seconds").show();
+                    $(".admin-success").show();
                     comm.effect.countDown('seconds',3,function(){
                             window.location.href = '/article-detail/' + data.insertId + '.html';
                     });

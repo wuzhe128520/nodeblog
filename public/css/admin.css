@@ -654,13 +654,11 @@ body {
   padding: 10px;
   margin-top: 1px;
 }
-.article-admin .hastag li {
-  width: 130px;
-}
 .article-admin .hastag li,
 .article-admin .hastype li {
   float: left;
   margin: 0 8px 3px 0;
+  width: 130px;
 }
 .article-admin .hastag li input[type="radio"],
 .article-admin .hastype li input[type="radio"] {
@@ -807,6 +805,7 @@ body {
 /*=====选项卡样式 end=====*/
 .admin-success {
   color: red;
+  font-size: 14px;
 }
 .cf {
   float: left;

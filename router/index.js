@@ -844,11 +844,16 @@ const express = require('express'),
         //上传文件
         router.post('/upload', upload.single('file'),function(req, res, next){
             console.log("上传文件……");
-            console.log(req.file);
+            let fileData = req.file,
+                fileName = fileData.filename,
+                destination = fileData.destination,
+                imgSrc = destination.substr(destination.indexOf('public') + 6);
+            console.log('imgSrc:');
+            console.log(imgSrc);
             res.json({
                 status: 1,
                 des: "上传成功！",
-                pic: req.file.filename
+                pic: imgSrc + fileName
             });
         });
 

@@ -144,7 +144,7 @@ router.post('/article',(req,res)=>{
         author = req.body.author,
         content = req.body.content,
         //img = '/image/' + req.file.filename,
-        img = '',
+        img = req.body.imgSrc,
         summery =  summeryContent.length>200?summeryContent.substr(0,200) + '...':summeryContent,
         time = new Date().toLocaleString();
         debugger;

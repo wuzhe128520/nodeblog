@@ -22,7 +22,7 @@
                             <div class="clearfix">
                                 <%if(data[i].img){%>
                                 <a href="/article-detail/<%=data[i].id%>.html" class="article-img-wrap">
-                                    <img src="<%=data[i].img%>" />
+                                    <img src="<%=data[i].img%>" onerror="onerror=null;src='/image/zw.png'" />
                                 </a>
                                 <%}%>
                                 <p class="article-content">
@@ -353,7 +353,7 @@
             "viewSize":"16"
         }
     };
-    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+    //with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
 </script>
 </body>
 </html>

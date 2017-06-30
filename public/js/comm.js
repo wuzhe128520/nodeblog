@@ -176,7 +176,6 @@ var comm = {
 
                  //将json字符串转为js对象
                  var data = eval("(" + JSON.stringify(xhr.responseText) + ")");
-                 console.log(data);
                  if(!!data.status && data.status === "nologin"){
                      comm.layer.confirm(
                          '您还未登录，是否跳转到登录界面？',
@@ -187,11 +186,12 @@ var comm = {
                                  window.location.href = "/login?show=1";
                              },1000);
                          });
-
                  }
              });
+
              comm.ajax.ajaxStart(function(){console.log("ajax开始请求！")});
              comm.ajax.ajaxError(function(event,xhr,options,exc){console.log("请求出错了噢！"+exc);});
+
              //给请求地址加上随机参数
              var num = new Date()*comm.randomNum(1,10);
              if(config.url){
@@ -1026,6 +1026,11 @@ var comm = {
                     if(xhr.upload){
                         xhr.upload.addEventListener('progress', that.onprogress, false);
                         return xhr;
+                    }
+                },
+                successFn: function(data){
+                    if(data.status){
+                        $('#imgSrc').val(data.pic);
                     }
                 }
             })

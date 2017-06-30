@@ -17,7 +17,7 @@
                 <li class="js_tab_single" data-action="/admin/article" data-target = "articleManage">文章管理</li>
                 <li class="js_tab_single" data-action="/admin/say" data-target = "sayManage">说说管理</li>
                 <li class="js_tab_single" data-action="/admin/type" data-target = "typeManage">类别管理</li>
-                <li class="js_tab_single" data-action="/admin/writearticle" data-target = "declareArticle">发表文章</li>
+                <li class="js_tab_single" data-action="/admin/writearticle" data-target = "declareArticle" data-callback="renderDeclareArticle" data-tmpl="declareArticleTmpl">发表文章</li>
                 <li class="js_tab_single" data-action="/admin/writesay" data-target = "declareSay">发表说说</li>
             </ul>
         </div>
@@ -83,6 +83,7 @@
                             <input type="button" value="上传" class="upload-btn" onclick="comm.upload.h5AjaxUpload()"/>
                         </div>
                         <div id="progressbar" class="hidden"><div id="progress">0%</div></div>
+                        <input type="hidden" value="" id="imgSrc">
                     </div>
                     <div class="tips">
                         <ul>
@@ -104,9 +105,9 @@
                             for(; i < length; i++){
                             tag = data.tags[i];
                             $>
-                            <li>
+                            <li class="ellipsis">
                                 <input id="chek_tag_<$=tag.tag_id$>" type="checkbox" data-tagid = "<$=tag.tag_id$>" autocomplete="off" />
-                                <label for="chek_tag_<$=tag.tag_id$>"><$=tag.tagname$></label>
+                                <label for="chek_tag_<$=tag.tag_id$>" title="<$=tag.tagname$>"><$=tag.tagname$></label>
                             </li>
                             <$}$>
                         </ul>
@@ -121,7 +122,7 @@
                             for(; j < jlength; j++){
                             type = data.types[j];
                             $>
-                            <li>
+                            <li class="ellipsis" title="<$=type.typename$>">
                                 <input type="radio" name="type" value="<$=type.type_id$>" autocomplete="off"><$=type.typename$>
                             </li>
                             <$}$>
@@ -173,27 +174,38 @@
 
     function handleAdminClick($target) {
         var action = $target.data('action'),
-            target = $target.data('target');
+            target = $target.data('target'),
+            tmplId = $target.data('tmpl'),
+            callback = $target.data('callback');
+            //加载了数据之后的回调函数
 
         //如果当前点击的tab数据已经加载过，则不请求数据
         if(!$target.data("ajaxData")){
             getData(action,function(data){
-                console.log('handleAdminClick-------------------------------------');
+                debugger;
                 console.log(data);
                 $target.data("ajaxData",data);
-                //渲染模板，并填充
-                comm.tmpl.render('declareArticleTmpl',{data: data},target);
-                $("#editorWrap").append('<script id="editor" type="text/plain" style="width:100%;height:500px;"><\/script>');
-                loadStaticFile('/js/writearticle.js');
+                eval(callback + '("' + tmplId + '",(' + JSON.stringify(data) +'),"' + target +'")');
+               // renderedCall.call($target,data, target);
             });
         }
-
     }
 
     function getData(action,callback) {
         //如何等待异步操作后的 结果，将数据结果 返回
 
         $.when(comm.ajax.commAjax({url: action})).done(callback);
+    }
+
+    //发表文章 渲染回调函数
+    function renderDeclareArticle(tmplId,data,target) {
+        debugger;
+        console.log('进入了发表文章渲染回调函数');
+        console.log(tmplId,data,target);
+       //渲染模板，并填充
+       comm.tmpl.render(tmplId,{data: data},target);
+        $("#editorWrap").append('<script id="editor" type="text/plain" style="width:100%;height:500px;"><\/script>');
+        loadStaticFile('/js/writearticle.js');
     }
 
     function tab() {
