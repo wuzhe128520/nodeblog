@@ -28,7 +28,7 @@ router.post('/',(req, res) => {
                        time = new Date().toLocaleString();
 
                    //使用md5加密
-                   var newpass = md5.update(pass).digest('hex');
+                   let newpass = md5.update(pass).digest('hex');
                    sql('insert into user (username,password,email,code,createtime,status,admin) values (?,?,?,?,?,0,0)',[user,newpass,email,uuid,time],(err)=>{
                             if(err){
                                 console.log(err);
@@ -37,7 +37,7 @@ router.post('/',(req, res) => {
                                     des: err
                                 });
                                 } else {
-                                sendMail(email,'欢迎您注册无畏滴青春博客网站！点此<a style="color:red;" href="http://wzblog.tt.w3cmark.com/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。');
+                                sendMail(email,'欢迎您注册无畏滴青春博客网站！点此<a style="color:red;" href="http://localhost:520/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。');
                                 res.json({
                                     status: 1,
                                     des: '发送邮件成功！',
@@ -60,7 +60,7 @@ router.post('/',(req, res) => {
 
 //邮件发送成功
 router.get('/sendsuccess', (req,res) => {
-    var username = req.query.username,
+    let username = req.query.username,
         email = req.query.email;
     res.send('邮件发送成功，请进入邮箱'+ email +'激活账号！');
 });
@@ -85,7 +85,7 @@ router.get('/validate/:uuid.html',(req,res) => {
                     if(new Date() - data[0].createtime > 1000*60*30) {
                         //验证码过期了，重新发送
                         const uuid = uuidV1();
-                        sendMail(data[0].email,'欢迎您注册无畏滴青春博客网站！点此<a style="color:red;" href="http://wuzhe128520.xicp.net:27936/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。');
+                        sendMail(data[0].email,'欢迎您注册无畏滴青春博客网站！点此<a style="color:red;" href="http://localhost:520/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。');
                         let time = new Date().toLocaleString();
                         sql('update user set createtime = ?,code=? where id=?',[time,uuid,data[0].id],(err, data) => {
                             if(err){

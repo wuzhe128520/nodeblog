@@ -841,7 +841,7 @@ const express = require('express'),
         });
     });
 
-        //上传文件
+        //单文件上传
         router.post('/upload', upload.single('file'),function(req, res, next){
             console.log("上传文件……");
             let fileData = req.file,
@@ -854,6 +854,15 @@ const express = require('express'),
                 status: 1,
                 des: "上传成功！",
                 pic: imgSrc + fileName
+            });
+        });
+
+        //多文件上传
+        router.post('/multiUpload', upload.array('file'),function(req,res,next){
+            console.log('多文件上传：');
+            console.log(req.files);
+            res.json({
+                status: '1'
             });
         });
 

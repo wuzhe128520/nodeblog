@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>发表说说</title>
+    <link rel="stylesheet" href="../public/css/reset.css">
+    <link rel="stylesheet" href="../public/font/iconfont.css" />
+    <link rel="stylesheet" href="../public/css/admin.css">
+    <link rel="stylesheet" href="../public/js/plugin/emoji/css/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="../public/js/plugin/emoji/css/jquery.emoji.css">
+</head>
+<body>
+    <div class="say">
+        <h1>有什么新鲜事想要告诉大家？</h1>
+        <div class="say-area" contenteditable="true" id="say">
+
+        </div>
+        <div class="icons-wrap">
+            <i class="iconfont icon-tupian icon-img"></i>
+        </div>
+
+        <button class="declare-btn">发表</button>
+    </div>
+    <script type="text/javascript" src="../public/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../public/js/plugin/jquery.mousewheel-3.0.6.min.js"></script>
+    <script type="text/javascript" src="../public/js/plugin/jquery.mCustomScrollbar.min.js"></script>
+    <script type="text/javascript" src="../public/js/plugin/emoji/js/jquery.emoji.min.js"></script>
+    <script>
+        $(init);
+        function init(){
+            $('#say').emoji(
+                {
+
+                    icons: [
+                        {
+                            name: "QQ表情",
+                            path: '../public/js/plugin/emoji/img/qq/',
+                            maxNum: 104,
+                            file: '.gif',
+                            placeholder: "#qq_{alias}#",
+                            title: {
+                                1: "微笑",
+                                2: "撇嘴",
+                                3: "色",
+                                4: "发呆",
+                                5: "得意",
+                                6: "流泪",
+                                7: "害羞",
+                                8: "闭嘴",
+                                9: "睡",
+                                10: "大哭",
+                                11: "尴尬",
+                                12: "发怒",
+                                13: "调皮",
+                                14: "龇牙",
+                                15: "惊讶",
+                                16: "难过",
+                                17: "酷",
+                                18: "冷汗",
+                                19: "抓狂",
+                                20: "吐",
+                                21: "偷笑",
+                                22: "可爱",
+                                23: "白眼",
+                                24: "傲慢",
+                                25: "饥饿",
+                                26: "困",
+                                27: "惊恐",
+                                28: "流汗",
+                                29: "憨笑",
+                                30: "大兵",
+                                31: "奋斗",
+                                32: "咒骂",
+                                33: "疑问",
+                                34: "嘘",
+                                35: "晕",
+                                36: "折磨",
+                                37: "衰",
+                                38: "骷髅",
+                                39: "敲打",
+                                40: "再见",
+                                41: "擦汗",
+                                42: "抠鼻",
+                                43: "鼓掌",
+                                44: "糗大了",
+                                45: "坏笑",
+                                46: "左哼哼",
+                                47: "右哼哼",
+                                48: "哈欠",
+                                49: "鄙视",
+                                50: "委屈",
+                                51: "快哭了",
+                                52: "阴险",
+                                53: "亲亲",
+                                54: "吓",
+                                55: "可怜",
+                                56: "眨眼睛",
+                                57: "笑哭",
+                                58: "doge",
+                                59: "泪奔",
+                                60: "无奈",
+                                61: "托腮",
+                                62: "卖萌",
+                                63: "斜眼笑",
+                                64: "喷血",
+                                65: "惊喜",
+                                66: "骚扰",
+                                67: "小纠结",
+                                68: "我最美",
+                                69: "啤酒",
+                                70: "咖啡",
+                                71: "饭",
+                                72: "猪",
+                                73: "玫瑰",
+                                74: "凋谢",
+                                75: "示爱",
+                                76: "爱心",
+                                77: "心碎",
+                                78: "蛋糕",
+                                79: "闪电",
+                                80: "炸弹",
+                                81: "刀",
+                                82: "菜刀",
+                                83: "足球",
+                                84: "瓢虫",
+                                85: "便便",
+                                86: "拥抱",
+                                87: "强",
+                                88: "弱",
+                                89: "握手",
+                                90: "胜利",
+                                91: "抱拳",
+                                92: "勾引",
+                                93: "拳头",
+                                94: "差劲",
+                                95: "爱你",
+                                96: "no",
+                                97: "ok",
+                                98: "跳跳",
+                                99: "发抖",
+                                100: "怄火",
+                                101: "磕头",
+                                102: "回头",
+                                103: "激动",
+                                104: "街舞"
+                            }
+                        }
+                    ]
+                }
+            );
+        }
+    </script>
+</body>
+</html>

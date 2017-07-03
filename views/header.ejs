@@ -31,7 +31,10 @@
                 <% if(locals.admin){%>
                 管理员
                 <%}%>
-                <%=locals.login%>&nbsp;<a href="/admin" style="marign-left: 15px;color: #eee;">进入后台</a>
+                <%=locals.login%>&nbsp;
+                <% if(locals.admin){%>
+                <a href="/admin" style="marign-left: 15px;color: #eee;">进入后台</a>
+                <%}%>
                 <a href="/logout" class="logout">退出</a>
                 <%}else {%>
                     <a href="/login?show=1" class="login-btn">登录</a>
