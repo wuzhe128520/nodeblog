@@ -30,8 +30,6 @@ function loadStaticFile (fileSrcs){
             element.type = "text/javascript";
             element.src = fileSrc;
             element.charset = "utf-8";
-           /* element.setAttribute('type','text/javascipt')
-            element.setAttribute('src',fileSrc);*/
             element.onload = element.onreadystatechange = function(){
                 if(!this.readyState||this.readyState == 'loaded'||this.readyState == 'complete'){
                     console.log(fileSrc + '加载成功');
@@ -45,8 +43,9 @@ function loadStaticFile (fileSrcs){
         }
         else if(extension.lastIndexOf('css') != -1) {
             element = document.createElement('link');
-            element.setAttribute('rel','stylesheet');
-            element.setAttribute('href',fileSrc);
+            element.href= fileSrc;
+            element.rel = 'stylesheet';
+            element.type='text/css';
         }
         fragment.appendChild(element);
     }

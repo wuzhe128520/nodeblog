@@ -1,7 +1,5 @@
 <%include header.ejs%>
-<script>
-    loadStaticFile('/css/index.css');
-</script>
+<link href="/css/index.css" rel="stylesheet" type="text/css">
 <main>
     <div class="main clearfix">
         <div class="article-list-wrap js_list" id="articles">
@@ -93,7 +91,7 @@
                     <div class="clearfix">
                         <$if(data.img){$>
                         <a href="/article-detail/<$=data.id$>.html" class="article-img-wrap">
-                            <img src="<$=data.img$>" />
+                            <img src="<$=data.img$>" onerror="onerror=null;src='/image/zw.png'"  />
                         </a>
                         <$}$>
                         <p class="article-content">
@@ -161,6 +159,8 @@
             action = '/search';
         } else if(requestType === 'tag'){
             action = '/tag';
+        }else if(requestType === 'querybymonth') {
+            action='/querybymonth';
         }
         //使用分页组件
         comm.page.init({
@@ -219,8 +219,6 @@
                 }
             });
         }
-
-
     };
     window._bd_share_config={
         "common":{

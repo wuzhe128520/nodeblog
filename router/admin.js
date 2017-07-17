@@ -232,18 +232,20 @@ router.get('/nav',(req,res)=>{
 
 //发表说说
 router.post('/writesay',(req, res) => {
-    let userid = req.body.userid,
+    let userid = req.cookies['login'].id,
         content = req.body.content,
-        time = new Date().toLocaleString(),
-
-        //这里是说说附带的图片(可能有多张图片)
-        imgs = '';
-
-    sql('insert into say(userid,content,time,dicid,imgs) values (?,?,?,?,?)',(err) => {
+        imgs = req.body.imgs,
+        time = new Date().toLocaleString();
+    console.log('进入发表说说！')
+    sql('insert into say(userid,content,time,dicid,imgs) values (?,?,?,?,?)',[userid,content,time,2,imgs],(err) => {
         if(err){
+            console.log('发表失败……');
             return;
         } else {
-            res.send('发表说说成功！');
+            res.json({
+                status: 1,
+                des: '发表说说成功！'
+            });
         }
     });
 

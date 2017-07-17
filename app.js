@@ -14,14 +14,19 @@ const http = require('http'),
        path = require('path'),
        ws = require('socket.io');
        module.exports = app;
+
        //全局时间格式化
        app.locals.dateFormat = utils.dateFormat;
+
        //设置模板引擎的目录
        app.set('views',__dirname + '/views');
+
        //设置使用的模板引擎是ejs
        app.set('view engine','ejs');
+
        //设置存放静态文件的路由
        app.use(express.static(path.join(__dirname,'/public')));
+
        //在访问静态文件时，必须使加上bc这个路径
        //app.use('/article-detail',express.static(__dirname + '/article-detail/public'));
 
@@ -50,10 +55,10 @@ const http = require('http'),
                          });
                   });
        });
-        //拦截器
 
        //访问当前路径的时候，交给index文件里的路由方法来处理
        app.use('/',require('./router/index'));
+
        //配置富文本编辑器路由
        app.use('/ueditor/ue',require('./ue'));
 
@@ -61,7 +66,9 @@ const http = require('http'),
        app.use(function(req,res){
               res.render('404');
        });
+
        let server =http.createServer(app).listen(520);
+
        //使用websocket监听服务
        let io = ws(server);
        //保存加入聊天的用户

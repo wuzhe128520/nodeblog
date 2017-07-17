@@ -177,6 +177,7 @@ var comm = {
                  //将json字符串转为js对象
                  var data = eval("(" + JSON.stringify(xhr.responseText) + ")");
                  if(!!data.status && data.status === "nologin"){
+                     alert('您还未登录！');
                      comm.layer.confirm(
                          '您还未登录，是否跳转到登录界面？',
                          null,
@@ -768,8 +769,10 @@ var comm = {
 
     //url相关
     url: {
+        address: window.location.href,
+        pathname: window.location.pathname,
         getOriginUrl: function(){
-            var url = window.location.href,
+            var url = this.address,
                 originUrl = url.split('?')[0],
                 index = originUrl.lastIndexOf('#');
 
@@ -777,6 +780,14 @@ var comm = {
                     originUrl = originUrl.substring(0,index);
                 }
                 return originUrl;
+        },
+        getRequestMethod: function(){
+            var url =this.pathname,
+                method = url.match(/\/\w+\/?/);
+            if(method){
+                return method[0];
+            }
+            return '/';
         }
     },
 
@@ -831,19 +842,13 @@ var comm = {
         },
         //展示数据
         showPageData: function(articlesId,dataTmplId,articleData){
-            /*$('#'+ articlesId).html('');
-             var html = comm.page.render(dataTmplId,{data: articleData});
-             $('#'+ articlesId).append(html);*/
             comm.tmpl.render(dataTmplId,{data: articleData},articlesId);
-
         },
         //绑定每一页的点击事件
         bindPageClick: function(container){
 
             $('#' + container).off('click').on('click','.page',function(e){
-
                 handlePageClick($(this));
-
             });
 
             var handlePageClick = function($pageli){
@@ -854,9 +859,8 @@ var comm = {
                 if(nowPage === newPage){
                     return false;
                 }
-                comm.page.options.postData.currentPage = newPage;
+            comm.page.options.postData.currentPage = newPage;
 
-            console.log(comm.page.options);
              var  pagesData = comm.page.getPageData(comm.page.options.url,comm.page.options.postData);
                 comm.page.showPageData(comm.page.options.dataId,comm.page.options.dataTmplId,pagesData.data);
                 comm.page.showPage(comm.page.options,pagesData.pages,comm.page.options.pageTmplId);
@@ -885,7 +889,6 @@ var comm = {
                     console.log(err);
                 }
             });
-
             comm.page.pagesData = pagesData;
             return pagesData;
         }
@@ -1058,6 +1061,25 @@ var comm = {
 
             }
         }
+    },
+
+    //导航操作
+    nav: function(){
+        var $navs = $('#nav').find('li>a'),
+            method = comm.url.getRequestMethod();
+        $navs.each(function(i,nav){
+           var $nav = $(nav),
+                href = $nav.attr('href');
+           if(href === method){
+               $nav.parent('li').addClass('actived');
+               return false;
+           }
+        });
+    },
+
+    //公用发表评论
+    declareComment: function(commentid,content){
+
     }
 };
 

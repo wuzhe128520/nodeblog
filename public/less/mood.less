@@ -23,15 +23,16 @@
     left: 1130px;
   }
   padding: 10px 0;
-  li {
+  &>ul > li {
     position: relative;
     padding: 8px 0;
+    margin-bottom: 15px;
     &:hover {
       &:before {
         .scale(1.5);
       }
       &:after {
-        background: #FE5187;
+        background: #F7AF57;
         .scale(1.5);
       }
     }
@@ -45,7 +46,7 @@
       content: '';
       background: #fff;
       .radius(6px);
-      .boxshadow(0,0,2px,#FE5187);
+      .boxshadow(0,0,2px,#F7AF57);
       z-index: 1;
     }
     &:after {
@@ -64,10 +65,13 @@
     .time {
       float: left;
       position: relative;
-      margin: 25px 0 0 15px;
+      width: 150px;
+      text-align: center;
+      margin: 25px 0 0 0;
       color: #888;
-      font-size: 14px;
-      padding: 0 5px;
+      font-size: 12px;
+      padding: 0 5px 0 9px;
+      background-clip: content-box;
     }
     .user-img {
       float: right;
@@ -76,11 +80,11 @@
     }
     &:hover {
       .time {
-        background: rgba(255,255,255,0.6);
-        color: #FE5187;
+        background-color: #F7AF57;
+        color: #fff;
       }
       .mood-content:after{
-        background: #FE5187;
+        background: #F7AF57;
         .scale(1.5);
       }
       .mood-content:before {
@@ -88,14 +92,18 @@
       }
     }
     em {
-      float: left;
+      position: absolute;
+      left: 164px;
+      top: 38px;
       width: 50px;
       height: 10px;
       background: url(../image/line.png) no-repeat;
-      margin: 30px 0 0 27px;
     }
   }
   .mood-content {
+    &>p {
+      padding-left: 0;
+    }
     position: relative;
     &:before {
       position: absolute;
@@ -107,7 +115,7 @@
       content: '';
       background: #fff;
       .radius(6px);
-      .boxshadow(0,0,2px,#FE5187);
+      .boxshadow(0,0,2px,#F7AF57);
     }
     &:after {
       position: absolute;
@@ -119,7 +127,6 @@
       width: 8px;
       .radius(6px);
       content: '';
-
     }
     margin: 0 150px 0 200px;
     color: #333;
@@ -133,15 +140,33 @@
   }
   .mood-footer {
     text-align: right;
-    span {
+    .mood-comments,
+    .declare-comment {
       margin: 0 10px;
+      a {
+        color: #333;
+        font-size: 14px;
+        &:hover {
+          color: #F7AF57;
+        }
+      }
     }
-    a {
-      color: #333;
-      font-size: 14px;
-      &:hover {
-        color: #FE5187;
+    .mood-comments {
+      a {
+        cursor: default;
       }
     }
   }
+}
+.say-img-wrap {
+  overflow: hidden;
+  img {
+    display: block;
+    float: left;
+    max-width: 100%;
+    margin: 10px 10px 10px 0;
+  }
+}
+.mood-page-wrap {
+  padding: 0 70px;
 }

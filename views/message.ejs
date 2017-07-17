@@ -1,0 +1,180 @@
+<%include header.ejs%>
+<link href="/css/message-board.css" rel="stylesheet" type="text/css">
+<main>
+    <div class="message-board-wrap layer-wz">
+          <h2 class="message-board-title">
+              <a href="/">留言板</a>
+          </h2>
+          <div class="send-word-title">
+              <h3 class="owner-word">
+                  主人寄语
+              </h3>
+              <div>
+                   <p class="send-word">
+                       我们人的生活方式有两种，一种方式是像草一样活着，你尽管活着，每年还在成长。但是你毕竟是一棵草，你吸收雨露阳光，但是长不大。人们可以踩过你，但是人们不会因为你的痛苦而他产生痛苦，人们不会因为你被踩了而来怜悯你，因为人们本身就没看到你。所以我们每个人都应该像树一样的成长即使我们现在什么都不是，但是只要你有树的种子，即使被人踩到泥土中间，你依然能够吸收泥土的养分，自己成长起来，当你长成参天大树以后，遥远的地方，人们就可以看见你，走近你，你能给人一片绿色。活着是美丽的风景，死了依然是栋梁之才。活着死了都有用。这就是我们每个人做人的标准和成长的标准。
+                   </p>
+              </div>
+          </div>
+          <!--评论部分 begin-->
+          <div class="comments-wrap">
+            <div class="comments-head clearfix">
+                <a href="/" class="comments-number">
+                    <span class="highlight">6</span>条评论
+                </a>
+                <div class="comments-sort">
+                    <a href="/" class="current">最新</a>
+                    <a href="/">最早</a>
+                    <a href="/">最热</a>
+                </div>
+            </div>
+            <ul class="comments-all">
+                <li>
+                    <div class="comments">
+                        <div class="user">
+                            <a href="javascript:void(0);">
+                                <img src="/image/user.jpg" />
+                            </a>
+                        </div>
+                        <div class="comment-body">
+                            <div class="comment-name">
+                                <a href="javascript:void(0);">
+                                    我浪故我在
+                                </a>
+                            </div>
+                            <p class="comment-content">
+                                坚持就是胜利！
+                            </p>
+                            <div class="comment-footer">
+                                <time>2017年02月16日</time>
+                                <a href="javascript:void(0);">
+                                    <i title="回复图标" class="iconfont icon-huifu" ></i>回复
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="comment-childs">
+                        <li>
+                            <!-- main comment content  begin -->
+                            <div class="comments">
+                                <div class="user">
+                                    <a href="javascript:void(0);">
+                                        <img src="/image/user.jpg" />
+                                    </a>
+                                </div>
+                                <div class="comment-body">
+                                    <div class="comment-name">
+                                        <a href="javascript:void(0);">
+                                            我浪故我在
+                                        </a>
+                                    </div>
+                                    <p class="comment-content">
+                                        坚持就是胜利！
+                                    </p>
+                                    <div class="comment-footer">
+                                        <time>2017年02月16日</time>
+                                        <a href="javascript:void(0);">
+                                            <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- main comment content end-->
+                            <!-- child comment begin -->
+                            <ul class="comment-childs">
+                                <li>
+                                    <div class="comments">
+                                        <div class="user">
+                                            <a href="javascript:void(0);">
+                                                <img src="/image/user.jpg" />
+                                            </a>
+                                        </div>
+                                        <div class="comment-body">
+                                            <div class="comment-name">
+                                                <a href="javascript:void(0);">
+                                                    我浪故我在
+                                                </a>
+                                            </div>
+                                            <p class="comment-content">
+                                                坚持就是胜利！
+                                            </p>
+                                            <div class="comment-footer">
+                                                <time>2017年02月16日</time>
+                                                <a href="javascript:void(0);">
+                                                    <i class="iconfont icon-huifu"></i>回复
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comments">
+                                        <div class="user">
+                                            <a href="javascript:void(0);">
+                                                <img src="/image/user.jpg" />
+                                            </a>
+                                        </div>
+                                        <div class="comment-body">
+                                            <div class="comment-name">
+                                                <a href="javascript:void(0);">
+                                                    我浪故我在
+                                                </a>
+                                            </div>
+                                            <p class="comment-content">
+                                                坚持就是胜利！
+                                            </p>
+                                            <div class="comment-footer">
+                                                <time>2017年02月16日</time>
+                                                <a href="javascript:void(0);">
+                                                    <i class="iconfont icon-huifu"></i>回复
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <!-- child comment end -->
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <div  class="comments-pages-wrap clearfix">
+                <ul>
+                    <li><a href="/" class="current-page">1</a></li>
+                    <li><a href="/">2</a></li>
+                    <li><a href="/">3</a></li>
+                    <li><a href="/">4</a></li>
+                    <li><a href="/">5</a></li>
+                </ul>
+            </div>
+        </div>
+          <div class="declare-comment-wrap">
+                <h3>发表评论</h3>
+                <form id="commentForm" action="" method="post">
+                    <p>
+                        <input type="text" tabindex="1" name="author" id="author" value=""/>
+                        <label for="author">名称（必须）</label>
+                    </p>
+                    <p>
+                        <input name="email" tabindex="2" id="email" />
+                        <label for="email">
+                            邮件地址(必须)
+                        </label>
+                    </p>
+                    <p>
+                        <input type="text" tabindex="3" id="site" name="site" />
+                        <label for="site">网站</label>
+                    </p>
+                    <p>
+                        <textarea name="comment" tabindex="4" cols="100%" rows="10"></textarea>
+                    </p>
+                    <p>
+                        <input name="submit" value="发表评论" class="declare-btn" type="submit">
+                    </p>
+                </form>
+            </div>
+          <!--评论部分 end-->
+    </div>
+</main>
+<%include footer.ejs%>
+</body>
+</html>

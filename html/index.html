@@ -17,9 +17,11 @@
     <link rel="shortcut icon" href="/public/favicon.ico">
     <link rel="stylesheet" href="../public/css/reset.css" />
     <link rel="stylesheet" href="../public/font/iconfont.css" />
-    <link rel="stylesheet" href="../public/css/index.css" />
+    <script src="../public/js/loadStaticFile.js"></script>
+
 </head>
 <body>
+
 <!--头部begin-->
 <header>
     <div class="head-wrap">
@@ -75,6 +77,9 @@
     </nav>
     <!--导航end-->
 </header>
+<script>
+    loadStaticFile('../public/css/index.css');
+</script>
 <!--头部end-->
 <!--轮播图begin-->
 <!--热门推荐文章(图文)-->
@@ -276,7 +281,7 @@
 <script type="text/javascript">
     $(init);
     function init() {
-        share(
+  /*      share(
             {
                 common: {
                     bdText : $("#blog").text(),
@@ -295,7 +300,7 @@
                     "bdSize" : 24
                 }]
             }
-        );
+        );*/
         var time = new Date();
         var year=time.getFullYear();
         document.getElementById("siteDate").innerHTML = year;

@@ -140,7 +140,7 @@
             //选择文件的按钮。可选。
             //内部根据当前运行时创建，可能是input元素，也可能是flash
             pick: '#filePicker',
-
+            fileNumLimit: 9,
             //只允许选择图片文件
             accept: {
                 title: 'Images',
@@ -179,8 +179,6 @@
             }, "220", "220");
 
             $li.on('click', '.remove-this', function() {
-                debugger;
-                console.log(file);
                 uploader.removeFile( file );
                 $("#" + file.id).remove();
             });
@@ -192,8 +190,6 @@
             var $li = $( '#'+file.id ),
                 percent = '',
                 $percent = $li.find('.progress span');
-            console.log("打印百分比：");
-            console.log(percentage);
             // 避免重复创建
             if ( !$percent.length ) {
                 $percent = $('<p class="progress"><span></span></p>')
@@ -203,9 +199,17 @@
             percent = percentage * 100 + '%';
             $percent.css( 'width', percent).find('span').end().text(percent);
         });
-
+            var imgUrls = [],
+                isFinished = false;
 // 文件上传成功，给item添加成功class, 用样式标记上传成功。
-        uploader.on( 'uploadSuccess', function( file ) {
+        uploader.on( 'uploadSuccess', function( file,response ) {
+
+            var jsonToObject = eval('('+response._raw+')'),
+                originUrl = jsonToObject.imgurl,
+                newUrl = originUrl.replace(/\\/g,'/'),
+                imgstr = '<img src="'+ newUrl +'" alt="" />';
+            imgUrls.push(imgstr);
+
             $( '#'+file.id ).addClass('upload-state-done');
         });
 
@@ -224,11 +228,62 @@
 
 // 完成上传完了，成功或者失败，先删除进度条。
         uploader.on( 'uploadComplete', function( file ) {
-           // $( '#'+file.id ).find('.progress').remove();
+          // $( '#'+file.id ).find('.progress').remove();
+
         });
 
+//全部上传完成时触发关闭弹出层
+    uploader.on('uploadFinished', function () {
+        isFinished = true;
+
+    });
         $('#declare-say-btn').on('click',function(){
-            uploader.upload();
+            //up = uploader.upload();
         });
 
+        //点击发表按钮发表说说
+        $('#declare-say-btn').on('click',function(){
+            //up =
+            //说说的内容
+            var sayContent = $('#say').html(),
+                imgUrlsSrc = '',
+                flag = false;
+            if($('#fileList').find('img').length > 0){
+                    uploader.upload();
+                    var loop = setInterval(function(){
+                        if(isFinished){
+                            imgUrlsSrc = imgUrls.join('');
+                            flag = true;
+                            clearInterval(loop);
+                        }
+                    },1000);
+
+            } else {
+                flag = true;
+            }
+
+            var looptwo = setInterval(function(){
+                if(flag){
+                    comm.ajax.commAjax({
+                        url: '/admin/writesay',
+                        type: 'post',
+                        data: {
+                            content: sayContent,
+                            imgs: imgUrlsSrc
+                        },
+                        successFn: function(data){
+                            if(data.status === 1){
+                                comm.layer.alert(data.des,function(index){
+                                    window.location.replace('/say');
+                                });
+                            }
+                        },
+                        errorFn: function(err){
+                            comm.layer.alert(err);
+                        }
+                    });
+                    clearInterval(looptwo);
+                }
+            },2000);
+        });
 })();

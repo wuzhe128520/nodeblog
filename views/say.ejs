@@ -1,0 +1,463 @@
+<%include header.ejs%>
+<link href="/css/mood.css" rel="stylesheet" type="text/css">
+<main>
+    <div class="mood-wrap">
+        <div class="moods" id="say">
+
+        </div>
+        <div id="pages" class="mood-page-wrap"></div>
+    </div>
+</main>
+<!--尾部begin-->
+<%include footer.ejs%>
+<!--尾部end-->
+<script type="text/javascript" src="/js/plugin/moment.js"></script>
+<script type="text/template" id="page">
+    <div class="pages clearfix">
+        <ul class="page-wrap">
+            <$
+            //每页显示几条数据
+            var  showPageNum = parseInt(pages.showPageNum),
+            //总页数
+            totalPage = Math.ceil(pages.allPageNum/showPageNum),
+            //当前页
+            currentPage = parseInt(pages.currentPage);
+            if(totalPage > 1){
+            $>
+
+            <li class="page">
+                <span><$= currentPage $>/<$= totalPage $></span>
+            </li>
+
+            <$ if(currentPage!== 1){ $>
+            <li class="page" data-pagenum="<$= currentPage - 1 $>">
+                <a href="javascript:void(0);">
+                    <
+                </a>
+            </li>
+            <$ } $>
+
+            <$
+            for(var i = 0;i < totalPage ;i++){
+            //循环中的当前页码
+            var loopPage = i + 1;
+            $>
+
+            <li class="page" data-pagenum="<$=loopPage$>">
+                <a  <$ if(loopPage === currentPage) { $>
+                class="active" href="javascript:void(0);"
+                <$ } else { $>
+                href="javascript:void(0);"
+                <$ } $>
+                >
+                <$= loopPage $>
+                </a>
+            </li>
+
+            <$}$>
+
+            <$if(currentPage !== totalPage){$>
+
+            <li class="page" data-pagenum="<$= currentPage + 1 $>">
+                <a href="javascript:void(0);">
+                    >
+                </a>
+            </li>
+            <li class="page" data-pagenum="<$=totalPage$>">
+                <a href="javascript:void(0);">尾页</a>
+            </li>
+            <$}$>
+            <$}$>
+        </ul>
+    </div>
+</script>
+<script type="text/template" id="template">
+    <div class="declare-comment-wrap js_reply_wrap hidden">
+        <h3>发表回复</h3>
+        <form>
+            <p>
+                <textarea name="comment" tabindex="4" cols="100%" rows="6"></textarea>
+            </p>
+            <p>
+                <input name="submit" value="回复" class="declare-btn" type="submit" onsubmit="return false;">
+            </p>
+        </form>
+    </div>
+</script>
+<script type="text/template" id="sayTmpl">
+    <ul>
+    <$
+        var i = 0,
+            length = data.length;
+        for(; i < length; i++){
+        var d = data[i];
+        console.log(d);
+        if(d.content||d.imgs) {
+        $>
+
+            <li class="mood-detail">
+                <img src="/image/user.jpg" class="user-img" />
+                <span class="time">
+                            <time>
+                                <$=moment(d.time).format('YYYY年MM月DD HH:mm')$>
+                            </time>
+                        </span>
+                <em></em>
+                <div class="mood-content">
+                    <p>
+                        <$-d.content$>
+                    </p>
+                    <$if(data.imgs){$>
+                    <div class="say-img-wrap clearfix">
+                        <$-d.imgs$>
+                    </div>
+                    <$}$>
+                    <div class="mood-footer js">
+                        <span class="mood-comments">
+                            <a href="/">有<$=d.comment_count|0$>条评论</a>
+                        </span>
+                        <span class="declare-comment">
+                            <a class="comment js_declare_comment" href="/">发表评论</a>
+                        </span>
+
+                        <!--评论和回复 begin-->
+                        <div class="comments-wrap" id="commentsArea">
+                            <ul class="comments-all">
+
+                                <$var m=0,
+                                commentsReply = d.comrep,
+                                l = commentsReply.length;
+
+                                for(;m < l; m++){
+                                $>
+                                <li>
+                                    <!--展示评论 begin-->
+                                    <div class="comments">
+                                        <div class="user">
+                                            <a href="javascript:void(0);">
+                                                <img src="/image/user.jpg" />
+                                            </a>
+                                        </div>
+                                        <div class="comment-body js_comment_body">
+                                            <div class="comment-name">
+                                                <a href="javascript:void(0);">
+                                                    <$=commentsReply[m].username$>
+                                                </a>
+                                            </div>
+                                            <p class="comment-content">
+                                                <$=commentsReply[m].content$>
+                                            </p>
+                                            <div class="comment-footer js_comment_footer">
+                                                <time> <$=moment(commentsReply[m].comm_time).format('YYYY年MM月DD HH:mm')$></time>
+                                                <a href="javascript:void(0);" data-flag="1" class="js_reply" data-replytype="4" data-replyid="<$=commentsReply[m].commid$>" data-replyuser="<$=commentsReply[m].from_uid$>" data-dicid="<$=commentsReply[m].dicid$>" >
+                                                    <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--展示评论 end-->
+                                    <$
+                                    loop(commentsReply[m].replys);
+                                    function loop(replys){
+
+                                    if(!replys||replys.length < 1){return;}
+                                    if(replys.length > 0){
+                                    for(var k = 0; k < replys.length;k++){
+                                    var reply =replys[k];
+                                    console.log("当前对象：");
+                                    console.log(reply);
+                                    if(reply.hasOwnProperty('rpid')){
+                                    $>
+                                    <ul class="comment-childs">
+                                        <li id="<$=reply.rpid$>">
+                                            <div class="comments">
+                                                <div class="user">
+                                                    <a href="javascript:void(0);">
+                                                        <img src="/image/user.jpg" />
+                                                    </a>
+                                                </div>
+                                                <div class="comment-body js_comment_body">
+                                                    <div class="comment-name">
+                                                        <a href="javascript:void(0);">
+                                                            <$=reply.from_username$> <span class="reply_text">回复</span> <$=reply.to_username$>
+                                                        </a>
+                                                    </div>
+                                                    <p class="comment-content">
+                                                        <$=reply.reply_content$>
+                                                    </p>
+                                                    <div class="comment-footer js_comment_footer">
+                                                        <time>
+                                                            <$=moment(replys[k].reply_time).format('YYYY年MM月DD HH:mm')$>
+                                                        </time>
+                                                        <a href="javascript:void(0);" class="js_reply" data-flag="1" data-replytype="5" data-commid="<$=reply.comment_id$>" data-replyid="<$=reply.rpid$>" data-replyuser="<$=reply.rp_from_uid$>" data-dicid="<$=reply.dicid$>">
+                                                            <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <$}$>
+                                    <$
+                                    if(reply.replys){
+                                    loop(reply.replys);
+                                    }
+                                    $>
+                                    <$ }$>
+
+                                    <$}$>
+                                    <$}$>
+                                    <!--表示针对评论的回复-->
+                                </li>
+                                <$}$>
+
+
+                            </ul>
+                        </div>
+                        <!--评论和回复 end-->
+                        <div class="declare-comment-wrap js_comments hidden">
+                            <div class="comment-form js_comment_form" data-commentid="<$=data.sayid$>"  method="post">
+                                <p>
+                                    <textarea autocomplete="off" name="content" class="js_comment_textarea" tabindex="4" style="width: 100%;" rows="10"></textarea>
+                                </p>
+                                <p>
+                                    <input name="submit" value="发表评论" class="declare-btn js_declare_comment_btn" type="button">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        <$}$>
+        <$ } $>
+    </ul>
+</script>
+<script type="text/javascript">
+    $(function(){
+        //使用分页组件
+        comm.page.init({
+            url: '/say',
+            container: 'pages',
+            pageTmplId: 'page',
+            dataTmplId: 'sayTmpl',
+            dataId: 'say',
+            postData: {
+                currentPage: 1,
+                showPageNum: 5
+            }
+        });
+        /*comm.ajax.commAjax({
+            url: '/say',
+            type: 'post',
+            successFn: function(data){
+                debugger;
+                console.log(data.data);
+                if(data.hasOwnProperty('data')){
+                    comm.tmpl.render('sayTmpl',{says: data.data},'say');
+                    comm.tmpl.render('page',{pages: data.pages},'pages');
+                }
+            },
+            errorFn: function(err){
+                comm.layer.alert('失败');
+            }
+        });*/
+
+        //点击发表评论
+        $('#say').on('click','.js_declare_comment',function(event){
+            event.preventDefault();
+            var $target = $(this),
+                $comment = $target.parent().siblings('.js_comments').eq(0);
+
+            //显示评论框并绑定事件
+            if($comment.is(':hidden')) {
+                $target.text('取消评论');
+                $comment.slideDown();
+                $comment.find('.js_declare_comment_btn').eq(0).off('click').on('click',function(event){
+                    event.preventDefault();
+                    var commentid = $comment.find('.js_comment_form').eq(0).data('commentid'),
+                        content = $comment.find('.js_comment_textarea').eq(0).val();
+                    handleDeclareComment(commentid,content);
+                });
+            } else {
+                $target.text('发表评论');
+                $comment.slideUp();
+            }
+            return false;
+        });
+
+        //发表评论的逻辑处理
+        function handleDeclareComment(commentid,content){
+            comm.ajax.commAjax({
+                url: '/comment',
+                type: 'post',
+                data: {
+                    commentid: commentid,
+                    content: content,
+                    dicid: 2
+                },
+                successFn: function(data){
+                    if(!comm.judge.isEmptyObject(data)){
+                        comm.layer.alert('成功');
+                        /*comm.layer.alert(data.des,null,function(index){
+                            layer.close(index);
+                            var originUrl = comm.url.getOriginUrl();
+                            $('#commentfirst').removeAttr('id');
+                            window.location.href = originUrl+'?time='+new Date().getTime()+'#commentfirst';
+                        });*/
+                    } else {
+                        comm.layer.alert('抱歉，返回数据为空！');
+                    }
+                },
+                errorFn: function(err){
+                    comm.layer.alert('失败');
+                }
+            });
+        }
+
+        //回复
+        $('#say').on('click','.js_reply',function(){
+            /*
+             获取html模板,根据reply_type是否为4来判断是不是根评论id(comment_id),
+             被回复评论的id(reply_id)，回复内容(reply_content)，评论人id(from_uid),
+             被评论人id(to_uid),评论主题id(dicid，文章是1)
+             */
+
+            /*
+             对于根评论来说：
+             comment_id 和 reply_id是一样的(所以只需要找到comment_id就行)；
+             被评论人id(就是评论表的from_id)
+             */
+            var $target = $(this),
+                flag = parseInt($target.data('flag'));
+            if(flag){
+                //这里是显示回复框
+                showReplyArea($target);
+            } else {
+                //移除回复框
+                revmoeReplyArea($target);
+            }
+            /*
+             *   需求分析：
+             *       点击回复/取消回复:
+             *           判断是回复(1)、还是取消回复(0)
+             *
+             *           如果是回复：
+             *               显示回复框，将数据绑定到当前的回复框里；显示"取消回复"
+             *
+             *           如果是取消回复：
+             *           直接移除这个框就好了;显示"回复"
+             *
+             * */
+        });
+
+        function saveDataOnDom($target,$store) {
+
+            //回复的是评论还是回复
+
+           var rpType = $target.data('replytype'),
+
+                //被回复的评论(回复)id
+                rpId = $target.data('replyid'),
+
+                //被回复人id
+                rpUserId = $target.data('replyuser'),
+
+                //哪个类型的回复(可能是文章的回复，也可能是说说的回复)
+                rpDicId = $target.data('dicid'),
+
+                //根评论的id
+                commentId = $target.data('commid')|null;
+
+            //如果回复的是评论
+            if(rpType===4){
+
+                commentId = rpId;
+            }
+
+            $store.data('reply',{
+                commid: commentId,
+                rptype: rpType,
+                rpid: rpId,
+                rpUserId: rpUserId,
+                rpDicId: rpDicId,
+
+            });
+        }
+
+        //显示评论框
+        function showReplyArea($target) {
+
+            var templ = $('#template').html(),
+                $templ = $(templ);
+
+            if($target.closest('.js_comment_footer').find('js_reply_wrap').length < 1){
+                $target.closest('.js_comment_body').append($templ);
+                $templ.find('input[type="submit"]').click(function(e){
+
+                    var $target = $(this);
+                    e.preventDefault();
+                    handleReplySubmit($target);
+                });
+                saveDataOnDom($target,$templ);
+            }
+            $templ.slideDown();
+            $target.text('取消回复').data('flag',0);
+        }
+
+        //移除评论框
+        function revmoeReplyArea($target) {
+            $target.closest('.js_comment_body').find('.js_reply_wrap').slideUp();
+            $target.text('回复').data('flag',1);
+        }
+
+        //处理回复的事件
+        function handleReplySubmit($target){
+            var $replyDialog = $target.closest('.js_reply_wrap'),
+                content = $target.closest('form').find('textarea').eq(0).val(),
+                replyData = $replyDialog.data('reply'),
+                commid = replyData.commid,
+                rpid = replyData.rpid,
+                touid = replyData.rpUserId,
+                rptype = replyData.rptype,
+                dicid = replyData.rpDicId;
+            declareReply(commid,rpid,rptype,content,touid,dicid);
+        }
+
+        //发表回复的逻辑处理
+        function declareReply(commid,rpid,rptype,content,touid,dicid) {
+
+            comm.ajax.commAjax({
+                url: '/reply',
+                type: 'post',
+                data: {
+                    commid: commid,
+                    replyid: rpid,
+                    replytype: rptype,
+                    content: content,
+                    touid: touid,
+                    dicid: dicid
+                },
+                errorFn: function(error){
+                    comm.layer.alert('回复失败！');
+                },
+                successFn: function(data){
+                    comm.layer.alert(data.data.des,null,function(index){
+                        var originUrl = comm.url.getOriginUrl();
+                        layer.close(index);
+                        var id = $("#commentsArea").find('li').eq(0).data('id');
+                        if(rpid === window.parseInt(id)) {
+                            rpid = 'commentfirst'
+                        }
+                        window.location.href = originUrl+'?time='+new Date().getTime()+'#'+rpid;
+                    });
+
+                }
+            });
+
+        }
+    });
+
+</script>
+</body>
+</html>

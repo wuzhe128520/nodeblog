@@ -17,11 +17,9 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="/css/reset.css" />
     <link rel="stylesheet" href="/font/iconfont.css" />
-    <script src="/js/loadStaticFile.js"></script>
 </head>
 <body>
-<!--头部begin-->
-<header>
+<div class="container-top-wrap">
     <div class="head-wrap">
         <div class="head clearfix">
             <span class="welcome">欢迎光临无畏滴青春个人网站!</span>
@@ -37,8 +35,8 @@
                 <%}%>
                 <a href="/logout" class="logout">退出</a>
                 <%}else {%>
-                    <a href="/login?show=1" class="login-btn">登录</a>
-                    <a href="/register?show=0" class="reg-btn">注册</a>
+                <a href="/login?show=1" class="login-btn">登录</a>
+                <a href="/register?show=0" class="reg-btn">注册</a>
                 <%}%>
             </div>
             <!--搜索 begin-->
@@ -48,7 +46,7 @@
                         <i class="a-search iconfont icon-search" title="搜索文章" id="search-btn">搜索</i>
                         <form id="search" class="search-form" method="get" action="/search" >
                             <div class="query-wrap">
-                                <input type="text" id="query" name="search" placeholder="搜索" class="search-input js_water_mark" />
+                                <input type="text" id="query" name="search" placeholder="搜索文章" class="search-input js_water_mark" />
                             </div>
                         </form>
                     </li>
@@ -57,48 +55,37 @@
             <!--搜索 end-->
         </div>
     </div>
-    <!--导航begin-->
-    <nav>
+</div>
+<div class="background-container">
+<!--头部begin-->
+<header class="header-body-wrap">
+    <div class="background-layer">
         <div class="site-description">
-            <a class="logo">
-                <img src="/image/logo.jpg" alt="无畏滴青春个人博客网站图标" />
-            </a>
             <div class="type-print">
                 <h1 class="site-title">
                     <a href="/" id="blog">
-                        无畏滴青春的个人网站
+                        无畏滴青春个人网站
                     </a>
                 </h1>
                 <p class="site-care">
-                    关注web前端技术，热爱web前端开发！
+                    关注web前端技术！
                 </p>
-                <!--百度分享begin -->
-                <!--<div class="share-wrap">
-                    <div class="bdsharebuttonbox" data-tag="share_1">
-                        <a class="bds_mshare" data-cmd="mshare"></a>
-                        <a class="bds_qzone" data-cmd="qzone" href="#"></a>
-                        <a class="bds_tsina" data-cmd="tsina"></a>
-                        <a class="bds_baidu" data-cmd="baidu"></a>
-                        <a class="bds_renren" data-cmd="renren"></a>
-                        <a class="bds_tqq" data-cmd="tqq"></a>
-                        <a class="bds_more" data-cmd="more">更多</a>
-                        <a class="bds_count" data-cmd="count"></a>
-                    </div>
-                </div>-->
-                <!--百度分享end -->
             </div>
         </div>
+    </div>
+</header>
+<!--导航begin-->
+<nav class="nav-body-wrap">
         <div class="nav-wrap">
-            <ul class="nav">
-                <li><a href="/" title="首页">首页</a></li>
-                <li><a href="/" title="web前端">web前端</a></li>
-                <li><a href="/" title="我的说说">我的说说</a></li>
-                <li><a href="/" title="关于我">关于我</a></li>
-                <li><a href="/" title="留言板">留言板</a></li>
-                <li><a href="/" title="相册">相册</a></li>
+            <ul class="nav" id="nav">
+                <% let navs = locals.nav
+                for(let i = 0,length = navs.length; i < length; i++) {
+                    let n = navs[i];
+                %>
+                <li><a href="<%=n.url%>" title="<%=n.title%>"><%=n.title%></a></li>
+                <%}%>
             </ul>
         </div>
-    </nav>
+</nav>
     <!--导航end-->
-</header>
 <!--头部end-->

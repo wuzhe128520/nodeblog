@@ -1,0 +1,141 @@
+<%include header.ejs%>
+<link href="/css/photos.css" rel="stylesheet" type="text/css">
+<main>
+    <div class="photos-wrap layer-wz">
+        <h2 class="photos-title">
+            <a href="/">我的相册</a>
+        </h2>
+        <div class="photos-list">
+            <ul class="clearfix">
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="javascript:void(0);">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="/">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="/">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="/">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="/">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="/">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="/">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="/">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="/">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="/">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="/">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="/">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+                <li>
+                    <figure class="photo-wrap">
+                        <a href="/">
+                            <img src="/image/photo.jpg" alt="相册">
+                            <span class="pic-num">5</span>
+                        </a>
+                        <figcaption class="photo-name"><a href="/" title="贴图相册">贴图相册</a></figcaption>
+                    </figure>
+                </li>
+            </ul>
+        </div>
+    </div>
+</main>
+<%include footer.ejs%>
+<script type="text/javascript">
+    $(function(){
+        $(".photos-wrap img").click(function(event){
+            event.preventDefault();
+            comm.layer.photos({url: '/photos.json'});
+        });
+    });
+</script>
+</body>
+</html>
