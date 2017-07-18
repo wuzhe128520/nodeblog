@@ -79,7 +79,7 @@ const app = require('../app'),
 
                     //如果请求路径存在于include里，则拦截……
                     if(include.indexOf(arr[0]) !== -1){
-
+                        debugger;
                         console.log('拦截请求…………');
                         console.log(arr[0]);
                         req.session.originalUrl = req.originalUrl ? req.originalUrl : null;  // 记录用户原始请求路径

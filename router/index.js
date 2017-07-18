@@ -195,7 +195,6 @@ const express = require('express'),
               queryMostComment(res);
         });
 
-
         /**
          *通用ajax分页
          * @param currentPage: 当前页
@@ -962,8 +961,26 @@ const express = require('express'),
 
                });
            });
-
            //查询说说对应说说下的评论回复
+       });
+
+       //查询当前说说的评论回复
+       router.post('/querysaycomment', (req, res) => {
+           let topicId = req.body.topicTd,
+               dicId = 2;
+           let promise = new Promise(function(resolve, reject){
+               commentsAndReplys(topicId, dicId,resolve, reject);
+           });
+           promise.then(function(data){
+               if(data.length > 0){
+                   res.json(data);
+               } else {
+                   res.json({
+                       status: 0,
+                       des: '获取数据失败！'
+                   });
+               }
+           });
        });
 
        //留言板

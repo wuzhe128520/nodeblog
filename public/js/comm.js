@@ -170,29 +170,7 @@ var comm = {
              $(document).ajaxError(callback);
          },
          commAjax: function(config){
-             comm.ajax.ajaxComplete(function(event,xhr,settins){
-                 console.log("ajax请求完成！");
-                 console.log(JSON.stringify(xhr.responseText));
-
-                 //将json字符串转为js对象
-                 var data = eval("(" + JSON.stringify(xhr.responseText) + ")");
-                 if(!!data.status && data.status === "nologin"){
-                     alert('您还未登录！');
-                     comm.layer.confirm(
-                         '您还未登录，是否跳转到登录界面？',
-                         null,
-                         function(index){
-                             comm.layer.close(index);
-                             setTimeout(function(){
-                                 window.location.href = "/login?show=1";
-                             },1000);
-                         });
-                 }
-             });
-
-             comm.ajax.ajaxStart(function(){console.log("ajax开始请求！")});
-             comm.ajax.ajaxError(function(event,xhr,options,exc){console.log("请求出错了噢！"+exc);});
-
+             var flag = true;
              //给请求地址加上随机参数
              var num = new Date()*comm.randomNum(1,10);
              if(config.url){
@@ -219,7 +197,6 @@ var comm = {
              if(config){
                  $.extend(defaultObj, config);
              }
-             console.log(defaultObj);
              return $.ajax(defaultObj);
          }
      },
@@ -1076,11 +1053,32 @@ var comm = {
            }
         });
     },
-
     //公用发表评论
     declareComment: function(commentid,content){
 
     }
 };
+(function(comm){
+    comm.ajax.ajaxComplete(function(event,xhr,settins){
+
+        //将json字符串转为js对象
+        var data = JSON.parse(xhr.responseText);
+        if(!!data.status && data.status === "nologin"){
+            alert('您还未登录！');
+            comm.layer.confirm(
+                '您还未登录，是否跳转到登录界面？',
+                null,
+                function(index){
+                    comm.layer.close(index);
+                    setTimeout(function(){
+                        window.location.href = "/login?show=1";
+                    },1000);
+                });
+        }
+    });
+    comm.ajax.ajaxStart(function(){console.log("ajax开始请求！")});
+    comm.ajax.ajaxError(function(event,xhr,options,exc){console.log("请求出错了噢！"+exc);});
+})(comm);
+
 
 
