@@ -73,10 +73,9 @@
 </script>
 <script type="text/template" id="template">
     <div class="declare-comment-wrap js_reply_wrap hidden">
-        <h3>发表回复</h3>
         <form>
             <p>
-                <textarea name="comment" tabindex="4" cols="100%" rows="6"></textarea>
+                <textarea name="comment" tabindex="4" class="js_replay_textarea" cols="100%" rows="6"></textarea>
             </p>
             <p>
                 <input name="submit" value="回复" class="declare-btn" type="submit" onsubmit="return false;">
@@ -91,11 +90,10 @@
             length = data.length;
         for(; i < length; i++){
         var d = data[i];
-        console.log(d);
         if(d.content||d.imgs) {
         $>
 
-            <li class="mood-detail">
+            <li class="mood-detail js_say_id" data-sayid="<$=d.sayid$>">
                 <img src="/image/user.jpg" class="user-img" />
                 <span class="time">
                             <time>
@@ -119,105 +117,104 @@
                         <span class="declare-comment">
                             <a class="comment js_declare_comment" href="/">发表评论</a>
                         </span>
+                        <div class="js_comments_replays">
+                            <!--评论和回复 begin-->
+                            <div class="comments-wrap">
+                                <ul class="comments-all">
 
-                        <!--评论和回复 begin-->
-                        <div class="comments-wrap" id="commentsArea">
-                            <ul class="comments-all">
+                                    <$var m=0,
+                                    commentsReply = d.comrep,
+                                    l = commentsReply.length;
 
-                                <$var m=0,
-                                commentsReply = d.comrep,
-                                l = commentsReply.length;
-
-                                for(;m < l; m++){
-                                $>
-                                <li>
-                                    <!--展示评论 begin-->
-                                    <div class="comments">
-                                        <div class="user">
-                                            <a href="javascript:void(0);">
-                                                <img src="/image/user.jpg" />
-                                            </a>
-                                        </div>
-                                        <div class="comment-body js_comment_body">
-                                            <div class="comment-name">
-                                                <a href="javascript:void(0);">
-                                                    <$=commentsReply[m].username$>
-                                                </a>
-                                            </div>
-                                            <p class="comment-content">
-                                                <$=commentsReply[m].content$>
-                                            </p>
-                                            <div class="comment-footer js_comment_footer">
-                                                <time> <$=moment(commentsReply[m].comm_time).format('YYYY年MM月DD HH:mm')$></time>
-                                                <a href="javascript:void(0);" data-flag="1" class="js_reply" data-replytype="4" data-replyid="<$=commentsReply[m].commid$>" data-replyuser="<$=commentsReply[m].from_uid$>" data-dicid="<$=commentsReply[m].dicid$>" >
-                                                    <i title="回复图标" class="iconfont icon-huifu"></i>回复
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--展示评论 end-->
-                                    <$
-                                    loop(commentsReply[m].replys);
-                                    function loop(replys){
-
-                                    if(!replys||replys.length < 1){return;}
-                                    if(replys.length > 0){
-                                    for(var k = 0; k < replys.length;k++){
-                                    var reply =replys[k];
-                                    console.log("当前对象：");
-                                    console.log(reply);
-                                    if(reply.hasOwnProperty('rpid')){
+                                    for(;m < l; m++){
                                     $>
-                                    <ul class="comment-childs">
-                                        <li id="<$=reply.rpid$>">
-                                            <div class="comments">
-                                                <div class="user">
+                                    <li>
+                                        <!--展示评论 begin-->
+                                        <div class="comments">
+                                            <div class="user">
+                                                <a href="javascript:void(0);">
+                                                    <img src="/image/user.jpg" />
+                                                </a>
+                                            </div>
+                                            <div class="comment-body js_comment_body">
+                                                <div class="comment-name">
                                                     <a href="javascript:void(0);">
-                                                        <img src="/image/user.jpg" />
+                                                        <$=commentsReply[m].username$>
                                                     </a>
                                                 </div>
-                                                <div class="comment-body js_comment_body">
-                                                    <div class="comment-name">
-                                                        <a href="javascript:void(0);">
-                                                            <$=reply.from_username$> <span class="reply_text">回复</span> <$=reply.to_username$>
-                                                        </a>
-                                                    </div>
-                                                    <p class="comment-content">
-                                                        <$=reply.reply_content$>
-                                                    </p>
-                                                    <div class="comment-footer js_comment_footer">
-                                                        <time>
-                                                            <$=moment(replys[k].reply_time).format('YYYY年MM月DD HH:mm')$>
-                                                        </time>
-                                                        <a href="javascript:void(0);" class="js_reply" data-flag="1" data-replytype="5" data-commid="<$=reply.comment_id$>" data-replyid="<$=reply.rpid$>" data-replyuser="<$=reply.rp_from_uid$>" data-dicid="<$=reply.dicid$>">
-                                                            <i title="回复图标" class="iconfont icon-huifu"></i>回复
-                                                        </a>
-                                                    </div>
+                                                <p class="comment-content">
+                                                    <$=commentsReply[m].content$>
+                                                </p>
+                                                <div class="comment-footer js_comment_footer">
+                                                    <time> <$=moment(commentsReply[m].comm_time).format('YYYY年MM月DD HH:mm')$></time>
+                                                    <a href="javascript:void(0);" data-flag="1" class="js_reply" data-replytype="4" data-replyid="<$=commentsReply[m].commid$>" data-replyuser="<$=commentsReply[m].from_uid$>" data-dicid="<$=commentsReply[m].dicid$>" >
+                                                        <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                                                    </a>
                                                 </div>
                                             </div>
-                                        </li>
-                                    </ul>
+                                        </div>
+                                        <!--展示评论 end-->
+                                        <$
+                                        loop(commentsReply[m].replys);
+                                        function loop(replys){
 
+                                        if(!replys||replys.length < 1){return;}
+                                        if(replys.length > 0){
+                                        for(var k = 0; k < replys.length;k++){
+                                        var reply =replys[k];
+                                        console.log("当前对象：");
+                                        console.log(reply);
+                                        if(reply.hasOwnProperty('rpid')){
+                                        $>
+                                        <ul class="comment-childs">
+                                            <li id="<$=reply.rpid$>">
+                                                <div class="comments">
+                                                    <div class="user">
+                                                        <a href="javascript:void(0);">
+                                                            <img src="/image/user.jpg" />
+                                                        </a>
+                                                    </div>
+                                                    <div class="comment-body js_comment_body">
+                                                        <div class="comment-name">
+                                                            <a href="javascript:void(0);">
+                                                                <$=reply.from_username$> <span class="reply_text">回复</span> <$=reply.to_username$>
+                                                            </a>
+                                                        </div>
+                                                        <p class="comment-content">
+                                                            <$=reply.reply_content$>
+                                                        </p>
+                                                        <div class="comment-footer js_comment_footer">
+                                                            <time>
+                                                                <$=moment(replys[k].reply_time).format('YYYY年MM月DD HH:mm')$>
+                                                            </time>
+                                                            <a href="javascript:void(0);" class="js_reply" data-flag="1" data-replytype="5" data-commid="<$=reply.comment_id$>" data-replyid="<$=reply.rpid$>" data-replyuser="<$=reply.rp_from_uid$>" data-dicid="<$=reply.dicid$>">
+                                                                <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+
+                                        <$}$>
+                                        <$
+                                        if(reply.replys){
+                                        loop(reply.replys);
+                                        }
+                                        $>
+                                        <$ }$>
+
+                                        <$}$>
+                                        <$}$>
+                                        <!--表示针对评论的回复-->
+                                    </li>
                                     <$}$>
-                                    <$
-                                    if(reply.replys){
-                                    loop(reply.replys);
-                                    }
-                                    $>
-                                    <$ }$>
-
-                                    <$}$>
-                                    <$}$>
-                                    <!--表示针对评论的回复-->
-                                </li>
-                                <$}$>
-
-
-                            </ul>
+                                </ul>
+                            </div>
                         </div>
                         <!--评论和回复 end-->
                         <div class="declare-comment-wrap js_comments hidden">
-                            <div class="comment-form js_comment_form" data-commentid="<$=data.sayid$>"  method="post">
+                            <div class="comment-form js_comment_form" data-commentid="<$=d.sayid$>"  method="post">
                                 <p>
                                     <textarea autocomplete="off" name="content" class="js_comment_textarea" tabindex="4" style="width: 100%;" rows="10"></textarea>
                                 </p>
@@ -233,6 +230,102 @@
         <$ } $>
     </ul>
 </script>
+<script type="text/template" id="commentsReplays">
+    <!--评论和回复 begin-->
+    <div class="comments-wrap">
+        <ul class="comments-all">
+
+            <$var m=0,
+            commentsReply = data,
+            l = commentsReply.length;
+
+            for(;m < l; m++){
+            $>
+            <li>
+                <!--展示评论 begin-->
+                <div class="comments">
+                    <div class="user">
+                        <a href="javascript:void(0);">
+                            <img src="/image/user.jpg" />
+                        </a>
+                    </div>
+                    <div class="comment-body js_comment_body">
+                        <div class="comment-name">
+                            <a href="javascript:void(0);">
+                                <$=commentsReply[m].username$>
+                            </a>
+                        </div>
+                        <p class="comment-content">
+                            <$=commentsReply[m].content$>
+                        </p>
+                        <div class="comment-footer js_comment_footer">
+                            <time> <$=moment(commentsReply[m].comm_time).format('YYYY年MM月DD HH:mm')$></time>
+                            <a href="javascript:void(0);" data-flag="1" class="js_reply" data-replytype="4" data-replyid="<$=commentsReply[m].commid$>" data-replyuser="<$=commentsReply[m].from_uid$>" data-dicid="<$=commentsReply[m].dicid$>" >
+                                <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!--展示评论 end-->
+                <$
+                loop(commentsReply[m].replys);
+                function loop(replys){
+
+                if(!replys||replys.length < 1){return;}
+                if(replys.length > 0){
+                for(var k = 0; k < replys.length;k++){
+                var reply =replys[k];
+                console.log("当前对象：");
+                console.log(reply);
+                if(reply.hasOwnProperty('rpid')){
+                $>
+                <ul class="comment-childs">
+                    <li id="<$=reply.rpid$>">
+                        <div class="comments">
+                            <div class="user">
+                                <a href="javascript:void(0);">
+                                    <img src="/image/user.jpg" />
+                                </a>
+                            </div>
+                            <div class="comment-body js_comment_body">
+                                <div class="comment-name">
+                                    <a href="javascript:void(0);">
+                                        <$=reply.from_username$> <span class="reply_text">回复</span> <$=reply.to_username$>
+                                    </a>
+                                </div>
+                                <p class="comment-content">
+                                    <$=reply.reply_content$>
+                                </p>
+                                <div class="comment-footer js_comment_footer">
+                                    <time>
+                                        <$=moment(replys[k].reply_time).format('YYYY年MM月DD HH:mm')$>
+                                    </time>
+                                    <a href="javascript:void(0);" class="js_reply" data-flag="1" data-replytype="5" data-commid="<$=reply.comment_id$>" data-replyid="<$=reply.rpid$>" data-replyuser="<$=reply.rp_from_uid$>" data-dicid="<$=reply.dicid$>">
+                                        <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+                <$}$>
+                <$
+                if(reply.replys){
+                loop(reply.replys);
+                }
+                $>
+                <$ }$>
+
+                <$}$>
+                <$}$>
+                <!--表示针对评论的回复-->
+            </li>
+            <$}$>
+        </ul>
+    </div>
+    <!--评论和回复 end-->
+</script>
 <script type="text/javascript">
     $(function(){
         //使用分页组件
@@ -247,21 +340,6 @@
                 showPageNum: 5
             }
         });
-        /*comm.ajax.commAjax({
-            url: '/say',
-            type: 'post',
-            successFn: function(data){
-                debugger;
-                console.log(data.data);
-                if(data.hasOwnProperty('data')){
-                    comm.tmpl.render('sayTmpl',{says: data.data},'say');
-                    comm.tmpl.render('page',{pages: data.pages},'pages');
-                }
-            },
-            errorFn: function(err){
-                comm.layer.alert('失败');
-            }
-        });*/
 
         //点击发表评论
         $('#say').on('click','.js_declare_comment',function(event){
@@ -277,7 +355,7 @@
                     event.preventDefault();
                     var commentid = $comment.find('.js_comment_form').eq(0).data('commentid'),
                         content = $comment.find('.js_comment_textarea').eq(0).val();
-                    handleDeclareComment(commentid,content);
+                    handleDeclareComment(commentid,content,$(this));
                 });
             } else {
                 $target.text('发表评论');
@@ -286,8 +364,22 @@
             return false;
         });
 
+        //重新渲染当前说说下的评论回复
+        function queryCommentReplay(commentid,callback){
+            comm.ajax.commAjax({
+                url: '/querysaycomment',
+                type: 'post',
+                data: {
+                    topicId: commentid
+                },
+                successFn: function(data){
+                    callback&&callback(data);
+                }
+            });
+        }
+
         //发表评论的逻辑处理
-        function handleDeclareComment(commentid,content){
+        function handleDeclareComment(commentid,content,$target){
             comm.ajax.commAjax({
                 url: '/comment',
                 type: 'post',
@@ -298,13 +390,19 @@
                 },
                 successFn: function(data){
                     if(!comm.judge.isEmptyObject(data)){
-                        comm.layer.alert('成功');
-                        /*comm.layer.alert(data.des,null,function(index){
-                            layer.close(index);
-                            var originUrl = comm.url.getOriginUrl();
-                            $('#commentfirst').removeAttr('id');
-                            window.location.href = originUrl+'?time='+new Date().getTime()+'#commentfirst';
-                        });*/
+                        if(data.status === 1){
+                            comm.layer.alert(data.des,function(index){
+                                var $wrapper = $target.closest('.js');
+                                    $comments = $wrapper.find('.js_declare_comment');
+                                    $wrapper.find('.js_comment_textarea').eq(0).val('');
+                                $comments.trigger('click');
+                                queryCommentReplay(commentid, function(data){
+                                    var $container = $target.closest('.js').find('.js_comments_replays').eq(0);
+                                    comm.tmpl.render('commentsReplays',{data: data},$container);
+                                });
+                                comm.layer.close(index);
+                            });
+                        }
                     } else {
                         comm.layer.alert('抱歉，返回数据为空！');
                     }
@@ -370,7 +468,7 @@
                 commentId = $target.data('commid')|null;
 
             //如果回复的是评论
-            if(rpType===4){
+            if(rpType === 4){
 
                 commentId = rpId;
             }
@@ -380,8 +478,7 @@
                 rptype: rpType,
                 rpid: rpId,
                 rpUserId: rpUserId,
-                rpDicId: rpDicId,
-
+                rpDicId: rpDicId
             });
         }
 
@@ -421,11 +518,11 @@
                 touid = replyData.rpUserId,
                 rptype = replyData.rptype,
                 dicid = replyData.rpDicId;
-            declareReply(commid,rpid,rptype,content,touid,dicid);
+            declareReply(commid,rpid,rptype,content,touid,dicid,$target);
         }
 
         //发表回复的逻辑处理
-        function declareReply(commid,rpid,rptype,content,touid,dicid) {
+        function declareReply(commid,rpid,rptype,content,touid,dicid,$target) {
 
             comm.ajax.commAjax({
                 url: '/reply',
@@ -442,19 +539,21 @@
                     comm.layer.alert('回复失败！');
                 },
                 successFn: function(data){
-                    comm.layer.alert(data.data.des,null,function(index){
-                        var originUrl = comm.url.getOriginUrl();
-                        layer.close(index);
-                        var id = $("#commentsArea").find('li').eq(0).data('id');
-                        if(rpid === window.parseInt(id)) {
-                            rpid = 'commentfirst'
-                        }
-                        window.location.href = originUrl+'?time='+new Date().getTime()+'#'+rpid;
-                    });
-
+                    if(data.data){
+                        comm.layer.alert(data.data.des,null,function(index){
+                            var $wrapper = $target.closest('.js_comment_body'),
+                                $comments = $target.closest('.js_reply_wrap '),
+                                sayid = $target.closest('.js_say_id').data('sayid');
+                            $wrapper.find('.js_reply').eq(0).trigger('click');
+                            queryCommentReplay(sayid,function(data){
+                                var $container = $target.closest('.js').find('.js_comments_replays').eq(0);
+                                comm.tmpl.render('commentsReplays',{data: data},$container);
+                            });
+                            layer.close(index);
+                        });
+                    }
                 }
             });
-
         }
     });
 

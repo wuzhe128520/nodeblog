@@ -11,10 +11,8 @@ router.get('/',(req, res)=>{
     console.log(req.cookies);
     //如果已经是登录状态，则跳回首页(能否跳回登录之前那个页面)
     if(req.cookies['login']){
-
         res.redirect('/');
     } else {
-
         res.render('login');
     }
 });
@@ -36,13 +34,20 @@ router.post('/',(req, res)=>{
                         success: 'noactive'
                     });
                 } else {
+                    let originalUrl = '';
+
                     //1、cookie的名称  2、数据  3、过期时间
                     res.cookie('login', {id: data[0].id,name: user},{maxAge: 1000*60*60*0.5});
+
                     // session所有后台页面都是可以访问到的
                     //保存到服务器上面的
                     //session 在关闭页面的时候 session里面保存的所有数据 都会清空
                     req.session.admin = data[0]['admin'];
+                    if(req.session.originalUrl){
+                        originalUrl = req.session.originalUrl;
+                    }
                     res.json({
+                        originalUrl: originalUrl,
                         success: 1
                     });
                 }

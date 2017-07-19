@@ -786,6 +786,7 @@ const express = require('express'),
                     }
 
                     res.json({
+                        status: 1,
                         des: '评论成功!'
                     });
                 });
@@ -966,7 +967,7 @@ const express = require('express'),
 
        //查询当前说说的评论回复
        router.post('/querysaycomment', (req, res) => {
-           let topicId = req.body.topicTd,
+           let topicId = req.body.topicId,
                dicId = 2;
            let promise = new Promise(function(resolve, reject){
                commentsAndReplys(topicId, dicId,resolve, reject);

@@ -437,7 +437,6 @@ var comm = {
                 ctx.rotate(-deg*Math.PI/180);
                 ctx.translate(-x,-y);
             }
-            console.log("code:"+code);
             return code;
         }
 
@@ -945,7 +944,11 @@ var comm = {
 
             ejs.delimiter = '$';
             html = ejs.render(template,tmplData);
-            $('#' + appendId).html('').append(html);
+            if(comm.type(appendId) === 'string'){
+                $('#' + appendId).html('').append(html);
+            } else if(appendId instanceof $) {
+                    appendId.html('').append(html);
+            }
         }
     },
 
@@ -987,7 +990,6 @@ var comm = {
 
         //使用html5 单文件ajax上传
         h5AjaxUpload: function(){
-            debugger;
             var pic = $('#file').get(0).files[0],
                 formData = new FormData(),
                 that = this;
@@ -1064,7 +1066,6 @@ var comm = {
         //将json字符串转为js对象
         var data = JSON.parse(xhr.responseText);
         if(!!data.status && data.status === "nologin"){
-            alert('您还未登录！');
             comm.layer.confirm(
                 '您还未登录，是否跳转到登录界面？',
                 null,
