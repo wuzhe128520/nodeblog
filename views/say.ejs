@@ -77,7 +77,7 @@
             <p>
                 <textarea name="comment" tabindex="4" class="js_replay_textarea" cols="100%" rows="6"></textarea>
             </p>
-            <p>
+            <p class="clearfix">
                 <input name="submit" value="回复" class="declare-btn" type="submit" onsubmit="return false;">
             </p>
         </form>
@@ -105,7 +105,7 @@
                     <p>
                         <$-d.content$>
                     </p>
-                    <$if(data.imgs){$>
+                    <$if(d.imgs){$>
                     <div class="say-img-wrap clearfix">
                         <$-d.imgs$>
                     </div>
@@ -216,9 +216,9 @@
                         <div class="declare-comment-wrap js_comments hidden">
                             <div class="comment-form js_comment_form" data-commentid="<$=d.sayid$>"  method="post">
                                 <p>
-                                    <textarea autocomplete="off" name="content" class="js_comment_textarea" tabindex="4" style="width: 100%;" rows="10"></textarea>
+                                    <textarea autocomplete="off" name="content" class="js_comment_textarea" tabindex="4" rows="6"></textarea>
                                 </p>
-                                <p>
+                                <p class="clearfix">
                                     <input name="submit" value="发表评论" class="declare-btn js_declare_comment_btn" type="button">
                                 </p>
                             </div>
@@ -370,7 +370,8 @@
                 url: '/querysaycomment',
                 type: 'post',
                 data: {
-                    topicId: commentid
+                    topicId: commentid,
+                    dicId: 2
                 },
                 successFn: function(data){
                     callback&&callback(data);
@@ -482,13 +483,13 @@
             });
         }
 
-        //显示评论框
+        //显示回复框
         function showReplyArea($target) {
 
             var templ = $('#template').html(),
                 $templ = $(templ);
 
-            if($target.closest('.js_comment_footer').find('js_reply_wrap').length < 1){
+            if($target.closest('.js_comment_footer').find('.js_reply_wrap').length < 1){
                 $target.closest('.js_comment_body').append($templ);
                 $templ.find('input[type="submit"]').click(function(e){
 

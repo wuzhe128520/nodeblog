@@ -32,6 +32,7 @@
     .article-img-wrap {
       display: block;
       width: 200px;
+      max-height: 200px;
       overflow: hidden;
       float: left;
       margin-right: 15px;
@@ -186,14 +187,19 @@
     padding-bottom: 20px;
 
     i {
-      vertical-align: baseline;
+      vertical-align: middle;
     }
     li {
       height: 36px;
       line-height: 36px;
     }
     a {
+      width: 205px;
       display: inline-block;
+      font-size: 14px;
+      line-height: 20px;
+      height: 20px;
+      vertical-align: middle;
       color: #525252;
       margin: 0 0 0 10px;
       .transition(all,0.3s);
@@ -208,6 +214,7 @@
     margin: 0 10px 5px 0;
 
     a {
+      width: auto;
       color: #525252;
     }
   }

@@ -252,7 +252,6 @@ const express = require('express'),
 
             //查询出当前主题下的所有评论
             sql('select comm.*,us.username from comments comm left join user us on comm.dicid = ? where comm.topic_id = ? and comm.from_uid = us.id order by comm.comm_time desc',[dicId,topicId],(err,comments)=>{
-
                 if(err){
                     console.log(err);
                     reject();
@@ -272,7 +271,7 @@ const express = require('express'),
                         let comrep=[];
 
                         for(let i = 0; i < comments.length; i++){
-
+                            debugger;
                             let commobj = comments[i],
                                 //第一个子对象
                                 child = {
@@ -289,10 +288,8 @@ const express = require('express'),
 
                             //循环回复数据，找到当前评论下的回复
                             for(let j = 0; j < replys.length; j++){
-                                debugger;
-                                let rpobj = replys[j];
-
-                                let newObj = copy(rpobj);
+                                let rpobj = replys[j],
+                                 newObj = copy(rpobj);
 
                                 //找到当前评论下的所有回复
                                 if(rpobj.comment_id === commobj.commid ) {
@@ -365,7 +362,7 @@ const express = require('express'),
                         resolve(comrep);
                     });
                 } else {
-                    resolve({});
+                    resolve([]);
                 }
             });
         }
@@ -968,12 +965,13 @@ const express = require('express'),
        //查询当前说说的评论回复
        router.post('/querysaycomment', (req, res) => {
            let topicId = req.body.topicId,
-               dicId = 2;
-           let promise = new Promise(function(resolve, reject){
+               dicId = req.body.dicId,
+               promise = new Promise(function(resolve, reject){
                commentsAndReplys(topicId, dicId,resolve, reject);
            });
            promise.then(function(data){
                if(data.length > 0){
+
                    res.json(data);
                } else {
                    res.json({
@@ -987,6 +985,160 @@ const express = require('express'),
        //留言板
        router.get('/message',(req, res) => {
            res.render('message.ejs');
+       });
+
+       //留言板 请求数据
+       router.post('/message', (req, res) => {
+
+                //当前页
+           let currentPage = parseInt(req.body.currentPage),
+
+               //每页显示条数
+               showPageNum = parseInt(req.body.showPageNum),
+
+               //分页起始位置
+               startPage = parseInt((currentPage - 1) * showPageNum),
+
+               topicId = req.body.topicId,
+               dicId = req.body.dicId;
+           let promise = new Promise(function(resolve,reject){
+               sql('select comm.*,us.username from comments comm left join user us on comm.dicid = ? where comm.topic_id = ? and comm.from_uid = us.id order by comm.comm_time desc limit ?,?',[dicId,topicId,startPage,showPageNum],(err,comments) =>{
+                   if(err){
+                       return;
+                   }
+                   if(comments&&comments.length > 0){
+
+                       //查询当前主题下的所有回复
+                       sql('select rp.*,(select username from  user where  id = rp.rp_from_uid) as from_username,(select username from  user where  id = rp.to_uid) as to_username from reply rp where rp.dicid = ? and rp.comment_id in (select comm.commid from comments comm where comm.topic_id = ? and  comm.dicid = ?)',[dicId,topicId,dicId],(err, replys) => {
+
+                           if(err){
+                               reject();
+                               return;
+                           }
+
+                           //构建回复的数组对象
+                           let comrep=[];
+
+                           for(let i = 0; i < comments.length; i++){
+                               let commobj = comments[i],
+                                   //第一个子对象
+                                   child = {
+                                       commid: commobj.commid,
+                                       content: commobj.content,
+                                       from_uid: commobj.from_uid,
+                                       comm_time: commobj.comm_time,
+                                       username: commobj.username,
+                                       dicid: commobj.dicid
+                                   };
+
+                               //child下的子回复
+                               let rpChild = [];
+
+                               //循环回复数据，找到当前评论下的回复
+                               for(let j = 0; j < replys.length; j++){
+                                   let rpobj = replys[j],
+                                       newObj = copy(rpobj);
+
+                                   //找到当前评论下的所有回复
+                                   if(rpobj.comment_id === commobj.commid ) {
+
+                                       //针对评论的回复
+                                       if(rpobj.reply_type === 4){
+
+                                           //回复id
+                                           let rpid = rpobj.rpid;
+
+                                           //通过递归得到当前回复下所有的子孙回复
+                                           let dg = digui(rpid),
+                                               isEmpty = isEmptyObject(dg);
+
+                                           if(!isEmpty&&dg['replys'].length > 0){
+
+                                               newObj['replys']=[];
+                                               newObj['replys'].push(dg);
+
+                                           }
+
+                                           rpChild.push(newObj);
+                                       }
+                                   }
+                               }
+
+                               //将所有递归出来的所有回复数据放入rpChlid的属性replys下
+                               if(rpChild.length > 0){
+                                   child['replys'] = rpChild;
+                               }
+
+                               comrep.push(child);
+                           }
+
+                           //递归构建 reply_type为5的回复
+                           function dgs(result,pid) {
+
+                               let rtn = [];
+                               for(let i =0;i < result.length; i++){
+
+                                   let resultObj = result[i];
+
+                                   if(resultObj.reply_id === pid && resultObj.reply_type === 5){
+
+                                       let childrpid = result[i].rpid,
+                                           dgsData = dgs(result,childrpid);
+                                       if(dgsData.length > 0){
+                                           result[i].replys = dgsData;
+                                       }
+                                       rtn.push(result[i]);
+                                   }
+                               }
+                               return rtn;
+                           }
+
+                           /**
+                            *
+                            * @param rpid 针对评论的回复id
+                            * @returns {{}}
+                            */
+                           function digui(rpid) {
+                               let dgobjs = {},
+                                   dgsTwoData = dgs( replys,rpid);
+
+                               if(dgsTwoData.length > 0){
+                                   dgobjs['replys'] = dgsTwoData;
+                                   return dgobjs;
+                               }
+                           }
+                           resolve(comrep);
+                       });
+                   } else {
+                       resolve([]);
+                   }
+               });
+           });
+           promise.then(function(data){
+               if(data.length > 0){
+                   sql('select count(commid) as counts from comments where dicid = 3 and topic_id = 0', (err, counts) => {
+                       if(err){
+                           console.log(err);
+                           res.error();
+                       } else {
+                           let allDataNum = counts[0].counts;
+                           res.json({
+                               data: data,
+                               pages: {
+                                   showPageNum: showPageNum,
+                                   currentPage: currentPage,
+                                   allPageNum: allDataNum
+                               }
+                           });
+                       }
+                   });
+               } else {
+                   res.json({
+                       status: 0,
+                       des: '暂无数据！'
+                   });
+               }
+           });
        });
 
        //相册

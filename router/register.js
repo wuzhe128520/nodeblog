@@ -22,32 +22,40 @@ router.post('/',(req, res) => {
            md5 = crypto.createHash('md5');
 
            sql('select * from user where username = ?',[user],(err,data) => {
-                console.log(data);
                if(data.length < 1){
-                   const uuid = uuidV1(),
-                       time = new Date().toLocaleString();
 
-                   //使用md5加密
-                   let newpass = md5.update(pass).digest('hex');
-                   sql('insert into user (username,password,email,code,createtime,status,admin) values (?,?,?,?,?,0,0)',[user,newpass,email,uuid,time],(err)=>{
-                            if(err){
-                                console.log(err);
-                                res.json({
-                                    status: 0,
-                                    des: err
-                                });
-                                } else {
-                                sendMail(email,'欢迎您注册无畏滴青春博客网站！点此<a style="color:red;" href="http://localhost:520/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。');
-                                res.json({
-                                    status: 1,
-                                    des: '发送邮件成功！',
-                                    username: user,
-                                    email: email
-                                });
-                            }
+                   sql('select * from user where email = ?', [email], (err, emailData) => {
+                       if(emailData.length < 1){
+                           const uuid = uuidV1(),
+                               time = new Date().toLocaleString();
 
+                           //使用md5加密
+                           let newpass = md5.update(pass).digest('hex');
+                           sql('insert into user (username,password,email,code,createtime,status,admin) values (?,?,?,?,?,0,0)',[user,newpass,email,uuid,time],(err)=>{
+                               if(err){
+                                   console.log(err);
+                                   res.json({
+                                       status: 0,
+                                       des: err
+                                   });
+                               } else {
+                                   sendMail(email,'欢迎您注册无畏滴青春博客网站！点此<a style="color:red;" href="http://localhost:520/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。');
+                                   res.json({
+                                       status: 1,
+                                       des: '发送邮件成功！',
+                                       username: user,
+                                       email: email
+                                   });
+                               }
+
+                           });
+                       } else {
+                           res.json({
+                               status: 3,
+                               des: '邮箱已被注册！'
+                           });
+                       }
                    });
-
                }
                else {
                    res.json({

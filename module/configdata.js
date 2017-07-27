@@ -12,21 +12,18 @@ const app = require('../app'),
             let p = new Promise(function(resolve, reject){
 
                     if(!app.locals.nav){
-                        console.log('查询导航：');
                         sql('select * from nav',(err, data) => {
                             if(err){
                                 console.log(err);
                                 reject();
                             } else {
                                 app.locals.nav = data;
-
                                 resolve();
                             }
                         });
                     } else {
                         resolve();
                     }
-
             });
 
             p.then(function(){
@@ -37,28 +34,25 @@ const app = require('../app'),
                     res.cookie('login', req.cookies['login'],{maxAge: 1000*60*60*0.5});
 
                     //已经登录的状态，设置是否是管理员
-                    if(res.locals.login){
                         let promise = new Promise(function(resolve, reject){
-                            sql('select admin from user where username = ?',[res.locals.login],(err,data)=> {
 
-                                if(err){
-                                    console.log(err);
-                                    reject();
-                                } else {
-                                    req.session.admin = Number(data[0].admin);
-                                    res.locals.admin = req.session.admin;
-                                    resolve();
-                                }
-                            });
+                                let loginData = res.locals.login;
+                                sql('select admin from user where username = ? or email = ?',[loginData , loginData],(err,data)=> {
 
+                                    if(err){
+                                        console.log(err);
+                                        reject();
+                                    } else {
+                                        req.session.admin = Number(data[0].admin);
+                                        res.locals.admin = req.session.admin;
+                                        resolve();
+                                    }
+                                });
                         });
 
                         promise.then(function(){
                             next();
                         });
-                    } else {
-                        next();
-                    }
                 }  else {
 
                     // 获取请求的方法
@@ -76,9 +70,6 @@ const app = require('../app'),
                     }
                     //如果请求路径存在于include里，则拦截……
                     if(include.indexOf(arr[0]) !== -1){
-                        console.log('拦截请求…………');
-                        console.log(arr[0]);
-                        req.session.originalUrl = req.originalUrl ? req.originalUrl : null;  // 记录用户原始请求路径
 
                         //如果是ajax请求，则使用json返回数据
                         if(req.xhr){
@@ -86,6 +77,7 @@ const app = require('../app'),
                                 status: 'nologin'
                             });
                         } else {
+                            req.session.originalUrl = req.originalUrl ? req.originalUrl : null;  // 记录用户原始请求路径
                             res.redirect('/login?show=1');  // 将用户重定向到登录页面
                         }
                     } else {

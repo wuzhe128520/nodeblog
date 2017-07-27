@@ -23,9 +23,6 @@
 
 </header>
 <main>
-    <% if(locals.login){%>
-    已经登陆
-    <%}else{%>
     <div class="main-content-wrap">
         <div class="login-title">
             <h1>无畏滴青春博客</h1>
@@ -101,14 +98,9 @@
             <!--注册 end-->
         </div>
     </div>
-    <%}%>
 </main>
-<% include footer.ejs %>
-<!--<form action="/login" method="post">
-    <input type="text" name="user" class="user" />
-    <input type="password" name="pass" class="pass" />
-    <input type="submit" />
-</form>-->
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/comm.js"></script>
 <script>
 
     $(init);
@@ -237,9 +229,12 @@
                             }
                             if(data.status === 2){
                                 code.getNewCode();
-                                comm.layer.msg('用户名已存在！');
+                                comm.layer.msg(data.des);
                             }
-
+                            if(data.status === 3){
+                                code.getNewCode();
+                                comm.layer.msg(data.des);
+                            }
                         },
                         error: function(err){
                             code.getNewCode();

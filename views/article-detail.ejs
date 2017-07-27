@@ -150,9 +150,7 @@
                                <%}%>
                                 <%}%>
                                     <!--表示针对评论的回复-->
-
                                 <!--回复部分-->
-
                             </li>
                            <%}%>
                         </ul>
@@ -164,16 +162,16 @@
                             <!--action="/comment/<%=data[0]['id']%>.html"-->
                             <form id="commentForm" data-commentid="<%=data[0]['id']%>"  method="post">
                                 <p>
-                                    <textarea autocomplete="off" name="content" tabindex="4" cols="100%" rows="10"></textarea>
+                                    <textarea autocomplete="off" name="content" tabindex="4" cols="100%" rows="6"></textarea>
                                 </p>
-                                <p>
+                                <p class="clearfix">
                                     <input name="submit" value="发表评论" class="declare-btn" type="submit" id="declareComment">
                                 </p>
                             </form>
                         </div>
                         <!--发表评论 end-->
                     <%} else {%>
-                        <p class="need-login">您还未登录，暂不能评论……</p>
+                        <p class="need-login">您还未<a target="_blank" href="/login?show=1" class="nologin">登录</a>，暂不能评论……</p>
                     <%}%>
                 </div>
             </article>
@@ -233,9 +231,9 @@
         <h3>发表回复</h3>
         <form>
             <p>
-                <textarea name="comment" tabindex="4" cols="100%" rows="10"></textarea>
+                <textarea name="comment" tabindex="4" cols="100%" rows="6"></textarea>
             </p>
-            <p>
+            <p class="clearfix">
                 <input name="submit" value="回复" class="declare-btn" type="submit" onsubmit="return false;">
             </p>
         </form>
@@ -388,7 +386,7 @@
         var templ = $('#template').html(),
             $templ = $(templ);
 
-        if($target.closest('.js_comment_footer').find('js_reply_wrap').length < 1){
+        if($target.closest('.js_comment_footer').find('.js_reply_wrap').length < 1){
             $target.closest('.js_comment_body').append($templ);
             $templ.find('input[type="submit"]').click(function(e){
 

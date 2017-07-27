@@ -72,7 +72,11 @@
     </div>
 </script>
 <script type="text/template" id="articleTmpl">
+    <$if(data.pageData.length > 0){$>
     <h2 class="article-recommend h-style"><$-data.tl$></h2>
+    <$} else {$>
+      <p class="nodata">暂无数据</p>
+    <$}$>
     <!--文章列表begin-->
     <$
        var i = 0,

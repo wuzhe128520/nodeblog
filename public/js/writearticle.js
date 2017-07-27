@@ -2,7 +2,6 @@
  * Created by Administrator on 2017/6/24.
  */
 (function(){
-    console.log('进入加载的js脚本中……');
     var ue = UE.getEditor('editor'),
 
         //存储已经有的标签文本

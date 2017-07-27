@@ -2,6 +2,8 @@
  * Created by Administrator on 2017/3/10.
  */
 const http = require('http'),
+       https = require('https'),
+       fs = require('fs'),
        express = require('express'),
        app = express(),
        bodyParser = require("body-parser"),
@@ -15,6 +17,10 @@ const http = require('http'),
        ws = require('socket.io');
        module.exports = app;
 
+       let options = {
+              key: fs.readFileSync('./214099656520737.key'),
+              cert: fs.readFileSync('./214099656520737.pem')
+       };
        //全局时间格式化
        app.locals.dateFormat = utils.dateFormat;
 
@@ -36,9 +42,16 @@ const http = require('http'),
        app.use(cookieParser('wuzhe128520'));//密钥
        app.use(session({secret:'wuzhe128520',resave: false, saveUninitialized: true}));//设置密钥
 
+       //设置看跨域请求
+      /* app.use((req, res, next) => {
+              res.header('Access-Control-Allow-Origin','*');
+              res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
+              res.header('Access-Control-Allow-Headers','X-Requested-With');
+              res.header('Content-Type','application/json;charset=utf-8');
+       });*/
        //configdata 没有暴露出去任何内容  引入所有代码
        require('./module/configdata');
-       let fs = require('fs');
+
        app.post('/fs',(req,res)=>{
               //console.log(req.body.data);
               var imgdata = req.body.data,
@@ -67,8 +80,8 @@ const http = require('http'),
               res.render('404');
        });
 
-       let server =http.createServer(app).listen(520);
-
+       let server =http.createServer(app).listen(80);
+       https.createServer(options, app).listen(443);
        //使用websocket监听服务
        let io = ws(server);
        //保存加入聊天的用户

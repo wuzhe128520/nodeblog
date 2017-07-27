@@ -3,9 +3,9 @@ body {
   background: none;
 }
 .main {
-  width: 960px;
   margin: 0 auto;
   padding: 20px 10px 20px 10px;
+
 }
 .article-admin {
   h1 {
@@ -196,14 +196,24 @@ body {
     float: left;
     margin: 10px 0 0 0;
     .icon-img {
+      position: relative;
+      overflow: hidden;
+      width: 30px;
+      height: 30px;
       font-size: 25px;
       color: #FF8140;
       cursor: pointer;
+      display: block;
+      float: left;
     }
     .icon-face {
+      width: 30px;
+      height: 30px;
       font-size: 25px;
       color: #F4C600;
       cursor: pointer;
+      display: block;
+      float: left;
     }
   }
 }
@@ -277,5 +287,9 @@ body {
       text-align: center;
     }
   }
+}
+//表情容器
+.emoji_container {
+  display: none;
 }
 /*=====设置webupload上传的样式 end=====*/

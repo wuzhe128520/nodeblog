@@ -179,9 +179,9 @@
                 <section>
                     <div class="article-hot article-aside article-hot-random marginb border">
                         <h3 class="new-style-title">热门文章</h3>
-                        <ul class="hot-wrap hot-random-wrap pl15 pr30 new-style-content">
+                        <ul class="hot-wrap hot-random-wrap new-style-content">
                             <% for(var i = 0; i < topsix.length; i++){%>
-                                <li class="ellipsis">
+                                <li>
                                     <i class="icon icon-diy <%if(i ===0 ){%>
                                     icon-black
                                     <%} else if(i ===1 ) {%>
@@ -196,7 +196,7 @@
                                        icon-gray
                                     <%}%>
                                 "><%=i + 1%></i>
-                                    <a href="/article-detail/<%= topsix[i].id %>.html" title="<%= topsix[i].title %>"><%= topsix[i].title %></a>
+                                    <a class="ellipsis tooltip" href="/article-detail/<%= topsix[i].id %>.html" title="<%= topsix[i].title %>"><%= topsix[i].title %></a>
                                 </li>
                             <%}%>
                         </ul>
@@ -207,11 +207,11 @@
                 <section>
                     <div class="article-random article-hot-random marginb border article-aside">
                         <h3 class="new-style-title">随机文章</h3>
-                        <ul class="random-wrap hot-random-wrap pl15 pr30 new-style-content">
+                        <ul class="random-wrap hot-random-wrap new-style-content">
                             <% for(var i = 0; i < random.length; i++) {%>
-                                <li class="ellipsis">
+                                <li>
                                     <i class="icon icon-diy icon-default"><%= i+1 %></i>
-                                    <a href="/article-detail/<%= random[i].id %>.html" title="<%=random[i].title%>"><%=random[i].title%></a>
+                                    <a  class="ellipsis tooltip" href="/article-detail/<%= random[i].id %>.html" title="<%=random[i].title%>"><%=random[i].title%></a>
                                 </li>
                             <%}%>
                         </ul>
@@ -247,6 +247,7 @@
 <script type="text/javascript">
     $(init);
     function init() {
+        $('.tooltip').toolTip();
 
         var time = new Date();
         var year=time.getFullYear();
@@ -353,6 +354,12 @@
         }
     };
     //with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+
+    //toolTip效果
+
+
+
+
 </script>
 </body>
 </html>

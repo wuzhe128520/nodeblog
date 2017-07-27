@@ -76,13 +76,6 @@
 .container-top-wrap {
   height: 42px;
 }
-.background-container {
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-attachment: scroll;
-  background-image: url(../image/dh.jpg);
-  margin-top: 42px;
-}
 .background-layer {
   width: 1200px;
   margin: 0 auto;
@@ -316,14 +309,20 @@
 body {
   font-family: punctuation, "PingFangSC-Regular", "Microsoft Yahei", "sans-serif";
   -webkit-font-smoothing: subpixel-antialiased;
-  display: flex;
-  flex-direction: column;
   /*在ie中会忽略flex中的min-height*/
-  height: 100vh;
   color: #403e3b;
   overflow-x: hidden;
   background-image: url(../image/bgimg_top.jpg);
   background-repeat: repeat;
+}
+.background-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-attachment: scroll;
+  background-image: url(../image/dh.jpg);
 }
 main {
   flex: 1 0 auto;
@@ -455,7 +454,9 @@ footer {
   border: 1px solid #ccc;
 }
 .declare-comment-wrap {
+  width: 670px;
   color: #333;
+  margin: 5px 0 0 0;
 }
 .declare-comment-wrap h3 {
   color: #444;
@@ -469,6 +470,7 @@ footer {
   height: 25px;
 }
 .declare-comment-wrap .declare-btn {
+  float: left;
   width: 72px;
   height: 28px;
   line-height: 28px;
@@ -651,6 +653,36 @@ footer {
 .need-login {
   font-size: 14px;
   line-height: 30px;
+}
+.nologin {
+  color: #E3A355;
+}
+.nodata {
+  color: #ccc;
+  font-size: 14px;
+}
+#tooltip {
+  position: absolute;
+  max-width: 200px;
+  background: #9e8c5f;
+  color: #fff;
+  margin-left: -40px;
+  margin-top: 28px;
+  z-index: 9999;
+  box-shadow: 0 0 5px #666;
+  border-radius: 4px;
+  padding: 7px 15px;
+  font-size: 12px;
+  line-height: 20px;
+}
+#tooltip:after {
+  content: "";
+  border-style: solid;
+  border-width: 8px;
+  border-color: transparent transparent #9e8c5f transparent;
+  position: absolute;
+  top: -16px;
+  left: 20%;
 }
 html,
 body {

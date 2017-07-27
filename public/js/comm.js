@@ -550,7 +550,13 @@ var comm = {
             $(window).bind("scroll.scrollTop",comm.debounce(comm.scrollEvent,300));
         });
     },
-
+    scrollToElement: function(id,otherheight){
+        var offsetTop = $('#' + id).offset().top;
+        if(otherheight&&!isNaN(parseInt(otherheight))){
+            offsetTop += otherheight;
+        }
+        $("html,body").animate({"scrollTop": offsetTop +'px'}, 600);
+    },
     //返回 function 函数的防反跳版本, 将延迟函数的执行(真正的执行)在函数最后一次调用时刻的 wait 毫秒之后.
     debounce: function(func, wait, immediate) {
         var timeout, args, context, timestamp, result;
@@ -790,7 +796,7 @@ var comm = {
             dataId: '',
             postData: {
                 currentPage: 1,
-                showPageNum: 5,
+                showPageNum: 10
             }
         },
         //显示分页组件
@@ -802,10 +808,10 @@ var comm = {
          *  url: '../../views/pages.ejs'
          */
         init: function(options){
-
-            var options = $.extend(comm.page.options,options,true),
+            debugger;
+            var options = $.extend(true,comm.page.options,options),
                 pagesData = this.getPageData(options.url,options.postData);
-
+             debugger;
              comm.page.showPageData(comm.page.options.dataId,comm.page.options.dataTmplId,pagesData.data);
              comm.page.showPage(options,pagesData.pages,comm.page.options.pageTmplId);
 
@@ -818,6 +824,7 @@ var comm = {
         },
         //展示数据
         showPageData: function(articlesId,dataTmplId,articleData){
+            debugger;
             comm.tmpl.render(dataTmplId,{data: articleData},articlesId);
         },
         //绑定每一页的点击事件
@@ -865,6 +872,7 @@ var comm = {
                     console.log(err);
                 }
             });
+            debugger;
             comm.page.pagesData = pagesData;
             return pagesData;
         }
@@ -1062,7 +1070,7 @@ var comm = {
 };
 (function(comm){
     comm.ajax.ajaxComplete(function(event,xhr,settins){
-
+        console.log('ajax请求完成！');
         //将json字符串转为js对象
         var data = JSON.parse(xhr.responseText);
         if(!!data.status && data.status === "nologin"){
@@ -1080,6 +1088,56 @@ var comm = {
     comm.ajax.ajaxStart(function(){console.log("ajax开始请求！")});
     comm.ajax.ajaxError(function(event,xhr,options,exc){console.log("请求出错了噢！"+exc);});
 })(comm);
+//jquery插件扩展
+//提示框
+/**
+ *
+ * @param options: {x: 20,y: 20} 偏移量对象
+ */
+$.fn.toolTip = function(options){
+    var $that = this,
+        $toolTip,
+        title,
+        offsetX = 0,
+        offsetY = 0,
+        position = {
+            x: 10,
+            y: 10
+        };
+    $.extend(position,options);
+    $that.each(function(i, current){
+        var $target = $(current);
+        $target.on('mouseover', function(event){
+            event.preventDefault();
+            title = $target.attr('title');
+            $target.attr('title','');
+            offsetX = event.pageX;
+            offsetY = event.pageY;
 
+            //toolTip的偏移量
+            $toolTip = $('<p class="hidden" id="tooltip">' + title + '</p>');
+            $toolTip.appendTo('body');
+            $toolTip.css({
+                top: offsetY + position.x + 'px',
+                left: offsetX + position.y + 'px'
+            }).fadeIn();
+
+            $target.off('mousemove.tooltip').on('mousemove.tooltip', function(event){
+                event.preventDefault();
+                offsetX = event.pageX;
+                offsetY = event.pageY;
+                $toolTip.css({
+                    top: offsetY + position.x + 'px',
+                    left:  offsetX + position.y + 'px'
+                });
+            });
+            $target.off('mouseleave.tooltip').on('mouseleave.tooltip', function(){
+                $target.attr('title',title);
+                $toolTip.fadeOut();
+                $toolTip.remove();
+            });
+        });
+    });
+};
 
 

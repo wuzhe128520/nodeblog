@@ -39,6 +39,7 @@ function sendMail(toEmail,content) {
         }
         console.log("发送邮件成功！");
         console.log('Message sent: ' + info.response);
+        transporter.close();
     });
 }
 
