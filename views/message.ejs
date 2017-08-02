@@ -20,17 +20,21 @@
 
           </div>
           <div id="pages"></div>
-          <div class="declare-comment-wrap">
-                <h3>发表留言</h3>
-                <form id="commentForm" action="" method="post">
-                    <p>
-                        <textarea name="comment" tabindex="4" cols="100%" rows="6"></textarea>
-                    </p>
-                    <p class="clearfix">
-                        <input name="submit" value="发表留言" class="declare-btn" type="submit" id="declareComment">
-                    </p>
-                </form>
-            </div>
+        <% if(locals.login) {%>
+        <div class="declare-comment-wrap">
+            <h3>发表留言</h3>
+            <form id="commentForm" action="" method="post">
+                <p>
+                    <textarea name="comment" tabindex="4" cols="100%" rows="6"></textarea>
+                </p>
+                <p class="clearfix">
+                    <input name="submit" value="发表留言" class="declare-btn" type="submit" id="declareComment">
+                </p>
+            </form>
+        </div>
+        <%} else {%>
+        <p class="need-login">您还未<a target="_blank" href="/login?show=1" class="nologin js_nologin_btn">登录</a>，暂不能留言……</p>
+        <%}%>
     </div>
     <input type="hidden" value="<%=locals.admin%>" id="admin">
     <input type="hidden" value="<%=locals.login%>" id="login">
@@ -218,6 +222,7 @@ function init(){
 
     //发表留言
     $('#declareComment').on('click',function(e){
+        debugger;
         var $target = $(this);
         e.preventDefault();
         var $commentForm = $target.closest('form'),
@@ -227,9 +232,26 @@ function init(){
 
     //发表留言的逻辑处理
     function handleDeclareComment(content){
-        queryCommentReplay();
+        comm.ajax.commAjax({
+           url: '/comment',
+           type: 'post',
+            data: {
+               dicid: 3,
+               commentid: 0,
+                content: content
+            },
+            successFn: function(data){
+               if(data.status === 1){
+                   comm.layer.msg('留言成功！');
+                   queryCommentReplay();
+                   comm.scrollToElement('message',-$('.js_head_wrap').height());
+               } else {
+                   comm.layer.alert(data.des);
+               }
+            }
+        });
+
         $('#commentForm').find('textarea').val('');
-        comm.scrollToTop($('.comments-wrap'),-$('.js_head_wrap').height());
     }
 
     //使用分页组件查询留言
@@ -246,8 +268,10 @@ function init(){
                 currentPage: 1,
                 showPageNum: 10
             }
+        },function(){
+            $('#counts').text($('#messageCounts').val());
         });
-        $('#counts').text($('#messageCounts').val());
+
     }
 
     queryCommentReplay();

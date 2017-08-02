@@ -34,12 +34,9 @@ function sendMail(toEmail,content) {
 
     transporter.sendMail(mailOptions, function(error, info){
         if(error){
-            console.log(error);
-            return;
+            return 'fail';
         }
-        console.log("发送邮件成功！");
-        console.log('Message sent: ' + info.response);
-        transporter.close();
+        return 'success';
     });
 }
 

@@ -35,38 +35,38 @@
                     <footer>
                         <div class="article-footer-wrap">
                         <span>
-                            <a href="javascript:void(0);" class="iconfont-wrap">
+                            <a href="javascript:void(0);" class="iconfont-wrap cursor-default">
                                 <i title="日期图标" class="iconfont icon-time"></i>
                                 <time><%=locals.dateFormat(data[i].time,'YYYY-MM-DD HH:mm')%></time>
                             </a>
                         </span>
                         <span>
-                                <a href="javascript:void(0);" class="iconfont-wrap">
+                                <a href="javascript:void(0);" class="iconfont-wrap cursor-default">
                                     <i title="浏览量图标" class="iconfont icon-eye"></i>
                                     浏览<%=data[i].views|0%>次
                                 </a>
                         </span>
                         <span>
-                                <a href="javascript:void(0);" class="iconfont-wrap js_ding">
+                                <a href="javascript:void(0);" class="iconfont-wrap js_ding cursor-default">
                                     <i title="顶一个图标" class="iconfont icon-ding" ></i>
                                     顶(<span class="js_ding_text"><%=data[i].ding|0%></span>)
                                 </a>
                         </span>
                         <span>
-                                <a href="javascript:void(0);" class="iconfont-wrap js_cai">
+                                <a href="javascript:void(0);" class="iconfont-wrap js_cai cursor-default">
                                         <i title="踩一个图标" class="iconfont icon-iconfontcai js_cai"></i>
                                         踩(<span class="js_cai_text"><%=data[i].cai|0%></span>)
                                 </a>
                         </span>
                         <span>
-                                <a href="/article-detail/<%=data[i].id%>.html#commentsArea" class="iconfont-wrap">
+                                <a href="/article-detail/<%=data[i].id%>.html#commentsWrapper" class="iconfont-wrap">
                                     <i title="评论图标" class="iconfont icon-comments"></i>
                                     评论(<%=data[i].comment_count|0%>)
                                 </a>
                         </span>
                             <!--分类-->
                             <span class="article-type">
-                            分类:[<a href="/type/<%= data[i].typeid %>.html?typename=<%= data[i].typename %>" class=""><%=data[i].typename %></a>]
+                            分类:[<a href="/type/<%= data[i].typeid %>.html?typename=<% var newTypename = encodeURI(encodeURI(data[i].typename)) %> <%= newTypename%>" class=""><%=data[i].typename %></a>]
                         </span>
                             <!--分类-->
                         </div>
@@ -166,7 +166,7 @@
                                     length = tagdata.length;
                             for(; j < length; j++) {
                             %>
-                            <a class="tag"  href="/tag/<%= tagdata[j].tag_id %>.html?tagname=<%= tagdata[j].tagname %>"><%= tagdata[j].tagname %></a>
+                            <a class="tag"  href="/tag/<%= tagdata[j].tag_id %>.html?tagname=<% var newTagName = encodeURI(encodeURI(tagdata[j].tagname)) %><%=newTagName%>"><%= tagdata[j].tagname %></a>
                             <%}%>
                             <%if(length > 16){%>
                             <span class="more" id="moreTag">查看更多</span>
@@ -247,61 +247,6 @@
 <script type="text/javascript">
     $(init);
     function init() {
-        $('.tooltip').toolTip();
-
-        var time = new Date();
-        var year=time.getFullYear();
-
-        document.getElementById("siteDate").innerHTML = year;
-
-        function handleClick() {
-            var $target = $(this);
-            var articleId = $target.closest('.js_article').data('articleid');
-            ding($target,articleId);
-        }
-        $("#articles").on('click','.js_ding',handleClick);
-
-        //顶的业务逻辑
-        function ding($self,articleId) {
-            comm.ajax.commAjax({
-                url: '/ding',
-                type: 'post',
-                data: {id: articleId},
-                errorFn: function(error){
-                    comm.layer.msg('顶操作失败！');
-                },
-                successFn: function(data){
-                    if(data.dm){
-                        $self.find('.js_ding_text').text(data.dm[0].ding);
-                    }
-                }
-            });
-
-        }
-        function handleCaiClick() {
-            var $target = $(this),
-                articleId = $target.closest('.js_article').data('articleid');
-            cai($target,articleId);
-        }
-        $("#articles").on('click','.js_cai',handleCaiClick);
-
-        //踩的业务逻辑
-        function cai($self,articleId) {
-            comm.ajax.commAjax({
-                url: '/cai',
-                type: 'post',
-                data: {id: articleId},
-                errorFn: function(error){
-                    comm.layer.msg('踩失败！');
-                },
-                successFn: function(data){
-                    if(data.c){
-                        $self.find('.js_cai_text').text(data.c[0].cai);
-                    }
-                }
-            });
-        }
-
         //初始化显示效果
         /**
          *

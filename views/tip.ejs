@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>邮件发送成功</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <style>
+        html {
+            min-height: 100%;
+            _height:100%;
+            height:100%;
+        }
+        body {
+            min-height: 100%;
+            _height:100%;
+            height:100%;
+            background-image: url(/image/bgimg_top.jpg);
+        }
+        .tip {
+            height: 100%;
+            width: 100%;
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .tip span {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/plugin/layer/layer.js"></script>
+<script type="text/javascript" src="/js/comm.js"></script>
+<script>
+   var layerIndex = comm.layer.dialog({
+                       type: 1,
+                       title: '',
+                       content: '<div class="tip"><span><%=locals.data%></span><div>',
+                       closeBtn: 0,
+                       area: ['30%','30%']
+
+                    });
+   $(window).resize(function(){
+       var $layer = $('.layui-layer');
+       $('.tip').height($layer.height()).width($layer.width()).css({
+           padding: '0 10px 0'
+       });
+   }).trigger('resize');
+</script>
+</body>
+</html>

@@ -12,12 +12,7 @@ const express = require('express'),
             c = c || {};
             for(let i in p){
                 if(p.hasOwnProperty(i)){
-                   /* if(typeof p[i] === 'object'){
-                        c[i] = (p[i].constructor === Array) ?[]:{};
-                        deepCopy(p[i], c[i]);
-                    }else {*/
                         c[i] = p[i];
-                   /* }*/
                 }
             }
             return c;
@@ -43,8 +38,7 @@ const express = require('express'),
             let p2 = new Promise(function(resolve, reject){
                 sql('select  ac.*,act.*,(select count(*) from comments comm where comm.topic_id = ac.id) comment_count from article ac , articletype act where ac.typeid = act.type_id order by ac.time desc limit ?,?',[start,length],(err, data) => {
                     if(err) {
-                        console.log(err);
-                        reject();
+                        reject(err);
                         return;
                     }
                     resolve(data);
@@ -61,8 +55,7 @@ const express = require('express'),
                 sql('select id,title,ding from article order by ding desc limit 0,6', (errs, topsix) => {
 
                     if (errs) {
-                        console.log(errs);
-                        reject();
+                        reject(errs);
                         return;
                     }
                     resolve(topsix);
@@ -79,8 +72,7 @@ const express = require('express'),
                 sql('select id,title from article order by rand() limit 10', (errs, random) => {
 
                     if(errs){
-                        reject();
-                        console.log(errs);
+                        reject(errs);
                     }
                     resolve(random);
                 });
@@ -97,10 +89,8 @@ const express = require('express'),
             //查询总页数
             let p3 = new Promise(function(resolve, reject) {
                 sql('select count(*) as articlenum  from article',(err,counts)=>{
-                    console.log(counts);
                     if(err){
-                        reject();
-                        console.log(err);
+                        reject(err);
                         return;
                     }
                     resolve(counts);
@@ -118,7 +108,7 @@ const express = require('express'),
                 sql("select time,count(id) as articlenum from article group by date_format(time,'%Y%m')", (errs, monthdata) => {
 
                     if(errs){
-                        reject();
+                        reject(errs);
                         return;
                     }
                     resolve(monthdata);
@@ -130,8 +120,7 @@ const express = require('express'),
                 sql("select * from articletype", function(err, types){
 
                     if(err){
-                        reject();
-                        console.log(err);
+                        reject(err);
                         return;
                     }
                     resolve(types);
@@ -144,8 +133,7 @@ const express = require('express'),
                 sql("select * from articletag", function(err, tags){
 
                     if(err){
-                        reject();
-                        console.log(err);
+                        reject(err);
                         return;
                     }
                     resolve(tags);
@@ -154,9 +142,6 @@ const express = require('express'),
 
             //使用Promise让上面的异步操作都执行完之后再渲染页面
             Promise.all([p2,p3,p4,p5,p6,p7,p8]).then(function(data) {
-
-                console.log('data[0]--------------------------------------------------------------------');
-                console.log(data[0]);
                 let showPageNum = 10;
                 res.render('index.ejs',{
                     data: data[0],
@@ -171,6 +156,8 @@ const express = require('express'),
                     typedata: data[5],
                     tagdata: data[6]
                 });
+            },function(error){
+                if(error) throw error;
             });
         }
 
@@ -183,7 +170,10 @@ const express = require('express'),
         function queryMostComment(res) {
             sql('select *,count(comm.commid) counts from article art , comments comm where  art.id = comm.topic_id and comm.dicid = 1 group by art.id order by counts desc limit 10', (err, data) => {
                     if(err){
-                        console.log(err);
+                       res.json({
+                           status: 0,
+                           des: '数据错误！'
+                       });
                     } else {
                         res.json(data);
                     }
@@ -214,13 +204,18 @@ const express = require('express'),
                     sql(sqlone,sqlparam,(err, data) => {
 
                         if(err){
-                            console.log(err);
+                            res.json({
+                                status: 0,
+                                des: '数据错误！'
+                            });
                         } else {
 
                             sql(sqltwo,sqlparam2,(err,counts) => {
                                 if(err){
-                                    console.log(err);
-
+                                    res.json({
+                                        status: 0,
+                                        des: '数据错误！'
+                                    });
                                 } else {
 
                                     let allDataNum = counts[0].counts;
@@ -253,8 +248,7 @@ const express = require('express'),
             //查询出当前主题下的所有评论
             sql('select comm.*,us.username from comments comm left join user us on comm.dicid = ? where comm.topic_id = ? and comm.from_uid = us.id order by comm.comm_time desc',[dicId,topicId],(err,comments)=>{
                 if(err){
-                    console.log(err);
-                    reject();
+                    reject(err);
                     return;
                 }
                 if(comments&&comments.length > 0){
@@ -262,8 +256,7 @@ const express = require('express'),
                     sql('select rp.*,(select username from  user where  id = rp.rp_from_uid) as from_username,(select username from  user where  id = rp.to_uid) as to_username from reply rp where rp.dicid = ? and rp.comment_id in (select comm.commid from comments comm where comm.topic_id = ? and  comm.dicid = ?)',[dicId,topicId,dicId],(err, replys) => {
 
                         if(err){
-                            console.log(err);
-                            reject();
+                            reject(err);
                             return;
                         }
 
@@ -385,7 +378,7 @@ const express = require('express'),
 
            res.locals.type = {
                topicid: req.params.typeid,
-               topicname: req.query.typename,
+               topicname: decodeURI(decodeURI(req.query.typename)),
                typename: 'type'
            };
            res.render('result.ejs');
@@ -420,7 +413,7 @@ const express = require('express'),
        router.get('/tag/:tagid.html',(req, res) => {
            res.locals.type = {
                topicid:  req.params.tagid,
-               topicname: req.query.tagname,
+               topicname: decodeURI(decodeURI(req.query.tagname)),
                typename: 'tag'
            };
            res.render('result.ejs');
@@ -454,7 +447,7 @@ const express = require('express'),
        //搜索传递参数
        router.get('/search', (req, res) => {
            res.locals.type = {
-               topicname: req.query.search,
+               topicname: decodeURI(decodeURI(req.query.search)),
                typename: 'search'
            };
            res.render('result.ejs');
@@ -530,6 +523,7 @@ const express = require('express'),
 
                             if(err){
                                 console.log(err);
+                                return;
                             }
                             if(data.length < 1){
                                 //status 返回页面的状态码
@@ -546,7 +540,6 @@ const express = require('express'),
                                         str = '';
                                     param = [];
                                     sqlStr = 'select * from articletag where tag_id in ';
-                                    console.log(tLegnth);
                                     for(;j < tLegnth; j++) {
 
                                         if(j===0) {
@@ -563,18 +556,13 @@ const express = require('express'),
                                     sqlStr = 'select * from articletag where tag_id = ?';
                                     param = tagsdata;
                                 }
-
-
-                                console.log(sqlStr);
-                                console.log(param);
                                 let promise2 = new Promise(function(resolve,reject){
 
                                    //查询标签
                                    sql(sqlStr,param,(err,tags) => {
 
                                        if(err){
-                                           console.log(err);
-                                           reject();
+                                           reject(err);
                                            return;
                                        }
                                        resolve(tags);
@@ -586,10 +574,8 @@ const express = require('express'),
                                     //修改浏览量
                                     sql('update article set views = views + 1 where id = ?',[id],(err) => {
                                         if(err){
-                                            console.log(err);
-                                            reject();
+                                            reject(err);
                                         } else {
-                                            console.log('浏览量自增1');
                                             resolve();
                                         }
                                     });
@@ -602,15 +588,14 @@ const express = require('express'),
                                     sql('select id,title from article where id > ? order by time asc limit 1',[id],(errone, next) => {
 
                                             if(errone){
-                                                console.log(errone);
-                                                reject();
+
+                                                reject(errone);
                                             } else {
                                                 //查询上一篇
                                                 sql('select id,title from article where id < ? order by time desc limit 1',[id],(errtwo, last) => {
 
-                                                    if(err){
-                                                        reject();
-                                                        console.log(err);
+                                                    if(errtwo){
+                                                        reject(errtwo);
                                                     } else {
                                                         resolve({next: next[0],last: last[0]});
                                                     }
@@ -625,136 +610,172 @@ const express = require('express'),
                                 let promise5 = queryding();
 
                                 Promise.all([promise,promise2,promise3,promise4,promise5]).then(function(alldata){
-
-                                    //查询出当前文章的所有评论
-                                    sql('select comm.*,us.username from comments comm left join user us on dicid = 1 where comm.topic_id = ? and comm.from_uid = us.id order by comm.comm_time desc',[id],(err,comments)=>{
-
-                                        if(err){
-                                            console.log(err);
-                                            return;
-                                        }
-
-                                        //查询当前文章下的所有回复
-                                        sql('select rp.*,(select username from  user where  id = rp.rp_from_uid) as from_username,(select username from  user where  id = rp.to_uid) as to_username from reply rp where rp.dicid=1 and rp.comment_id in (select comm.commid from comments comm where comm.topic_id = ? and  comm.dicid = 1)',[id],(err, replys) => {
-
-                                                if(err){
-                                                    console.log(err);
-                                                    return;
-                                                }
-
-                                                //构建回复的数组对象
-                                                let comrep=[];
-
-                                                for(let i = 0; i < comments.length; i++){
-
-                                                    let commobj = comments[i],
-                                                        //第一个子对象
-                                                        child = {
-                                                            commid: commobj.commid,
-                                                            content: commobj.content,
-                                                            from_uid: commobj.from_uid,
-                                                            comm_time: commobj.comm_time,
-                                                            username: commobj.username,
-                                                            dicid: commobj.dicid
-                                                        };
-
-                                                    //child下的子回复
-                                                    let rpChild = [];
-
-                                                    //循环回复数据，找到当前评论下的回复
-                                                    for(let j = 0; j < replys.length; j++){
-                                                        debugger;
-                                                        let rpobj = replys[j];
-
-                                                        let newObj = copy(rpobj);
-
-                                                        //找到当前评论下的所有回复
-                                                        if(rpobj.comment_id === commobj.commid ) {
-
-                                                            //针对评论的回复
-                                                            if(rpobj.reply_type === 4){
-
-                                                                //回复id
-                                                                let rpid = rpobj.rpid;
-
-                                                                //通过递归得到当前回复下所有的子孙回复
-                                                                let dg = digui(rpid),
-                                                                    isEmpty = isEmptyObject(dg);
-
-                                                                if(!isEmpty&&dg['replys'].length > 0){
-
-                                                                    newObj['replys']=[];
-                                                                    newObj['replys'].push(dg);
-
-                                                                }
-                                                                rpChild.push(newObj);
-                                                            }
-                                                        }
-                                                    }
-
-                                                    //将所有递归出来的所有回复数据放入rpChlid的属性replys下
-                                                    if(rpChild.length > 0){
-                                                        child['replys'] = rpChild;
-                                                    }
-
-                                                    comrep.push(child);
-                                                }
-
-                                            //递归构建 reply_type为5的回复
-                                            function dgs(result,pid) {
-
-                                                debugger;
-                                                let rtn = [];
-                                                for(let i =0;i < result.length; i++){
-
-                                                    let resultObj = result[i];
-
-                                                    if(resultObj.reply_id === pid && resultObj.reply_type === 5){
-
-                                                        let childrpid = result[i].rpid,
-                                                            dgsData = dgs(result,childrpid);
-                                                        if(dgsData.length > 0){
-                                                            result[i].replys = dgsData;
-                                                        }
-                                                        rtn.push(result[i]);
-                                                    }
-                                                }
-                                                return rtn;
-                                            }
-
-                                            /**
-                                             *
-                                             * @param rpid 针对评论的回复id
-                                             * @returns {{}}
-                                             */
-                                                function digui(rpid) {
-                                                    let dgobjs = {},
-                                                        dgsTwoData = dgs( replys,rpid);
-
-                                                    if(dgsTwoData.length > 0){
-                                                        dgobjs['replys'] = dgsTwoData;
-                                                        return dgobjs;
-                                                    }
-                                                }
-
-                                                debugger;
-                                                console.log('构建新的数据结构：');
-                                                console.log(comrep);
-                                               res.render('article-detail',{
-                                                    commentsReply: comrep,
-                                                    data: data,
-                                                    tags: alldata[1],
-                                                    sibling: alldata[2],
-                                                    lastest: alldata[3],
-                                                    topsix: alldata[4]
-                                                });
-                                        });
+                                    res.render('article-detail',{
+                                        data: data,
+                                        tags: alldata[1],
+                                        sibling: alldata[2],
+                                        lastest: alldata[3],
+                                        topsix: alldata[4]
                                     });
+                                },function(error){
+                                    if(error) throw error;
                                 });
 
                             }
 
                 });
+        });
+
+       //查询文章下的评论回复
+       router.post('/querycomments', (req, res) => {
+           console.log('查询评论回复……');
+            //当前页
+            let currentPage = parseInt(req.body.currentPage),
+
+                //每页显示条数
+                showPageNum = parseInt(req.body.showPageNum),
+
+                //分页起始位置
+                startPage = parseInt((currentPage - 1) * showPageNum),
+
+                topicId = req.body.topicId,
+                dicId = req.body.dicId;
+            let promise = new Promise(function(resolve,reject){
+                sql('select comm.*,us.username from comments comm left join user us on comm.dicid = ? where comm.topic_id = ? and comm.from_uid = us.id order by comm.comm_time desc limit ?,?',[dicId,topicId,startPage,showPageNum],(err,comments) =>{
+                    if(err){
+                        reject(err);
+                        return;
+                    }
+                    if(comments&&comments.length > 0){
+
+                        //查询当前主题下的所有回复
+                        sql('select rp.*,(select username from  user where  id = rp.rp_from_uid) as from_username,(select username from  user where  id = rp.to_uid) as to_username from reply rp where rp.dicid = ? and rp.comment_id in (select comm.commid from comments comm where comm.topic_id = ? and  comm.dicid = ?)',[dicId,topicId,dicId],(err, replys) => {
+
+                            if(err){
+                                reject(err);
+                                return;
+                            }
+
+                            //构建回复的数组对象
+                            let comrep=[];
+
+                            for(let i = 0; i < comments.length; i++){
+                                let commobj = comments[i],
+                                    //第一个子对象
+                                    child = {
+                                        commid: commobj.commid,
+                                        content: commobj.content,
+                                        from_uid: commobj.from_uid,
+                                        comm_time: commobj.comm_time,
+                                        username: commobj.username,
+                                        dicid: commobj.dicid
+                                    };
+
+                                //child下的子回复
+                                let rpChild = [];
+
+                                //循环回复数据，找到当前评论下的回复
+                                for(let j = 0; j < replys.length; j++){
+                                    let rpobj = replys[j],
+                                        newObj = copy(rpobj);
+
+                                    //找到当前评论下的所有回复
+                                    if(rpobj.comment_id === commobj.commid ) {
+
+                                        //针对评论的回复
+                                        if(rpobj.reply_type === 4){
+
+                                            //回复id
+                                            let rpid = rpobj.rpid;
+
+                                            //通过递归得到当前回复下所有的子孙回复
+                                            let dg = digui(rpid),
+                                                isEmpty = isEmptyObject(dg);
+
+                                            if(!isEmpty&&dg['replys'].length > 0){
+
+                                                newObj['replys']=[];
+                                                newObj['replys'].push(dg);
+
+                                            }
+
+                                            rpChild.push(newObj);
+                                        }
+                                    }
+                                }
+
+                                //将所有递归出来的所有回复数据放入rpChlid的属性replys下
+                                if(rpChild.length > 0){
+                                    child['replys'] = rpChild;
+                                }
+
+                                comrep.push(child);
+                            }
+
+                            //递归构建 reply_type为5的回复
+                            function dgs(result,pid) {
+
+                                let rtn = [];
+                                for(let i =0;i < result.length; i++){
+
+                                    let resultObj = result[i];
+
+                                    if(resultObj.reply_id === pid && resultObj.reply_type === 5){
+
+                                        let childrpid = result[i].rpid,
+                                            dgsData = dgs(result,childrpid);
+                                        if(dgsData.length > 0){
+                                            result[i].replys = dgsData;
+                                        }
+                                        rtn.push(result[i]);
+                                    }
+                                }
+                                return rtn;
+                            }
+
+                            /**
+                             *
+                             * @param rpid 针对评论的回复id
+                             * @returns {{}}
+                             */
+                            function digui(rpid) {
+                                let dgobjs = {},
+                                    dgsTwoData = dgs( replys,rpid);
+
+                                if(dgsTwoData.length > 0){
+                                    dgobjs['replys'] = dgsTwoData;
+                                    return dgobjs;
+                                }
+                            }
+                            resolve(comrep);
+                        });
+                    } else {
+                        resolve([]);
+                    }
+                });
+            });
+            promise.then(function(data){
+                    sql('select count(commid) as counts from comments where dicid = 1 and topic_id = ?',[topicId],(err, counts) => {
+                        if(err){
+                            res.json({
+                                    status: 0,
+                                    des: err
+                            });
+                        } else {
+                            let allDataNum = counts[0].counts;
+                            res.json({
+                                data: data,
+                                pages: {
+                                    showPageNum: showPageNum,
+                                    currentPage: currentPage,
+                                    allPageNum: allDataNum
+                                }
+                            });
+                        }
+                    });
+            },function(error){
+                if(error) throw error;
+            });
         });
 
         //发表评论
@@ -775,8 +796,12 @@ const express = require('express'),
                 sql('insert into comments (from_uid,dicid,topic_id,content,comm_time) values (?,?,?,?,?)',[userid,dicid,commentid, content,time],(err)=>{
 
                     if(err){
-                        console.log(err);
                         res.json({
+                            status: 0,
+                            des: '数据错误！'
+                        });
+                        res.json({
+                            status: 0,
                             des: '数据错误！'
                         });
                         return;
@@ -789,6 +814,7 @@ const express = require('express'),
                 });
             } else {
                 res.json({
+                    status: 2,
                     des: '评论失败!用户id不存在!'
                 });
             }
@@ -807,7 +833,6 @@ const express = require('express'),
                  time = new Date().toLocaleString();
                  sql('insert into reply(comment_id,reply_id,reply_type,reply_content,rp_from_uid,to_uid,dicid,reply_time) values (?,?,?,?,?,?,?,?)',[commid,replyid,replytype,content,fromuid,touid,dicid,time],(err) => {
                         if(err) {
-                            console.log(err);
                             res.json({
                                 data: {
                                     status: 0,
@@ -830,17 +855,21 @@ const express = require('express'),
           //顶
        router.post('/ding', (req, res) => {
                 let articleId = req.body.id;
-                console.log('ding:');
-                console.log(articleId);
+
                 sql('update article set ding = ding + 1 where id = ?',[articleId],(err) => {
                     if (err) {
-                        console.log(err);
+                        res.json({
+                            status: 0,
+                            des: '数据错误'
+                        });
                     } else {
                         sql('select ding from article where id = ?',[articleId],(error, ding) => {
                             if (error) {
-                               console.log(error);
+                                res.json({
+                                    status: 0,
+                                    des: '数据错误！'
+                                });
                             } else {
-                                console.log(ding);
                                 res.json({
                                     dm: ding
                                 });
@@ -848,7 +877,6 @@ const express = require('express'),
                         });
 
                     }
-
                 });
           });
 
@@ -857,13 +885,18 @@ const express = require('express'),
         let articleId = req.body.id;
         sql('update article set cai = cai + 1 where id = ?',[articleId],(err) => {
             if (err) {
-                console.log(err);
+                res.json({
+                    status: 0,
+                    des: '数据错误！'
+                });
             } else {
                 sql('select cai from article where id = ?',[articleId],(error, cai) => {
                     if (error) {
-                        console.log(error);
+                        res.json({
+                            status: 0,
+                            des: '数据错误！'
+                        });
                     } else {
-                        console.log(cai);
                         res.json({
                             c: cai
                         });
@@ -903,7 +936,6 @@ const express = require('express'),
            let promiseSay = new Promise(function(resolved, rejected){
                sql('select ss.*,(select count(*) from comments comm where comm.topic_id = ss.sayid and comm.dicid = 2) comment_count from say ss order by ss.time desc  limit ?,?',[startPage,showPageNum],function(err,says){
                    if(err){
-                        console.log(err);
                         rejected(err);
                    } else {
                        resolved(says);
@@ -938,12 +970,9 @@ const express = require('express'),
                        }
                        sayComRep.push(says[j]);
                    }
-                   console.log('构建完成后的说说评论回复结构：');
-                   console.log(sayComRep);
                    sql('select count(sayid) as counts from say', (err, counts) => {
                       if(err){
-                          console.log(err);
-                          res.error();
+                          res.status(500).send('服务器错误！');
                       } else {
                           let allDataNum = counts[0].counts;
                           res.json({
@@ -957,7 +986,11 @@ const express = require('express'),
                       }
                    });
 
+               },function(errors) {
+                   if(error) throw error;
                });
+           },function(error){
+               if(error) throw error;
            });
            //查询说说对应说说下的评论回复
        });
@@ -979,6 +1012,8 @@ const express = require('express'),
                        des: '获取数据失败！'
                    });
                }
+           },function(error){
+               if(error) throw error;
            });
        });
 
@@ -1004,6 +1039,7 @@ const express = require('express'),
            let promise = new Promise(function(resolve,reject){
                sql('select comm.*,us.username from comments comm left join user us on comm.dicid = ? where comm.topic_id = ? and comm.from_uid = us.id order by comm.comm_time desc limit ?,?',[dicId,topicId,startPage,showPageNum],(err,comments) =>{
                    if(err){
+                       reject(err);
                        return;
                    }
                    if(comments&&comments.length > 0){
@@ -1012,7 +1048,7 @@ const express = require('express'),
                        sql('select rp.*,(select username from  user where  id = rp.rp_from_uid) as from_username,(select username from  user where  id = rp.to_uid) as to_username from reply rp where rp.dicid = ? and rp.comment_id in (select comm.commid from comments comm where comm.topic_id = ? and  comm.dicid = ?)',[dicId,topicId,dicId],(err, replys) => {
 
                            if(err){
-                               reject();
+                               reject(err);
                                return;
                            }
 
@@ -1118,8 +1154,7 @@ const express = require('express'),
                if(data.length > 0){
                    sql('select count(commid) as counts from comments where dicid = 3 and topic_id = 0', (err, counts) => {
                        if(err){
-                           console.log(err);
-                           res.error();
+                           res.status(500).send('服务器错误！');
                        } else {
                            let allDataNum = counts[0].counts;
                            res.json({
@@ -1138,6 +1173,8 @@ const express = require('express'),
                        des: '暂无数据！'
                    });
                }
+           },function(error){
+               if(error) throw error;
            });
        });
 
@@ -1161,14 +1198,11 @@ const express = require('express'),
 
         //多文件上传
         router.post('/multiUpload', upload.array('file',9),function(req,res,next){
-            console.log('多文件上传：');
-            console.log(req.files);
             let files = req.files;
             if(files.length === 1){
                 let destination = files[0].path;
                 if(destination) {
                    let imgSrc = destination.substr(destination.indexOf('public') + 6);
-                   console.log(imgSrc);
                    res.json({
                         status: '1',
                         imgurl: imgSrc
@@ -1199,7 +1233,9 @@ const express = require('express'),
             let fn = function(onedata,i){
                 return new Promise(function(resolve,reject){
                     sql('select * from nav where level =2 and navid = ?',[onedata[i]['navid']],(err,twodata)=>{
-
+                        if(err){
+                            reject(err);
+                        }
                         onedata[i].child = twodata;
                         resolve();
 
@@ -1207,6 +1243,10 @@ const express = require('express'),
                 });
             };
             sql('select * from nav where level = 1',(err,onedata)=>{
+                if(err){
+                    console.log(err);
+                    res.status('500').send('服务器错误！');
+                }
                 let arr = [];
                 for(let i = 0; i < onedata.length; i++){
 
@@ -1214,8 +1254,9 @@ const express = require('express'),
                 }
                 //当arr里面的所有promise执行完后，在执行then()里面的方法
                 Promise.all(arr).then(function(){
-                    console.log(onedata);
                     res.render('nav',{navdata: onedata});
+                },function(error){
+                    if(error) throw error;
                 });
             });
         });

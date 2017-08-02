@@ -19,14 +19,38 @@
                     <div class="article-detail-content clearfix js_article_content">
                         <%-data[0]['content']%>
                     </div>
-                    <!--文章详情end-->
-                    <!--百度分享begin-->
-                    <div class="share">
-                        <div class="article-detail-footer">
-
+                    <div class="share-like-wrap clearfix">
+                        <div class="like-hate" id="likeorhate">
+                            <span class="ding-cai-wrap">
+                                    <a href="javascript:void(0);" class="iconfont-wrap js_ding" data-article-id = <%=data[0].id%>>
+                                        <i title="顶一个图标" class="iconfont icon-ding" ></i>
+                                        顶(<span class="js_ding_text"><%=data[0].ding|0%></span>)
+                                    </a>
+                            </span>
+                            <span class="ding-cai-wrap">
+                                    <a href="javascript:void(0);" class="iconfont-wrap js_cai" data-article-id = <%=data[0].id%>>
+                                            <i title="踩一个图标" class="iconfont icon-iconfontcai js_cai"></i>
+                                            踩(<span class="js_cai_text"><%=data[0].cai|0%></span>)
+                                    </a>
+                            </span>
                         </div>
+                        <!--百度分享begin-->
+                        <div class="share">
+                            <div class="bdsharebuttonbox" data-tag="share_1">
+                                <a class="bds_weixin" data-cmd="weixin"></a>
+                                <a class="bds_qzone" data-cmd="qzone" href="#"></a>
+                                <a class="bds_tsina" data-cmd="tsina"></a>
+                                <a class="bds_baidu" data-cmd="baidu"></a>
+                                <a class="bds_renren" data-cmd="renren"></a>
+                                <a class="bds_tqq" data-cmd="tqq"></a>
+                                <a class="bds_more" data-cmd="more">更多</a>
+                                <a class="bds_count" data-cmd="count"></a>
+                            </div>
+                        </div>
+                        <!--百度分享end-->
                     </div>
-                    <!--百度分享end-->
+                    <!--文章详情end-->
+
                     <!--文章相关标签 begin-->
                     <div class="relation-wrap">
                         <div class="relation-tags">
@@ -61,100 +85,16 @@
                         </div>
                     </div>
                     <!--文章相关标签 end-->
+
                     <!--相关文章 begin-->
                     <div class="related-article"></div>
                     <!--相关文章 end-->
-                    <!--评论部分 begin-->
-                    <div class="comments-wrap" id="commentsArea">
-                        <ul class="comments-all">
+                    <h4 class="comment-theme">评论(<span id="counts"></span>)</h4>
+                    <!--评论回复部分 begin-->
+                    <div id="commentsWrapper"></div>
+                    <!--评论回复部分 end-->
 
-                            <%var m=0,
-                                  length = commentsReply.length;
-                                for(;m < length; m++){
-                            %>
-                            <li <%if(m === 0){%>id="commentfirst" data-id="<%=commentsReply[m].commid%>"<%} else {%> id="<%=commentsReply[m].commid%>" <%}%>>
-                                <!--展示评论 begin-->
-                                <div class="comments">
-                                    <div class="user">
-                                        <a href="javascript:void(0);">
-                                            <img src="/image/user.jpg" />
-                                        </a>
-                                    </div>
-                                    <div class="comment-body js_comment_body">
-                                        <div class="comment-name">
-                                            <a href="javascript:void(0);">
-                                                <%=commentsReply[m].username%>
-                                            </a>
-                                        </div>
-                                        <p class="comment-content">
-                                            <%=commentsReply[m].content%>
-                                        </p>
-                                        <div class="comment-footer js_comment_footer">
-                                            <time><%=locals.dateFormat(commentsReply[m].comm_time,'YYYY-MM-DD HH:mm:ss')%></time>
-                                            <% if(locals.login) {%>
-                                                <a href="javascript:void(0);" data-flag="1" class="js_reply" data-replytype="4" data-replyid="<%=commentsReply[m].commid%>" data-replyuser="<%=commentsReply[m].from_uid%>" data-dicid="<%=commentsReply[m].dicid%>" >
-                                                    <i title="回复图标" class="iconfont icon-huifu"></i>回复
-                                                </a>
-                                            <%}%>
-                                        </div>
-                                    </div>
-                                </div>
-                               <!--展示评论 end-->
-                                <%
-                               loop(commentsReply[m].replys);
-                               function loop(replys){
-
-                                if(!replys||replys.length < 1){return;}
-                               if(replys.length > 0){
-                               for(var k = 0; k < replys.length;k++){
-                                   var reply =replys[k];
-                                    if(reply.hasOwnProperty('rpid')){
-                                %>
-                                   <ul class="comment-childs">
-                                                <li id="<%=reply.rpid%>">
-                                                    <div class="comments">
-                                                        <div class="user">
-                                                            <a href="javascript:void(0);">
-                                                                <img src="/image/user.jpg" />
-                                                            </a>
-                                                        </div>
-                                                        <div class="comment-body js_comment_body">
-                                                            <div class="comment-name">
-                                                                <a href="javascript:void(0);">
-                                                                    <%=reply.from_username%> <span class="reply_text">回复</span> <%=reply.to_username%>
-                                                                </a>
-                                                            </div>
-                                                            <p class="comment-content">
-                                                                <%=reply.reply_content%>
-                                                            </p>
-                                                            <div class="comment-footer js_comment_footer">
-                                                                <time><%=locals.dateFormat(replys[k].reply_time,'YYYY-MM-DD HH:mm:ss')%></time>
-                                                                <% if(locals.login) {%>
-                                                                    <a href="javascript:void(0);" class="js_reply" data-flag="1" data-replytype="5" data-commid="<%=reply.comment_id%>" data-replyid="<%=reply.rpid%>" data-replyuser="<%=reply.rp_from_uid%>" data-dicid="<%=reply.dicid%>">
-                                                                        <i title="回复图标" class="iconfont icon-huifu"></i>回复
-                                                                    </a>
-                                                                <%}%>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                   <%}%>
-                                    <%
-                                        if(reply.replys){
-                                            loop(reply.replys);
-                                        }
-                                    %>
-                                 <% }%>
-
-                               <%}%>
-                                <%}%>
-                                    <!--表示针对评论的回复-->
-                                <!--回复部分-->
-                            </li>
-                           <%}%>
-                        </ul>
-                    </div>
+                    <div id="pages"></div>
                     <% if(locals.login) {%>
                         <!--发表评论 begin-->
                         <div class="declare-comment-wrap">
@@ -171,7 +111,7 @@
                         </div>
                         <!--发表评论 end-->
                     <%} else {%>
-                        <p class="need-login">您还未<a target="_blank" href="/login?show=1" class="nologin">登录</a>，暂不能评论……</p>
+                        <p class="need-login">您还未<a target="_blank" href="/login?show=1" class="nologin js_nologin_btn">登录</a>，暂不能评论……</p>
                     <%}%>
                 </div>
             </article>
@@ -181,7 +121,7 @@
                 <section>
                     <div class="last-article-wrap">
                         <h2>
-                            博客最新
+                            最新文章
                         </h2>
                         <div class="aside-content-wrap">
                             <ul class="number-wrap">
@@ -190,7 +130,7 @@
                                         length = lastest.length;
                                     for(;i < length; i++){
                                 %>
-                                    <li class="ellipsis"><i class="number"><%=(i+1)%></i><a href="/article-detail/<%=lastest[i].id%>.html" title="<%=lastest[i].title%>"><%=lastest[i].title%></a></li>
+                                    <li class="ellipsis"><i class="number"><%=(i+1)%></i><a href="/article-detail/<%=lastest[i].id%>.html" class="tooltip" title="<%=lastest[i].title%>"><%=lastest[i].title%></a></li>
                                 <%}%>
                             </ul>
                         </div>
@@ -207,7 +147,7 @@
                             %>
                             <li class="ellipsis">
                                 <i class="number ls3"><%= (j + 1) %></i>
-                                <a href="/article-detail/<%= topsix[j].id %>.html" title="<%=topsix[j].title%>"><%=topsix[j].title%></a></li>
+                                <a class="tooltip" href="/article-detail/<%= topsix[j].id %>.html" title="<%=topsix[j].title%>"><%=topsix[j].title%></a></li>
                             <%}%>
                         </ul>
                     </div>
@@ -223,6 +163,7 @@
             </aside>
         </div>
     </div>
+
 </main>
 <% include footer.ejs %>
 <script type="text/javascript" src="/js/plugin/highlight/highlight.pack.js"></script>
@@ -248,37 +189,221 @@
         $>
         <li class="ellipsis">
             <i class="number ls3"><$= (j + 1) $></i>
-            <a href="/article-detail/<$= mostcomment[j].id $>.html" title="共有<$=mostcomment[j].counts$>条评论"><$=mostcomment[j].title$></a></li>
+            <a class="tooltip" href="/article-detail/<$= mostcomment[j].id $>.html" title="共有<$=mostcomment[j].counts$>条评论"><$=mostcomment[j].title$></a></li>
         <$}$>
     </ul>
 </script>
+<script type="text/template" id="commentsReplays">
+    <!--评论和回复 begin-->
+    <div class="comments-wrap">
+        <ul class="comments-all">
+
+            <$var m=0,
+            commentsReply = data,
+            l = commentsReply.length;
+
+            for(;m < l; m++){
+            $>
+            <li class="js_comment_single">
+                <!--展示评论 begin-->
+                <div class="comments">
+                    <div class="user">
+                        <a href="javascript:void(0);">
+                            <img src="/image/user.jpg" />
+                        </a>
+                    </div>
+                    <div class="comment-body js_comment_body">
+                        <div class="comment-name">
+                            <a href="javascript:void(0);" class="js_comment_name">
+                                <$=commentsReply[m].username$>
+                            </a>
+                        </div>
+                        <p class="comment-content">
+                            <$=commentsReply[m].content$>
+                        </p>
+                        <div class="comment-footer js_comment_footer">
+                            <time> <$=moment(commentsReply[m].comm_time).format('YYYY年MM月DD HH:mm')$></time>
+                            <a href="javascript:void(0);" data-flag="1" class="js_reply" data-replytype="4" data-replyid="<$=commentsReply[m].commid$>" data-replyuser="<$=commentsReply[m].from_uid$>" data-dicid="<$=commentsReply[m].dicid$>" >
+                                <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!--展示评论 end-->
+                <$
+                loop(commentsReply[m].replys);
+                function loop(replys){
+
+                if(!replys||replys.length < 1){return;}
+                if(replys.length > 0){
+                for(var k = 0; k < replys.length;k++){
+                var reply =replys[k];
+                if(reply.hasOwnProperty('rpid')){
+                $>
+                <ul class="comment-childs">
+                    <li id="<$=reply.rpid$>">
+                        <div class="comments">
+                            <div class="user">
+                                <a href="javascript:void(0);">
+                                    <img src="/image/user.jpg" />
+                                </a>
+                            </div>
+                            <div class="comment-body js_comment_body">
+                                <div class="comment-name">
+                                    <a href="javascript:void(0);">
+                                        <$=reply.from_username$> <span class="reply_text">回复</span> <$=reply.to_username$>
+                                    </a>
+                                </div>
+                                <p class="comment-content">
+                                    <$=reply.reply_content$>
+                                </p>
+                                <div class="comment-footer js_comment_footer">
+                                    <time>
+                                        <$=moment(replys[k].reply_time).format('YYYY年MM月DD HH:mm')$>
+                                    </time>
+                                    <a href="javascript:void(0);" class="js_reply" data-flag="1" data-replytype="5" data-commid="<$=reply.comment_id$>" data-replyid="<$=reply.rpid$>" data-replyuser="<$=reply.rp_from_uid$>" data-dicid="<$=reply.dicid$>">
+                                        <i title="回复图标" class="iconfont icon-huifu"></i>回复
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+                <$}$>
+                <$
+                if(reply.replys){
+                loop(reply.replys);
+                }
+                $>
+                <$ }$>
+
+                <$}$>
+                <$}$>
+                <!--表示针对评论的回复-->
+            </li>
+            <$}$>
+        </ul>
+    </div>
+    <!--评论和回复 end-->
+</script>
+<script type="text/template" id="page">
+    <div class="pages clearfix">
+        <input type="hidden" value="<$=pages.allPageNum$>" id="messageCounts">
+        <ul class="page-wrap">
+            <$
+            //每页显示几条数据
+            var  showPageNum = parseInt(pages.showPageNum),
+            //总页数
+            totalPage = Math.ceil(pages.allPageNum/showPageNum),
+            //当前页
+            currentPage = parseInt(pages.currentPage);
+            if(totalPage > 1){
+            $>
+
+            <li class="page">
+                <span><$= currentPage $>/<$= totalPage $></span>
+            </li>
+
+            <$ if(currentPage!== 1){ $>
+            <li class="page" data-pagenum="<$= currentPage - 1 $>">
+                <a href="javascript:void(0);">
+                    <
+                </a>
+            </li>
+            <$ } $>
+
+            <$
+            for(var i = 0;i < totalPage ;i++){
+            //循环中的当前页码
+            var loopPage = i + 1;
+            $>
+
+            <li class="page" data-pagenum="<$=loopPage$>">
+                <a  <$ if(loopPage === currentPage) { $>
+                class="active" href="javascript:void(0);"
+                <$ } else { $>
+                href="javascript:void(0);"
+                <$ } $>
+                >
+                <$= loopPage $>
+                </a>
+            </li>
+
+            <$}$>
+
+            <$if(currentPage !== totalPage){$>
+
+            <li class="page" data-pagenum="<$= currentPage + 1 $>">
+                <a href="javascript:void(0);">
+                    >
+                </a>
+            </li>
+            <li class="page" data-pagenum="<$=totalPage$>">
+                <a href="javascript:void(0);">尾页</a>
+            </li>
+            <$}$>
+            <$}$>
+        </ul>
+    </div>
+</script>
+<script type="text/javascript" src="/js/plugin/moment.js"></script>
+
 <script>
+    var articleId = <%=data[0]['id']%>;
+    //使用分页组件查询评论回复
+    function queryCommentReplay() {
+        comm.page.init({
+            url: '/querycomments',
+            container: 'pages',
+            pageTmplId: 'page',
+            dataTmplId: 'commentsReplays',
+            dataId: 'commentsWrapper',
+            postData: {
+                topicId: parseInt(articleId),
+                dicId: 1,
+                currentPage: 1,
+                showPageNum: 10
+            }
+        },function(){
+            $('#counts').text($('#messageCounts').val());
+        });
+    }
+
     hljs.initHighlightingOnLoad();
     window._bd_share_config={
         "common":{
             "bdSnsKey":{},
-            "bdText":"",
+            "bdText":"<%=data[0]['title']%>",
             "bdMini":"2",
             "bdPic":"",
             "bdStyle":"0",
             "bdSize":"24"
         },
         "share":{},
-        "image":{
-            "viewList":["qzone","tsina","tqq","renren","weixin"],
-            "viewText":"分享到：",
-            "viewSize":"16"
-        },
         "selectShare":{
             "bdContainerClass":null,
-            "bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]
+            "bdSelectMiniList":["weixin","qzone","tsina","tqq","sqq"]
         }
     };
     with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
     $(init);
     function init(){
+
+        //查询当前文章下的评论回复
+        queryCommentReplay();
+
+        //发表评论
+        $('#declareComment').on('click',function(e){
+            var $target = $(this);
+            e.preventDefault();
+            var $commentForm = $target.closest('form'),
+                content =$commentForm.find('textarea').val();
+            handleDeclareComment(content);
+        });
+
         //回复
-        $('.js_reply').on('click',function(){
+        $('#commentsWrapper').on('click','.js_reply',function(){
             /*
              获取html模板,根据reply_type是否为4来判断是不是根评论id(comment_id),
              被回复评论的id(reply_id)，回复内容(reply_content)，评论人id(from_uid),
@@ -290,8 +415,8 @@
              comment_id 和 reply_id是一样的(所以只需要找到comment_id就行)；
              被评论人id(就是评论表的from_id)
              */
-             var $target = $(this),
-                 flag = parseInt($target.data('flag'));
+            var $target = $(this),
+                flag = parseInt($target.data('flag'));
             if(flag){
                 //这里是显示回复框
                 showReplyArea($target);
@@ -300,27 +425,17 @@
                 revmoeReplyArea($target);
             }
             /*
-            *   需求分析：
-            *       点击回复/取消回复:
-            *           判断是回复(1)、还是取消回复(0)
-            *
-            *           如果是回复：
-            *               显示回复框，将数据绑定到当前的回复框里；显示"取消回复"
-            *
-            *           如果是取消回复：
-               *           直接移除这个框就好了;显示"回复"
-            *
-            * */
-        });
-
-        //发表评论
-        $('#declareComment').on('click',function(e){
-            var $target = $(this);
-             e.preventDefault();
-            var $commentForm = $target.closest('form'),
-                commentid = $commentForm.data('commentid'),
-                content =$commentForm.find('textarea').val();
-            handleDeclareComment(commentid,content);
+             *   需求分析：
+             *       点击回复/取消回复:
+             *           判断是回复(1)、还是取消回复(0)
+             *
+             *           如果是回复：
+             *               显示回复框，将数据绑定到当前的回复框里；显示"取消回复"
+             *
+             *           如果是取消回复：
+             *           直接移除这个框就好了;显示"回复"
+             *
+             * */
         });
 
         //请求评论数最多的数据
@@ -328,13 +443,13 @@
             comm.ajax.commAjax({
                 url: '/getmostcomment',
                 successFn: function(data){
-                    console.log(data);
                     if(data){
                         comm.tmpl.render('mostcomment',{mostcomment: data},'mostCommentWrap');
+                        $('#mostCommentWrap .tooltip').toolTip();
                     }
                 },
                 errorFn: function(err){
-                    console.log(err);
+                    if(err) comm.layer.alert(err);
                 }
             })
         }
@@ -406,21 +521,47 @@
         $target.text('回复').data('flag',1);
     }
 
-    //处理回复的事件
-    function handleReplySubmit($target){
-         var $replyDialog = $target.closest('.js_reply_wrap'),
-             content = $target.closest('form').find('textarea').eq(0).val(),
-             replyData = $replyDialog.data('reply'),
-             commid = replyData.commid,
-             rpid = replyData.rpid,
-            touid = replyData.rpUserId,
-             rptype = replyData.rptype,
-            dicid = replyData.rpDicId;
-         declareReply(commid,rpid,rptype,content,touid,dicid);
+    //发表评论的逻辑处理
+    function handleDeclareComment(content){
+        comm.ajax.commAjax({
+            url: '/comment',
+            type: 'post',
+            data: {
+                dicid: 1,
+                commentid: articleId,
+                content: content
+            },
+            successFn: function(data){
+                if(data.status === 1){
+                    comm.layer.msg('评论成功！');
+                    queryCommentReplay();
+                    comm.scrollToElement('commentsWrapper',-$('.js_head_wrap').height());
+                } else {
+                    comm.layer.alert(data.des);
+                }
+            }
+        });
+
+        $('#commentForm').find('textarea').val('');
+
+
     }
 
     //发表回复的逻辑处理
-    function declareReply(commid,rpid,rptype,content,touid,dicid) {
+    function handleReplySubmit($target){
+        var $replyDialog = $target.closest('.js_reply_wrap'),
+            content = $target.closest('form').find('textarea').eq(0).val(),
+            replyData = $replyDialog.data('reply'),
+            commid = replyData.commid,
+            rpid = replyData.rpid,
+            touid = replyData.rpUserId,
+            rptype = replyData.rptype,
+            dicid = replyData.rpDicId;
+        declareReply(commid,rpid,rptype,content,touid,dicid,$target);
+    }
+
+    //发表回复的逻辑处理
+    function declareReply(commid,rpid,rptype,content,touid,dicid,$target) {
 
         comm.ajax.commAjax({
             url: '/reply',
@@ -437,45 +578,72 @@
                 comm.layer.alert('回复失败！');
             },
             successFn: function(data){
-                comm.layer.alert(data.data.des,null,function(index){
-                    var originUrl = comm.url.getOriginUrl();
-                    layer.close(index);
-                    var id = $("#commentsArea").find('li').eq(0).data('id');
-                    if(rpid === window.parseInt(id)) {
-                        rpid = 'commentfirst'
-                    }
-                    window.location.href = originUrl+'?time='+new Date().getTime()+'#'+rpid;
-                });
-
+                if(data.data){
+                    comm.layer.alert(data.data.des,null,function(index){
+                        var $wrapper = $target.closest('.js_comment_body'),
+                            $comments = $target.closest('.js_reply_wrap ');
+                        $wrapper.find('.js_reply').eq(0).trigger('click');
+                        queryCommentReplay();
+                        layer.close(index);
+                    });
+                }
             }
         });
-
     }
 
-    //发表评论的逻辑处理
-    function handleDeclareComment(commentid,content){
+
+
+    function handleClick() {
+        var $target = $(this),
+            articleId = $target.data('articleId');
+        ding($target,articleId);
+    }
+    var newHandleClick = comm.debounce(handleClick,500);
+
+    //点赞、踩
+    $("#likeorhate").on('click','.js_ding',newHandleClick);
+
+    //顶的业务逻辑
+    function ding($self,articleId) {
         comm.ajax.commAjax({
-            url: '/comment',
+            url: '/ding',
             type: 'post',
-            data: {
-                commentid: commentid,
-                content: content,
-                dicid: 1
+            data: {id: articleId},
+            errorFn: function(error){
+                comm.layer.msg('顶操作失败！');
             },
             successFn: function(data){
-                if(!comm.judge.isEmptyObject(data)){
-                    comm.layer.alert(data.des,null,function(index){
-                        layer.close(index);
-                        var originUrl = comm.url.getOriginUrl();
-                        $('#commentfirst').removeAttr('id');
-                        window.location.href = originUrl+'?time='+new Date().getTime()+'#commentfirst';
-                    });
-                } else {
-                    comm.layer.alert('抱歉，返回数据为空！');
+                if(data.dm){
+                    $self.find('.js_ding_text').text(data.dm[0].ding);
+                    $self.plusOne();
                 }
+            }
+        });
+    }
+
+    function handleCaiClick() {
+        var $target = $(this),
+            articleId = $target.data('articleId');
+        cai($target,articleId);
+    }
+    var newHandleCaiClick = comm.debounce(handleCaiClick,500);
+    $("#likeorhate").on('click','.js_cai',newHandleCaiClick);
+
+
+    //踩的业务逻辑
+    function cai($self,articleId) {
+        comm.ajax.commAjax({
+            url: '/cai',
+            type: 'post',
+            data: {id: articleId},
+            errorFn: function(error){
+                comm.layer.msg('踩失败！');
             },
-            errorFn: function(err){
-                     comm.layer.alert(err);
+            successFn: function(data){
+                if(data.c){
+                    $self.find('.js_cai_text').text(data.c[0].cai);
+                    $self.plusOne();
+                }
             }
         });
     }

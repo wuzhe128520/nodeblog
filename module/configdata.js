@@ -10,12 +10,12 @@ const app = require('../app'),
 
             //查询导航信息
             let p = new Promise(function(resolve, reject){
-
+                    console.log('第一个promise');
                     if(!app.locals.nav){
+                        console.log('进入第一个promise方法里……');
                         sql('select * from nav',(err, data) => {
                             if(err){
-                                console.log(err);
-                                reject();
+                                reject(err);
                             } else {
                                 app.locals.nav = data;
                                 resolve();
@@ -27,32 +27,43 @@ const app = require('../app'),
             });
 
             p.then(function(){
-
                 if(req.cookies['login']){
-                    console.log(req.cookies['login']);
-                    res.locals.login = req.cookies.login.name;
-                    res.cookie('login', req.cookies['login'],{maxAge: 1000*60*60*0.5});
+
+                    if(!res.locals.login ){
+                        res.locals.login = req.cookies.login.name;
+                    }
+
+                    //只要用户处于活动状态，重新设置cookie的过期时间
+                    //res.cookie('login', req.cookies['login'],{maxAge: 1000*60*60*0.5});
 
                     //已经登录的状态，设置是否是管理员
-                        let promise = new Promise(function(resolve, reject){
+                    let p2 = new Promise(function(resolve2, reject2){
+                        debugger;
+                        console.log('typeof session admin:' + req.session.admin);
+                        let sessionAdmin = req.session.admin;
+                        if(typeof sessionAdmin === 'undefined'){
+                            console.log('进入第2个promise方法里2222222');
+                            let loginData = res.locals.login;
+                            sql('select admin from user where username = ? or email = ?',[loginData , loginData],(err,data)=> {
 
-                                let loginData = res.locals.login;
-                                sql('select admin from user where username = ? or email = ?',[loginData , loginData],(err,data)=> {
+                                if(err){
+                                    reject2(err);
+                                } else {
+                                    res.locals.admin = req.session.admin = Number(data[0].admin);
+                                    resolve2();
+                                }
+                            });
+                        } else {
+                            resolve2();
+                        }
+                    });
 
-                                    if(err){
-                                        console.log(err);
-                                        reject();
-                                    } else {
-                                        req.session.admin = Number(data[0].admin);
-                                        res.locals.admin = req.session.admin;
-                                        resolve();
-                                    }
-                                });
-                        });
-
-                        promise.then(function(){
-                            next();
-                        });
+                    p2.then(function(){
+                        console.log('出去了……');
+                        next();
+                    },function(error){
+                        throw error;
+                    });
                 }  else {
 
                     // 获取请求的方法
@@ -68,34 +79,26 @@ const app = require('../app'),
                             arr.splice(i,1);
                         }
                     }
+
                     //如果请求路径存在于include里，则拦截……
                     if(include.indexOf(arr[0]) !== -1){
 
                         //如果是ajax请求，则使用json返回数据
                         if(req.xhr){
                             res.json({
-                                status: 'nologin'
+                                status: 'nologin',
+                                des: '您还未登录！'
                             });
                         } else {
-                            req.session.originalUrl = req.originalUrl ? req.originalUrl : null;  // 记录用户原始请求路径
+                            req.session.returnUrl = req.originalUrl;
                             res.redirect('/login?show=1');  // 将用户重定向到登录页面
                         }
                     } else {
                         next();
                     }
                 }
+            },function(err){
+                if(err) throw  err;
             });
          });
-/* 导航数据 */
-/*
-app.use(function(req,res,next){
-                if(req.session.navdata === undefined){
-                    navdata(ondata=>{
-                        req.session.navdata = ondata;
-                        next();
-                    });
-                }
-                else {
-                    next();
-                }
-        });*/
+

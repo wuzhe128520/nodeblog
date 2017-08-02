@@ -6,6 +6,9 @@ var moment = require('moment');
 var utils = {
     dateFormat: function(date, fmt) {
         return moment(date).format(fmt);
+    },
+    fromNow: function(date){
+        return moment().fromNow();
     }
 };
 

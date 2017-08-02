@@ -12,7 +12,10 @@
     <!-- 搜索引擎抓取 -->
     <meta name="robots" content="index,follow"/>
     <!-- 网站图标 -->
-    <meta name="viewport" content="initial-scale=1,minimum-scale=1,user-scalable=no">
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
     <title>无畏滴青春的博客</title>
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="/css/reset.css" />
@@ -35,15 +38,15 @@
                 <%}%>
                 <a href="/logout" class="logout">退出</a>
                 <%}else {%>
-                <a href="/login?show=1" class="login-btn">登录</a>
-                <a href="/register?show=0" class="reg-btn">注册</a>
+                <a href="/login?show=1" class="login-btn" id="login-top-btn">登录</a>
+                <a href="/register?show=0" class="reg-btn" id="reg-top-btn">注册</a>
                 <%}%>
             </div>
             <!--搜索 begin-->
             <div class="search-wrap">
                 <ul class="search-ul clearfix">
                     <li class="search clearfix">
-                        <i class="a-search iconfont icon-search" title="搜索文章" id="search-btn">搜索</i>
+                        <i class="a-search iconfont icon-search tooltip" title="搜索文章" id="search-btn">搜索</i>
                         <form id="search" class="search-form" method="get" action="/search" >
                             <div class="query-wrap">
                                 <input type="text" id="query" name="search" placeholder="搜索文章" class="search-input js_water_mark" />

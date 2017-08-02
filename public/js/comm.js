@@ -1,66 +1,6 @@
 /**
  * Created by Administrator on 2017/4/21.
  */
-//封装百度分享功能
-/*
-    需求：
-        1、在首页能够分享主页面
-        2、在文章详情页提供按钮分享和划词分享
-    需求分析：
-        1、分享主页面
-            内容是固定的
-            通用设置的主要参数：
-                bdText: '分享的文本'
-                bdDesc: '分享的描述'
-                bdUrl: '点击分享的内容要跳转的网址'
-                bdPic: '分享内容封面图'
-          分享按钮设置：
-                主要参数：
-                    tag: 表示该配置只会应用于data-tag值一致的分享按钮
-                    bdSize: 分享按钮的尺寸
-                    bdCustomStyle: 自定义样式，引入样式文件
-           浮窗分享设置：
-                    bdImg: 浮窗图标的颜色
-                    bdPos: 分享浮窗的位置
-                    bdTop: 分享浮窗与可视区域顶部的距离
-            划词分享设置：
-                    bdSelectMiniList: 自定义弹出浮层中的分享按钮类型和排列顺序
-                    bdContainerClass: 自定义划词分享的激活区域
-            2、划词分享
-*/
-/*window._bd_share_config = {
-    common : {
-        bdText : '自定义分享内容',
-        bdDesc : '自定义分享摘要',
-        bdUrl : window.location.href.split("?")[0],
-       /!* bdPic : '自定义分享图片'*!/
-        onBeforeClick: function(cmd, config){
-            for(let i in config){
-                console.log(i,config[i]);
-            }
-            config.bdText= $('.js_article_title').text();
-            return config;
-        }
-    },
-    share : [{
-        "bdSize" : 24
-    }],
-    slide : [{
-        bdImg : 0,
-        bdPos : "right",
-        bdTop : 100
-    }],
-    image : [{
-        viewType : 'list',
-        viewPos : 'top',
-        viewColor : 'black',
-        viewSize : '16',
-        viewList : ['qzone','tsina','huaban','tqq','renren']
-    }],
-    selectShare : [{
-        "bdselectMiniList" : ['qzone','tqq','kaixin001','bdxc','tqf']
-    }]
-};*/
 var comm = {
 
      /*数据类型判断*/
@@ -133,7 +73,7 @@ var comm = {
          deepCopy: function(p, c, isDeep){
 
             var c = c || {};
-            for(let i in p){
+            for(var i in p){
                 if(p.hasOwnProperty(i)){
                     if(typeof p[i] === 'object'){
                         c[i] = (p[i].constructor === Array) ?[]:{};
@@ -259,9 +199,7 @@ var comm = {
                         }
                 }
                 $.extend(defaultObj, config);
-                console.log('弹框的参数：');
-                console.log(defaultObj);
-                layer.open(defaultObj);
+                return layer.open(defaultObj);
           },
 
           //普通信息框
@@ -416,8 +354,6 @@ var comm = {
                     deg = randomNum(-45,45),
                     txt = letters[randomNum(0,lettersLength)],
                     code = code+ txt;
-                console.log(txt);
-                console.log(codeContent);
                 ctx.fillStyle = randomColor(10,100);
 
                 //font 属性设置或返回画布上文本内容的当前字体属性。
@@ -526,7 +462,6 @@ var comm = {
     },
 
     scrollEvent: function(){
-        console.log($(this).scrollTop());
         var $target = $(this);
         if($target.scrollTop() > 150){
             $("#scrollTop").fadeIn();
@@ -628,7 +563,6 @@ var comm = {
 
     //window滚动事件
     scrollEvent: function(){
-        console.log($(this).scrollTop());
         var $target = $(this);
         if($target.scrollTop() > 150){
             $("#scrollTop").fadeIn();
@@ -753,6 +687,7 @@ var comm = {
     url: {
         address: window.location.href,
         pathname: window.location.pathname,
+        //获取原始的url地址(不带参数)
         getOriginUrl: function(){
             var url = this.address,
                 originUrl = url.split('?')[0],
@@ -763,6 +698,14 @@ var comm = {
                 }
                 return originUrl;
         },
+
+        //获取地址栏最新的url地址
+        getCurrentUrl: function(){
+
+            return window.location.href;
+        },
+
+        //获取地址栏的请求方法
         getRequestMethod: function(){
             var url =this.pathname,
                 method = url.match(/\/\w+\/?/);
@@ -807,24 +750,23 @@ var comm = {
          * @param data:  分页组件的数据
          *  url: '../../views/pages.ejs'
          */
-        init: function(options){
-            debugger;
-            var options = $.extend(true,comm.page.options,options),
-                pagesData = this.getPageData(options.url,options.postData);
-             debugger;
-             comm.page.showPageData(comm.page.options.dataId,comm.page.options.dataTmplId,pagesData.data);
-             comm.page.showPage(options,pagesData.pages,comm.page.options.pageTmplId);
-
+        init: function(options,callback){
+            var options = $.extend(true,comm.page.options,options);
+                this.getPageData(options.url,options.postData,function(pagesData){
+                    comm.page.showPageData(comm.page.options.dataId,comm.page.options.dataTmplId,pagesData.data);
+                    comm.page.showPage(options,pagesData.pages,comm.page.options.pageTmplId);
+                    callback&&callback();
+                },function(error){
+                   if(error) comm.layer.alert(error);
+                });
         },
         //展示分页组件
         showPage: function(options,pages,pageTmplId){
-
             comm.tmpl.render(pageTmplId, {pages: pages},options.container);
             comm.page.bindPageClick(options.container,options.postData.showPageNum);
         },
         //展示数据
         showPageData: function(articlesId,dataTmplId,articleData){
-            debugger;
             comm.tmpl.render(dataTmplId,{data: articleData},articlesId);
         },
         //绑定每一页的点击事件
@@ -843,11 +785,12 @@ var comm = {
                     return false;
                 }
             comm.page.options.postData.currentPage = newPage;
-
-             var  pagesData = comm.page.getPageData(comm.page.options.url,comm.page.options.postData);
-                comm.page.showPageData(comm.page.options.dataId,comm.page.options.dataTmplId,pagesData.data);
-                comm.page.showPage(comm.page.options,pagesData.pages,comm.page.options.pageTmplId);
-                comm.scrollToTop();
+             var  pagesData = comm.page.getPageData(comm.page.options.url,comm.page.options.postData,function(pagesData){
+                  comm.page.showPageData(comm.page.options.dataId,comm.page.options.dataTmplId,pagesData.data);
+                  comm.page.showPage(comm.page.options,pagesData.pages,comm.page.options.pageTmplId);
+             },function(error){
+                 if(error) comm.layer.alert(error);
+             });
             }
         },
         //获取分页数据
@@ -856,25 +799,12 @@ var comm = {
          * @param url 后端分页请求地址
          * @param data 传递给后端的数据,对象形式
          */
-        getPageData: function(url, postData){
-            var pagesData = null;
-
-            comm.ajax.commAjax({
+        getPageData: function(url, postData,fnSuccess,fnError){
+            $.when(comm.ajax.commAjax({
                 url: url,
-                async: false,
                 type: 'post',
-                data: postData,
-                successFn: function(data){
-                    pagesData = data;
-
-                },
-                errorFn: function(err){
-                    console.log(err);
-                }
-            });
-            debugger;
-            comm.page.pagesData = pagesData;
-            return pagesData;
+                data: postData
+            })).then(fnSuccess,fnError);
         }
     },
 
@@ -1070,7 +1000,6 @@ var comm = {
 };
 (function(comm){
     comm.ajax.ajaxComplete(function(event,xhr,settins){
-        console.log('ajax请求完成！');
         //将json字符串转为js对象
         var data = JSON.parse(xhr.responseText);
         if(!!data.status && data.status === "nologin"){
@@ -1080,13 +1009,14 @@ var comm = {
                 function(index){
                     comm.layer.close(index);
                     setTimeout(function(){
-                        window.location.href = "/login?show=1";
+                        var originalUrl = comm.url.getCurrentUrl();
+                        window.location.href = "/login?show=1&returnurl=" + originalUrl;
                     },1000);
                 });
         }
     });
-    comm.ajax.ajaxStart(function(){console.log("ajax开始请求！")});
-    comm.ajax.ajaxError(function(event,xhr,options,exc){console.log("请求出错了噢！"+exc);});
+    comm.ajax.ajaxStart(function(){});
+    comm.ajax.ajaxError(function(event,xhr,options,exc){});
 })(comm);
 //jquery插件扩展
 //提示框
@@ -1095,49 +1025,67 @@ var comm = {
  * @param options: {x: 20,y: 20} 偏移量对象
  */
 $.fn.toolTip = function(options){
-    var $that = this,
+    var $target = this,
         $toolTip,
-        title,
-        offsetX = 0,
-        offsetY = 0,
+
+        //偏移量
         position = {
             x: 10,
             y: 10
         };
     $.extend(position,options);
-    $that.each(function(i, current){
-        var $target = $(current);
-        $target.on('mouseover', function(event){
-            event.preventDefault();
-            title = $target.attr('title');
-            $target.attr('title','');
-            offsetX = event.pageX;
-            offsetY = event.pageY;
+    function handleMouseover(event) {
+        this.myTitle = this.title;
+        this.title = '';
 
-            //toolTip的偏移量
-            $toolTip = $('<p class="hidden" id="tooltip">' + title + '</p>');
-            $toolTip.appendTo('body');
+        //toolTip的偏移量
+        $toolTip = $('<p class="hidden" id="tooltip">' + this.myTitle + '</p>');
+        $toolTip.appendTo('body');
+        $toolTip.css({
+            top:  event.pageY + position.x + 'px',
+            left: event.pageX + position.y + 'px'
+        }).fadeIn();
+    }
+    $target.on('mouseover.tooltip', function(event){
+            handleMouseover.call(this,event);
+        }).on('mousemove.tooltip', function(event){
+            $target.off('mouseover.tooltip');
             $toolTip.css({
-                top: offsetY + position.x + 'px',
-                left: offsetX + position.y + 'px'
-            }).fadeIn();
-
-            $target.off('mousemove.tooltip').on('mousemove.tooltip', function(event){
-                event.preventDefault();
-                offsetX = event.pageX;
-                offsetY = event.pageY;
-                $toolTip.css({
-                    top: offsetY + position.x + 'px',
-                    left:  offsetX + position.y + 'px'
-                });
+                top:  event.pageY + position.x + 'px',
+                left: event.pageX + position.y + 'px'
             });
-            $target.off('mouseleave.tooltip').on('mouseleave.tooltip', function(){
-                $target.attr('title',title);
-                $toolTip.fadeOut();
-                $toolTip.remove();
+        }).on('mouseout.tooltip', function(){
+            $target.on('mouseover.tooltip',function(event){
+                handleMouseover.call(this,event);
             });
+            this.title = this.myTitle;
+            $toolTip.remove();
         });
-    });
 };
+
+//加一效果
+$.fn.plusOne = function(){
+    var $this = this,
+        offset = $this.offset(),
+        offsetX = offset.left,
+        offsetY = offset.top,
+        $plusone = $('<div class="plusone hidden">+1</div>');
+
+    $plusone.css({
+        position: 'absolute',
+        left: offsetX + $this.outerWidth()/2 + 'px',
+        top: offsetY - $plusone.height() - $this.outerHeight()  + 'px',
+        color: '#F7AF57'
+    }).appendTo('body').fadeIn().
+    animate({
+        top: offsetY - $plusone.height() - 30 + 'px',
+        left: offsetX + 50 + 'px',
+        opacity: 0,
+        fontSize: '24px'
+    },600,function(){
+        $plusone.remove();
+        $plusone = null;
+    });
+}
 
 

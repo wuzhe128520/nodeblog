@@ -7,27 +7,32 @@ const express = require('express'),
        router = express.Router();
 
 router.get('/',(req, res)=>{
-    console.log('cookies是否存在：');
-    console.log(req.cookies);
     //如果已经是登录状态，则跳回首页(能否跳回登录之前那个页面)
     if(req.cookies['login']){
         res.redirect('/');
     } else {
+
+        //获取登录之前的页面地址,并存入session
+        let originalUrl = req.query.returnurl;
+        if(originalUrl) req.session.returnUrl = originalUrl;
+
         res.render('login');
     }
 });
 
 router.post('/',(req, res)=>{
-    debugger;
     const user = req.body['name'],
            pass = req.body['pass'],
            md5 = crypto.createHash('md5'),
            newpass = md5.update(pass).digest('hex');
     sql("select id,status,admin,username from user where (username = ? or email = ?) and password = ?",[user,user,newpass],(err,data)=>{
             if(err){
-                console.log(err);
-                return;
+               res.json({
+                   status: 0,
+                   des: '数据错误！'
+               });
             } else {
+                console.log(req.originalUrl);
                 if(data.length === 1){
 
                     //表示未激活
@@ -39,14 +44,14 @@ router.post('/',(req, res)=>{
                         let originalUrl = '';
 
                         //1、cookie的名称  2、数据  3、过期时间
-                        res.cookie('login', {id: data[0].id,name: data[0].username},{maxAge: 1000*60*60*0.5});
+                        res.cookie('login', {id: data[0].id,name: data[0].username},{maxAge: 1000*60*60*24});
 
                         // session所有后台页面都是可以访问到的
                         //保存到服务器上面的
                         //session 在关闭页面的时候 session里面保存的所有数据 都会清空
                         req.session.admin = data[0]['admin'];
-                        if(req.session.originalUrl){
-                            originalUrl = req.session.originalUrl;
+                        if(req.session.returnUrl){
+                            originalUrl = req.session.returnUrl;
                         }
                         res.json({
                             originalUrl: originalUrl,

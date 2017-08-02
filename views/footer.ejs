@@ -19,7 +19,11 @@
 <script type="text/javascript" src="/js/comm.js"></script>
 <script>
     $(function(){
+        var time = new Date();
+        var year=time.getFullYear();
+        document.getElementById("siteDate").innerHTML = year;
         comm.nav();
+        $('.tooltip').toolTip();
         //点击搜索
         $("#search-btn").click(function(e){
             e.stopPropagation();
@@ -28,12 +32,10 @@
             if(!$query.hasClass("search")){
                 $query.addClass("search");
             }
-            console.log(!$query.is(":focus"));
             if(!$query.is(":focus")){//判断元素是否获取焦点
                 $query.focus();
             }
 
-            submitForm($query);
             //绑定全局的点击事件
             $(document).unbind("click.focus").bind("click.focus",function(e){
                 if(!$(e.target).is(".search-input")){
@@ -41,8 +43,6 @@
                         $("#waterMark").remove();
                         $query.attr("placeholder","搜索").val("").
                         removeClass("search-error search").blur();
-
-                        submitForm.isNotFirst = null;
                     }
                 }
             });
@@ -63,16 +63,27 @@
         });
         //提交表单
         var submitForm = function($query){
-            if(submitForm.isNotFirst){
-                if($.trim($query.val())){
-                    $("#search").submit();
+                var qVal = $query.val();
+                if($.trim(qVal)){
+                    var newQval = encodeURI(encodeURI(qVal));
+                    window.location.href = '/search?search=' + newQval;
+                    //$('#search').submit();
                 }
                 else {
                     $query.val("").addClass("search-error");
                     comm.waterMark();
                 }
-            }
-            submitForm.isNotFirst = true;
         };
+
+        //绑定登录，注册的点击事件
+        $('#login-top-btn,#reg-top-btn,.js_nologin_btn').click(function(e){
+            var url = '',
+                action = '',
+                $target = $(this);
+            e.preventDefault();
+            action = $target.attr('href');
+            url = comm.url.getCurrentUrl();
+            window.location.href = action + '&returnurl=' + url;
+        });
     });
 </script>

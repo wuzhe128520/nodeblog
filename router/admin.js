@@ -10,8 +10,6 @@ const express = require('express'),
 
 //get post 任何形式的访问都会走这一条路由
 router.use((req,res,next)=>{
-    console.log('进入后台通用方法：');
-    console.log(req.session.admin);
      if(req.session.admin){
          next();
      }else {
@@ -28,7 +26,7 @@ router.get('/',(req,res) => {
 router.get('/user',(req, res)=> {
     sql('select * from user',(err,data)=>{
             if(err){
-                console.log(err);
+                res.status(500).send('服务器错误！');
                 return;
             }
             res.render('admin/user',{data: data});
@@ -37,11 +35,9 @@ router.get('/user',(req, res)=> {
 
 //删除用户
 router.post('/user/delete',(req, res)=> {
-    console.log(req.body.userid);
     let userid = req.body.userid;
     sql('delete from user where id = ?',[userid],(err,data)=>{
             if(err){
-                console.log(err);
                 return;
             }
             res.send('删除成功');
@@ -51,7 +47,6 @@ router.post('/user/delete',(req, res)=> {
 
 //查询要修改的那条数据
 router.get('/user/updateuser',(req,res)=>{
-    console.log(req.query);
     sql('select * from user where id = ?',[req.query.id],(err, data)=>{
             res.render('admin/updateuser', {data: data});
     });
@@ -59,11 +54,9 @@ router.get('/user/updateuser',(req,res)=>{
 
 //执行修改
 router.get('/user/update',(req, res)=> {
-    console.log("修改用户",req.query);
     let formData = req.query;
    sql('update user set username = ?,admin = ? where id= ?',[formData.username,formData.isadmin,formData.ids],(err,data)=>{
             if(err){
-                console.log(err);
                 return;
             }
             res.send("修改成功");
@@ -72,11 +65,13 @@ router.get('/user/update',(req, res)=> {
 
 
 router.get('/gettypes', (req, res) => {
-    console.log('ajax查询分类中……');
     sql('select * from articletype', (err, types) => {
 
         if(err){
-            console.log(err);
+            res.json({
+                status: 0,
+                des: '数据错误！'
+            });
         } else {
             res.json(types)
         }
@@ -89,12 +84,18 @@ router.get('/writearticle',(req, res)=>{
     //查询所有标签
     sql('select * from articletag',(error, tags) =>{
         if(error){
-            console.log(error);
+            res.json({
+                status: 0,
+                des: '数据错误！'
+            });
         } else {
             sql('select * from articletype', (err, types) => {
 
                 if(err){
-                    console.log(err);
+                    res.json({
+                        status: 0,
+                        des: '数据错误！'
+                    });
                 } else {
                    res.json({
                         types: types,
@@ -114,10 +115,12 @@ router.get('/writearticle',(req, res)=>{
 router.post('/addtype', (req, res) => {
 
     let typename = req.body.typename;
-console.log(typename);
     sql('insert into articletype(typename) values(?)', [typename], (err) => {
             if(err){
-                console.log(err);
+                res.json({
+                    status: 0,
+                    des: '数据错误！'
+                });
             } else {
                 res.json({
                     status: 1,
@@ -147,9 +150,6 @@ router.post('/article',(req,res)=>{
         img = req.body.imgSrc,
         summery =  summeryContent.length>200?summeryContent.substr(0,200) + '...':summeryContent,
         time = new Date().toLocaleString();
-        debugger;
-        console.log(req.body.type);
-        console.log(title,newTags,oldTagIds,typeId,author,content,img,summery,time);
 
         if(!!newTags) {
             let tagsAry = newTags.split(','),
@@ -160,12 +160,11 @@ router.post('/article',(req,res)=>{
                         sql('insert into articletag(tagname) values (?)',[tag],(err) => {
 
                             if(err){
-                                 console.log();
+                               reject(err);
                             } else {
                                 sql('select tag_id from articletag where tagname = ?',[tag],(err, tagdata) => {
                                     if(err){
-                                        console.log(err);
-                                        reject();
+                                        reject(err);
                                     } else {
                                         resolve(tagdata[0].tag_id);
                                     }
@@ -179,9 +178,6 @@ router.post('/article',(req,res)=>{
                 arr.push(fn(tagsAry[i]));
             }
             Promise.all(arr).then(function(finaldata){
-                debugger;
-                console.log('打印新添加的标签id：');
-                console.log(finaldata);
                 let finalTag = '';
                 if(finaldata.length > 1) {
                     finalTag = finaldata.join(',');
@@ -189,6 +185,8 @@ router.post('/article',(req,res)=>{
                     finalTag = finaldata[0];
                 }
                 executQuery(finalTag);
+            },function(error) {
+                if(error) throw error;
             });
         } else {
                 executQuery();
@@ -202,16 +200,12 @@ router.post('/article',(req,res)=>{
 
             sql('insert into article(title,tags,author,content,time,img,summery,typeid) values(?,?,?,?,?,?,?,?)',[title,finalTag,author,content,time,img,summery,typeId],(err,data)=>{
                 if(err){
-                    console.log(err);
-
                     res.json({
                         status: 0,
                         des: '添加文章失败！'
                     });
                     return;
                 }
-                console.log('存入数据库后返回的值：');
-                console.log(data);
                 res.json({
                     status: 1,
                     des: '添加文章成功！',
@@ -226,7 +220,6 @@ router.get('/nav',(req,res)=>{
     //查询父级
     sql('select distinct navid,title  from nav where level = 1',(err,data)=>{
         res.render('admin/nav',{data:data});
-            console.log(data);
     });
 });
 
@@ -236,10 +229,12 @@ router.post('/writesay',(req, res) => {
         content = req.body.content,
         imgs = req.body.imgs,
         time = new Date().toLocaleString();
-    console.log('进入发表说说！')
     sql('insert into say(userid,content,time,dicid,imgs) values (?,?,?,?,?)',[userid,content,time,2,imgs],(err) => {
         if(err){
-            console.log('发表失败……');
+            res.json({
+                status: 0,
+                des: '发表说说失败！'
+            });
             return;
         } else {
             res.json({
@@ -260,7 +255,7 @@ router.post('/nav',(req,res)=>{
 
     sql('insert into nav (title,navid,level,url) values (?,?,1,?)',[title,navid,url],(err,data)=>{
            if(err){
-               console.log(err);
+               res.status(500).send('服务器错误！');
                return;
            }
             res.redirect('/admin/nav');
@@ -291,7 +286,6 @@ router.get('/views',(req, res)=>{
         return loop;
     }
     let dir =readDir()(`${process.cwd()}/views`);
-    console.log('dir',dir);
     res.render('views', {
             dir: dir
     });
@@ -314,9 +308,11 @@ router.post('/views',(req, res)=>{
     }
     else if(dirtype === '2'){
         fs.readdir(`${process.cwd()}/views/${dirname}`,(err, data)=>{
-            console.log("输出数据",data);
             if(err){
-                console.log(err);
+                res.json({
+                    status: 0,
+                    des: '数据错误！'
+                });
             }
             res.json({
                 dirtype: '2',
@@ -328,7 +324,10 @@ router.post('/views',(req, res)=>{
     else if(dirtype === '3'){
         fs.writeFile(`${process.cwd()}/views/${dirname}`,content,(err, data)=>{
             if(err){
-                console.log(err);
+                res.json({
+                    status: 0,
+                    des: '数据错误！'
+                });
             }
                 res.json({
                     result: '修改成功'

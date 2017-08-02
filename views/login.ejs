@@ -100,6 +100,7 @@
     </div>
 </main>
 <script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/plugin/layer/layer.js"></script>
 <script type="text/javascript" src="/js/comm.js"></script>
 <script>
 
@@ -115,35 +116,48 @@
             var regexp = /show=(\w+)/g;
             //match这里返回的数组
             var matchStr =regexp.test(href);
-            console.log(RegExp.$1);
             //显示登录
             if(Number(RegExp.$1)===1){
                 $('#login').show();
                 $('#title').text('登录');
                 $('.main-content-wrap').height(302);
+
+                //给登录按钮绑定enter事件
+                bindEnterEvent(1);
             }
             else {
                 //显示注册
                 $('#register').show();
                 $('#title').text('注册');
-
+                //给注册按钮绑定enter事件
+                bindEnterEvent(0);
             }
             code= comm.validateCode('code',6);
-
         }
+
+        //绑定enter事件
+        function bindEnterEvent(regOrLogin){
+            $(document).off('keydown.enter').on('keydown.enter',function(e){
+                if(e.which === 13){
+                    //提交登录，触发登录的点击事件
+                    if(regOrLogin){
+                        $("#loginBtn").trigger('click');
+                    } else {
+                        $('#registerBtn').trigger('click');
+                    }
+                }
+            });
+        }
+
         //保存验证码
         var code = null;
-        showBlock()
-
         //点击登录链接，显示登录
         $('#loginLink').click (function(event){
                 event.stopPropagation();
                 event.preventDefault();
-                /*$('#login').show();
-                $('#register').hide();
-                $('#title').text('登录');*/
                 window.location.href = '/login?show=1';
                 $('.main-content-wrap').height(500);
+                bindEnterEvent(1);
             });
 
         //点击注册链接
@@ -151,14 +165,10 @@
 
                 event.stopPropagation();
                 event.preventDefault();
-
-               /* $('#login').hide();
-                $('#register').show();
-                $('#title').text('注册');*/
                 window.location.href = '/login?show=0';
                 $('.main-content-wrap').height(302);
-                //每当点击注册的a标签时候刷新验证码
-
+            bindEnterEvent(0);
+            //每当点击注册的a标签时候刷新验证码
                 code.getNewCode();
             });
 
@@ -175,9 +185,17 @@
                         pass: $('.pass').val()
                     },
                     success: function(data){
-                        console.log(data);
                         if(data.success === 1){
-                            window.location.href = '/';
+                            console.log('登录之前的地址：' + data.originalUrl);
+                            comm.layer.msg('登陆成功,正在跳转...');
+                            setTimeout(function(){
+                                if(data.originalUrl){
+                                    window.location.href = data.originalUrl;
+                                } else {
+                                    window.location.href = '/';
+                                }
+                            },1000);
+
                         } else if(data.success === 'noactive'){
                             comm.layer.alert('对不起，您的账号还未在邮箱激活！暂不能登录！');
                         } else if(data.success === 0){
@@ -185,11 +203,10 @@
                         }
                     },
                     error: function(err){
-                        console.log(err);
+                        comm.layer.alert(err);
                     }
                 });
             }
-
         });
 
         //登录验证
@@ -210,7 +227,6 @@
         //注册
         var handleRegister = comm.throttle(handleRegisterClick,1000);
         function handleRegisterClick(){
-                console.log(validateForm());
                 if(validateForm()){
                     $.ajax({
                         url: '/register',
@@ -222,10 +238,13 @@
                             email: $('#regEmail').val()
                         },
                         success: function(data){
+                            if(data.status === -1){
+                                comm.layer.alert(data.des);
+                            }
                             if(data.status === 1){
                                 var username = data.username,
                                     email = data.email;
-                                window.location.href = '/register/sendsuccess?username='+username+'&email='+email;
+                                window.location.href = '/register/sendsuccess?username='+ encodeURI(encodeURI(username)) + '&email='+email;
                             }
                             if(data.status === 2){
                                 code.getNewCode();
@@ -314,6 +333,7 @@
                 }
                 return true;
         }
+        showBlock();
     }
 </script>
 </body>

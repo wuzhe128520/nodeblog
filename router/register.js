@@ -10,6 +10,11 @@ const express = require('express'),
 
 //注册get请求
 router.get('/',(req, res) => {
+
+    //获取登录之前的页面地址,并存入session
+    let originalUrl = req.query.returnurl;
+    if(originalUrl) req.session.returnUrl = originalUrl;
+
     res.render('login');
 });
 
@@ -23,7 +28,6 @@ router.post('/',(req, res) => {
 
            sql('select * from user where username = ?',[user],(err,data) => {
                if(data.length < 1){
-
                    sql('select * from user where email = ?', [email], (err, emailData) => {
                        if(emailData.length < 1){
                            const uuid = uuidV1(),
@@ -33,21 +37,33 @@ router.post('/',(req, res) => {
                            let newpass = md5.update(pass).digest('hex');
                            sql('insert into user (username,password,email,code,createtime,status,admin) values (?,?,?,?,?,0,0)',[user,newpass,email,uuid,time],(err)=>{
                                if(err){
-                                   console.log(err);
                                    res.json({
                                        status: 0,
                                        des: err
                                    });
                                } else {
-                                   sendMail(email,'欢迎您注册无畏滴青春博客网站！点此<a style="color:red;" href="http://localhost:520/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。');
-                                   res.json({
-                                       status: 1,
-                                       des: '发送邮件成功！',
-                                       username: user,
-                                       email: email
+                                   let promise = new Promise(function(resolve, reject){
+                                       let isOk = sendMail(email,'感谢您注册无畏滴青春博客网站！点此<a style="color:red;" href="'+ req.protocol +'://' + req.hostname + '/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。(此链接<span style="color: red">有效时间24小时</span>，请尽快注册！)');
+                                       if(isOk === 'fail') {
+                                           reject();
+                                       } else {
+                                           resolve();
+                                       }
+                                   });
+                                   promise.then(function(){
+                                       res.json({
+                                           status: 1,
+                                           des: '发送邮件成功！',
+                                           username: user,
+                                           email: email
+                                       });
+                                   },function() {
+                                       res.json({
+                                           status: -1,
+                                           des: '发送邮件失败！'
+                                       });
                                    });
                                }
-
                            });
                        } else {
                            res.json({
@@ -68,9 +84,10 @@ router.post('/',(req, res) => {
 
 //邮件发送成功
 router.get('/sendsuccess', (req,res) => {
-    let username = req.query.username,
+    let username = decodeURI(decodeURI(req.query.username)),
         email = req.query.email;
-    res.send('邮件发送成功，请进入邮箱'+ email +'激活账号！');
+        res.locals.data = '邮件发送成功，请进入邮箱'+ email +'激活账号！';
+        res.render('tip.ejs');
 });
 
 //激活注册
@@ -80,7 +97,7 @@ router.get('/validate/:uuid.html',(req,res) => {
 
     sql('select id,createtime,username,email,status from user where code = ?',[uuid],(err, data) => {
         if(err){
-            console.log(err);
+            return;
         } else {
 
             //如果这个验证码是对的
@@ -90,29 +107,39 @@ router.get('/validate/:uuid.html',(req,res) => {
                 if(data[0].status !== 1) {
 
                     //如果验证码没有过期
-                    if(new Date() - data[0].createtime > 1000*60*30) {
+                    if(new Date() - data[0].createtime > 1000*60*60*24) {
                         //验证码过期了，重新发送
                         const uuid = uuidV1();
-                        sendMail(data[0].email,'欢迎您注册无畏滴青春博客网站！点此<a style="color:red;" href="http://localhost:520/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。');
-                        let time = new Date().toLocaleString();
-                        sql('update user set createtime = ?,code=? where id=?',[time,uuid,data[0].id],(err, data) => {
-                            if(err){
-                                console.log(err);
+                        let pm = new Promise(function(resolve, reject){
+                            let isOk = sendMail(email,'感谢您注册无畏滴青春博客网站！点此<a style="color:red;" href="'+ req.protocol +'://' + req.hostname + '/register/validate/'+ uuid +'.html" >立即激活</a>您的账号。(此链接<span style="color: red">有效时间24小时</span>，请尽快注册！)');
+                            if(isOk === 'fail') {
+                                reject();
                             } else {
-                                res.send('验证码已经过期,已重新发送验证码，请在邮箱查收！');
+                                resolve();
                             }
+                        });
+                        pm.then(function(){
+                            let time = new Date().toLocaleString();
+                            sql('update user set createtime = ?,code=? where id=?',[time,uuid,data[0].id],(err, data) => {
+                                if(err){
+                                    res.send('数据查询失败！');
+                                } else {
+                                    res.send('验证码已经过期,已重新发送验证码，请在邮箱查收！');
+                                }
+                            });
+                        },function(){
+                            res.send('重新发送验证码失败，请到邮箱重新激活账号！');
                         });
                     } else {
                         res.locals.data = {active: 1,content: '账号激活成功!',username: data[0].username};
                         sql('update user set status = 1 where id = ?',[data[0].id], (err,data) => {
                             if(err){
-                                console.log(err);
+                                res.send('数据错误！');
                             } else {
                                 res.render('active');
                             }
                         });
                     }
-
                 } else {
 
                     //如果用户已经激活，则进入登录页面
@@ -128,6 +155,6 @@ router.get('/validate/:uuid.html',(req,res) => {
 
 });
 
-//重发验证码，需要修改数据库验证骂的时间和验证码
+//重发验证码，需要修改数据库验证码的时间和验证码
 
 module.exports = router;
