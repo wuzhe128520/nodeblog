@@ -14,7 +14,7 @@ router.get('/',(req, res) => {
     //获取登录之前的页面地址,并存入session
     let originalUrl = req.query.returnurl;
     if(originalUrl) req.session.returnUrl = originalUrl;
-
+    res.locals.title = '无畏滴青春个人网站注册';
     res.render('login');
 });
 

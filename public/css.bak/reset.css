@@ -1,0 +1,167 @@
+@charset "utf-8";
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+p,
+blockquote,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+span,
+pre,
+a,
+img,
+form,
+fieldset,
+legend,
+button,
+input,
+textarea,
+th,
+td,
+figure,
+figcaption {
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  /*将body的最小高度设置为屏幕的高度*/
+  font-size: 1em;
+  font-family: "Microsoft YaHei", Arial, Helvetica, sans-serif;
+  word-break: break-all;
+  /*强制英文单词断行*/
+  word-wrap: break-word;
+  /*强制换行*/
+}
+img,
+ul {
+  border: 0;
+}
+/*img {
+    cursor:pointer
+}*/
+ul {
+  list-style-type: none;
+}
+a {
+  text-decoration: none;
+}
+a:focus,
+textarea:focus,
+input,
+button,
+select,
+textarea {
+  outline: none;
+}
+/*a:link {
+    color: #fff;
+}
+a:visited {
+
+}
+a:hover {
+
+}a:active {
+     color: #fff;
+ }*/
+textarea {
+  resize: none;
+  border: 1px #c3c3c3 solid;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  padding: 3px 3px 0 0;
+}
+.purpleclear {
+  clear: both;
+}
+.clearfix:before {
+  content: " ";
+  display: block;
+  clear: both;
+  height: 0;
+  visibility: hidden;
+  font-size: 0;
+  line-height: 0;
+  width: 0;
+}
+.clearfix:after {
+  content: " ";
+  display: block;
+  clear: both;
+  height: 0;
+  visibility: hidden;
+  font-size: 0;
+  line-height: 0;
+  width: 0;
+}
+.clearfix {
+  zoom: 1;
+}
+input[type="button"],
+input[type="submit"],
+button {
+  border: 0;
+  cursor: pointer;
+}
+em,
+i {
+  font-style: normal;
+}
+/*解决谷歌浏览器input的谈黄色背景*/
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #222423 inset;
+  -webkit-text-fill-color: #fff;
+  background-color: #000000 !important;
+  opacity: 0.3;
+}
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+input[type='text'],
+input[type='password'],
+textarea,
+p {
+  padding-left: 3px;
+}
+/* 隐藏的元素，不占据空间 */
+.hidden {
+  display: none;
+}
+/* 看不见的元素，但是占据空间 */
+.invisible {
+  visibility: hidden;
+}
+.pointer {
+  cursor: pointer;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.abs-position {
+  position: absolute;
+}
+.abs-relative {
+  position: relative;
+}

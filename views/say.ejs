@@ -1,5 +1,5 @@
 <%include header.ejs%>
-<link href="/css/mood.css" rel="stylesheet" type="text/css">
+<link href="/css/mood.css?v=aae989eb1f" rel="stylesheet" type="text/css">
 <main>
     <div class="mood-wrap">
         <div class="moods" id="say">
@@ -106,7 +106,7 @@
                         <$-d.content$>
                     </p>
                     <$if(d.imgs){$>
-                    <div class="say-img-wrap clearfix">
+                    <div class="say-img-wrap">
                         <$-d.imgs$>
                     </div>
                     <$}$>
@@ -162,8 +162,6 @@
                                         if(replys.length > 0){
                                         for(var k = 0; k < replys.length;k++){
                                         var reply =replys[k];
-                                        console.log("当前对象：");
-                                        console.log(reply);
                                         if(reply.hasOwnProperty('rpid')){
                                         $>
                                         <ul class="comment-childs">
@@ -275,8 +273,6 @@
                 if(replys.length > 0){
                 for(var k = 0; k < replys.length;k++){
                 var reply =replys[k];
-                console.log("当前对象：");
-                console.log(reply);
                 if(reply.hasOwnProperty('rpid')){
                 $>
                 <ul class="comment-childs">
@@ -337,7 +333,7 @@
             dataId: 'say',
             postData: {
                 currentPage: 1,
-                showPageNum: 5
+                showPageNum: 10
             }
         });
 
@@ -403,6 +399,8 @@
                                 });
                                 comm.layer.close(index);
                             });
+                        } else {
+                            comm.layer.alert(data.des);
                         }
                     } else {
                         comm.layer.alert('抱歉，返回数据为空！');
@@ -540,8 +538,8 @@
                     comm.layer.alert('回复失败！');
                 },
                 successFn: function(data){
-                    if(data.data){
-                        comm.layer.alert(data.data.des,null,function(index){
+                    if(data.status === 1){
+                        comm.layer.alert(data.des,null,function(index){
                             var $wrapper = $target.closest('.js_comment_body'),
                                 $comments = $target.closest('.js_reply_wrap '),
                                 sayid = $target.closest('.js_say_id').data('sayid');
@@ -552,6 +550,8 @@
                             });
                             layer.close(index);
                         });
+                    } else {
+                        comm.layer.alert(data.des);
                     }
                 }
             });

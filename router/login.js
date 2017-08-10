@@ -7,7 +7,8 @@ const express = require('express'),
        router = express.Router();
 
 router.get('/',(req, res)=>{
-    //如果已经是登录状态，则跳回首页(能否跳回登录之前那个页面)
+    res.locals.title = '无畏滴青春个人网站登录';
+    //如果已经是登录状态，则跳回首页
     if(req.cookies['login']){
         res.redirect('/');
     } else {
@@ -32,7 +33,6 @@ router.post('/',(req, res)=>{
                    des: '数据错误！'
                });
             } else {
-                console.log(req.originalUrl);
                 if(data.length === 1){
 
                     //表示未激活
@@ -49,7 +49,7 @@ router.post('/',(req, res)=>{
                         // session所有后台页面都是可以访问到的
                         //保存到服务器上面的
                         //session 在关闭页面的时候 session里面保存的所有数据 都会清空
-                        req.session.admin = data[0]['admin'];
+                        res.locals.admin = req.session.admin = data[0]['admin'];
                         if(req.session.returnUrl){
                             originalUrl = req.session.returnUrl;
                         }

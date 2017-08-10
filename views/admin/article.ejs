@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>添加文章</title>
-    <link rel="stylesheet" href="/css/reset.css">
-    <link rel="stylesheet" href="/font/iconfont.css" />
-    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/reset.css?v=ec4610b89a">
+    <link rel="stylesheet" href="/font/iconfont.css?v=3cab2af4f9" />
+    <link rel="stylesheet" href="/css/admin.css?v=9465fbec59">
     <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
     <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.min.js"> </script>
     <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"> </script>
@@ -66,9 +66,9 @@
      </div>
  </main>
 <script src="/js/plugin/ejs.min.js"></script>
-<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jquery.min.js?v=dd07e83ec0"></script>
 <script type="text/javascript" src="/js/plugin/layer/layer.js"></script>
-<script type="text/javascript" src="/js/comm.js"></script>
+<script type="text/javascript" src="/js/comm.js?v=1d97920d4f"></script>
 <script type="text/template" id="addType">
     <div class="add-type-wrap" id="addTypeWrap">
         <form>
@@ -167,7 +167,6 @@
 
                 //将多余的标签放入giveup里，然后取消勾选
                 var giveup = inputValAry.slice(jLength - 1);
-                debugger;
                 for(var g = 0, l = giveup.length; g < l; g++){
                     cancelChecked(giveup[g]);
                 }
@@ -248,7 +247,6 @@
         function cancelChecked (tagStr){
 
             var $inputs = $('#hasTag').find('input:checked');
-            debugger;
             $inputs.each(function(i, current){
                 var $label = $(this).siblings('label'),
                     inputText = $label.text();
@@ -273,7 +271,6 @@
                         checked = this.checked;
 
                     //如果选中，同时选择的个数不超过5个，则创建标签
-                    debugger;
                     if(checked){
 
                         if(limitSelectNum()){
@@ -359,7 +356,6 @@
 
         //限制checkbox选择的个数,最多5个
         function limitSelectNum() {
-            debugger;
             var checkedNum = $('#hasTag').find("input[type='checkbox']:checked").length ,
                 newTagNum = getNewTag().length + 1;
 
@@ -368,7 +364,6 @@
 
         //获取新添加的标签
         function getNewTag() {
-            debugger;
             var oldTag = getOldTag(),
                 i = 0,
                 allTag = comm.ary.cloneAry(storeTag),
@@ -397,7 +392,6 @@
 
         //获取已选择的旧标签
         function getOldTag() {
-            debugger;
             //获取已选择的checkbox
             var $checkedInputs = $('#hasTag').find('input:checked'),
                 oldTag = [];

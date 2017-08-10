@@ -1,0 +1,33 @@
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+}
+.icon-diy {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  color: #fff;
+  vertical-align: baseline;
+}
+.icon-black {
+  background-color: #4C4B49;
+}
+.icon-red {
+  background-color: #CD2B45;
+}
+.icon-green {
+  background-color: #ADA30A;
+}
+.icon-orange {
+  background-color: #F69523;
+}
+.icon-blue {
+  background-color: #63B6F7;
+}
+.icon-gray {
+  background-color: #B0AFAA;
+}
+.icon-default {
+  background-color: #A2A2A2;
+}

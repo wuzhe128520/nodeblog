@@ -21,7 +21,7 @@
 <script src="/js/socket.io.min.js"></script>
 <script>
     //当引入socket的时候会在window下添加一个 io 全局变量
-    const jinru = document.querySelector('.jinru'),
+    var jinru = document.querySelector('.jinru'),
            usernum = document.querySelector('.user-num'),
            userlist = document.querySelector('.user-list'),
            div = document.querySelector('.chat-wrap'),
@@ -29,16 +29,16 @@
            leave = document.querySelector('.leave'),
             xq = document.querySelector('.xq');
         ;
-    let socket,
+    var socket,
         name,
         userid;
     send.onclick = submit;
     function submit(){
-        let txt = document.getElementById('content').value;
+        var txt = document.getElementById('content').value;
         socket.emit('msg',{content: txt});
     }
     jinru.onclick = function(){
-         let name = document.querySelector('.name').value;
+         var name = document.querySelector('.name').value;
          init(name);
         // socket.emit('login',{name: name, userid: new Date().getTime()});
     };

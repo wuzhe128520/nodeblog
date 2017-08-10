@@ -1,5 +1,5 @@
 <% include header.ejs %>
-<link href="/css/article-detail.css" rel="stylesheet" type="text/css">
+<link href="/css/article-detail.css?v=63e13099bf" rel="stylesheet" type="text/css">
 <link href="/js/plugin/highlight/styles/default.css" rel="stylesheet" type="text/css">
 <main>
     <div class="main-wrap layer-wz clearfix">
@@ -60,7 +60,7 @@
                                     length = tags.length;
                                     for(;i < length; i++){
                             %>
-                                    <a href="/tag/<%=tags[i].tag_id%>.html?tagname=<%=tags[i].tagname%>"><%=tags[i].tagname%></a>
+                                    <a href="/tag/<%=tags[i].tag_id%>.html?tagname=<% var newTagName = encodeURI(encodeURI(tags[i].tagname)) %><%=newTagName%>"><%=tags[i].tagname%></a>
                             <%}%>
                         </div>
                         <div class="other-article-wrap">
@@ -383,7 +383,7 @@
         "share":{},
         "selectShare":{
             "bdContainerClass":null,
-            "bdSelectMiniList":["weixin","qzone","tsina","tqq","sqq"]
+            "bdSelectMiniList":["weixin","qzone","tsina","tqq","sqq","h163"]
         }
     };
     with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
@@ -536,15 +536,12 @@
                     comm.layer.msg('评论成功！');
                     queryCommentReplay();
                     comm.scrollToElement('commentsWrapper',-$('.js_head_wrap').height());
+                    $('#commentForm').find('textarea').val('');
                 } else {
                     comm.layer.alert(data.des);
                 }
             }
         });
-
-        $('#commentForm').find('textarea').val('');
-
-
     }
 
     //发表回复的逻辑处理
@@ -578,14 +575,16 @@
                 comm.layer.alert('回复失败！');
             },
             successFn: function(data){
-                if(data.data){
-                    comm.layer.alert(data.data.des,null,function(index){
+                if(data.status){
+                    comm.layer.alert(data.des,null,function(index){
                         var $wrapper = $target.closest('.js_comment_body'),
                             $comments = $target.closest('.js_reply_wrap ');
                         $wrapper.find('.js_reply').eq(0).trigger('click');
                         queryCommentReplay();
                         layer.close(index);
                     });
+                } else {
+                    comm.layer.alert(data.des);
                 }
             }
         });

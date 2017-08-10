@@ -44,9 +44,6 @@ gulp.task("serve", ["less", "js-watch", "html","css"], function() {
     gulp.watch(path.JS, ["js-watch"]);
     gulp.watch(path.HTML, ["html"]);
     gulp.watch(path.CSS, ["css"]);
-    /* gulp.watch(path.HTML).on("change", function() { //当文件变化时，自动刷新
-     // browserSync.reload;
-     });*/
 });
 
 //编译less
@@ -78,13 +75,13 @@ gulp.task("html", function() {
 });
 //js代码检查
 gulp.task('jshint', function () {
-    gulp.src('js/*.js')
+    gulp.src('public/js/*.js')
         .pipe(plugins.jshint())
         .pipe(plugins.jshint.reporter()); // 输出检查结果
 });
 //js代码压缩
 gulp.task('minify-js', function () {
-    gulp.src('js/*.js') // 要压缩的js文件
+    gulp.src('public/js/*.js') // 要压缩的js文件
         .pipe(plugins.uglify())  //使用uglify进行压缩,更多配置请参考：
         .pipe(gulp.dest('dist/js')); //压缩后的路径
 });
@@ -102,7 +99,7 @@ gulp.task('minify-html', function () {
 });
 //文件合并
 gulp.task('concat', function () {
-    gulp.src('js/*.js')  //要合并的文件
+    gulp.src('public/js/*.js')  //要合并的文件
         .pipe(plugins.concat('all.js'))  // 合并匹配到的js文件并命名为 "all.js"
         .pipe(gulp.dest('dist/js'));
 });
@@ -154,41 +151,45 @@ gulp.task('clean',function(){
 
 //css文件压缩，更改版本号，并通过rev.manifest将对应的版本号用json表示出来
 gulp.task('versioncss',function(){
-    return gulp.src('app/styles/*.css')
-        //.pipe( concat('wap.min.css') )
+    return gulp.src(['public/css/*.css','public/font/*.css'])
+        //.pipe(plugins.concat('wap.min.css') )
         .pipe(plugins.minifyCss())
         .pipe(plugins.rev())
-        .pipe(gulp.dest('dist/app/styles/'))
+        .pipe(gulp.dest('dist/css/'))
         .pipe(plugins.rev.manifest())
-        .pipe(gulp.dest('dist/rev/css'))
+        .pipe(gulp.dest('dist/rev/css'));
 });
 
 //js文件压缩，更改版本号，并通过rev.manifest将对应的版本号用json表示出
 gulp.task('versionjs',function(){
-    return gulp.src('app/scripts/*.js')
-        //.pipe( concat('wap.min.js') )
+    return gulp.src('public/js/*.js')
+        //.pipe(plugins.concat('wap.min.js') )
         .pipe(plugins.jshint())
         .pipe(plugins.uglify())
         .pipe(plugins.rev())
-        .pipe(gulp.dest('dist/app/scripts/'))
-        .pipe(plugins.rev.manifest())
+        .pipe(gulp.dest('dist/js/'))
+        .pipe(plugins.rev.manifest({
+            merge: true
+        }))
         .pipe(gulp.dest('dist/rev/js'))
 });
 
 //通过hash来精确定位到html模板中需要更改的部分,然后将修改成功的文件生成到指定目录
 gulp.task('rev',function(){
-    return gulp.src(['dist/rev/**/*.json','app/pages/*.html'])
-        .pipe( plugins.revCollector() )
-        .pipe(gulp.dest('dist/app/pages/'));
+    return gulp.src(['dist/rev/**/*.json','views/**/*.ejs'])
+        .pipe( plugins.revCollector({
+            replaceReved: true
+        }) )
+        .pipe(gulp.dest('dist/views/'));
 });
 
 //合并html页面内引用的静态资源文件
 gulp.task('versionhtml', function () {
-    return gulp.src('dist/app/pages/*.html')
+    return gulp.src('views/**/*.ejs')
         .pipe(plugins.useref())
         .pipe(plugins.rev())
         .pipe(plugins.revReplace())
-        .pipe(gulp.dest('dist/html/'));
+        .pipe(gulp.dest('dist/views/'));
 });
 /*
  gulp静态资源文件版本管理任务执行顺序：

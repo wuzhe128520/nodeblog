@@ -1,5 +1,5 @@
 <%include header.ejs%>
-<link href="/css/message-board.css" rel="stylesheet" type="text/css">
+<link href="/css/message-board.css?v=3b147e072f" rel="stylesheet" type="text/css">
 <main>
     <div class="message-board-wrap layer-wz">
           <h2 class="message-board-title">
@@ -97,8 +97,6 @@
                 if(replys.length > 0){
                 for(var k = 0; k < replys.length;k++){
                 var reply =replys[k];
-                console.log("当前对象：");
-                console.log(reply);
                 if(reply.hasOwnProperty('rpid')){
                 $>
                 <ul class="comment-childs">
@@ -222,7 +220,6 @@ function init(){
 
     //发表留言
     $('#declareComment').on('click',function(e){
-        debugger;
         var $target = $(this);
         e.preventDefault();
         var $commentForm = $target.closest('form'),
@@ -245,13 +242,12 @@ function init(){
                    comm.layer.msg('留言成功！');
                    queryCommentReplay();
                    comm.scrollToElement('message',-$('.js_head_wrap').height());
+                   $('#commentForm').find('textarea').val('');
                } else {
                    comm.layer.alert(data.des);
                }
             }
         });
-
-        $('#commentForm').find('textarea').val('');
     }
 
     //使用分页组件查询留言
@@ -401,14 +397,16 @@ function init(){
                 comm.layer.alert('回复失败！');
             },
             successFn: function(data){
-                if(data.data){
-                    comm.layer.alert(data.data.des,null,function(index){
+                if(data.status === 1){
+                    comm.layer.alert(data.des,null,function(index){
                         var $wrapper = $target.closest('.js_comment_body'),
                             $comments = $target.closest('.js_reply_wrap ');
                         $wrapper.find('.js_reply').eq(0).trigger('click');
                         queryCommentReplay();
                         layer.close(index);
                     });
+                } else {
+                    comm.layer.alert(data.des);
                 }
             }
         });
@@ -430,8 +428,6 @@ function init(){
     }
     showReplyText();
 }
-
-
 </script>
 </body>
 </html>

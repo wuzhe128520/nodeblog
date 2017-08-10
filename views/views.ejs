@@ -14,7 +14,7 @@
         <p data-dirtype="2" onclick="next(this)"><%=dir[i]%></p>
     <%}%>
 <%}%>
-<script src="/js/jquery.min.js"></script>
+<script src="/js/jquery.min.js?v=dd07e83ec0"></script>
 <script>
     let dirname,
         dirtype;
@@ -25,7 +25,6 @@
         else {
             dirname = `${_this.getAttribute('data-dirname')}/${_this.innerText||_this.textContent}`;
         }
-        console.log(dirname);
         dirtype = _this.getAttribute('data-dirtype');
         $.ajax({
             url:'/admin/views',
@@ -104,11 +103,9 @@
                     alert(data.result);
                 },
                 error: function(error){
-                    console.log(error);
+                   alert(error);
                 }
-
             });
-
     }
     function escapeHTML(str){
     if(str){

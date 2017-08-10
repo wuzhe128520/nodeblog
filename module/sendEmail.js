@@ -3,12 +3,12 @@
  */
 const nodemailer = require('nodemailer');
 
-function sendMail(toEmail,content) {
+function sendMail(toEmail,content,subject) {
 
     const mailOptions = {
         from: '无畏滴青春博客 <postmaster@51happybuy.com>', // 发件地址
         to: toEmail, // 收件列表
-        subject: '欢迎注册无畏滴青春博客！', // 标题
+        subject: subject||'欢迎注册无畏滴青春博客！', // 标题
         html: content
     };
 
@@ -34,6 +34,7 @@ function sendMail(toEmail,content) {
 
     transporter.sendMail(mailOptions, function(error, info){
         if(error){
+            console.log(error);
             return 'fail';
         }
         return 'success';

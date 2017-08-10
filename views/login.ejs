@@ -14,11 +14,167 @@
     <!-- 网站图标 -->
     <meta name="viewport" content="initial-scale=1,minimum-scale=1,user-scalable=no">
     <title>无畏滴青春的博客登录/注册</title>
-    <link rel="stylesheet" href="/css/reset.css">
-    <link rel="stylesheet" href="/css/login.css">
-    <link rel="stylesheet" href="/font/iconfont.css">
+    <link rel="stylesheet" href="/css/reset.css?v=ec4610b89a">
+    <link rel="stylesheet" href="/css/login.css?v=1b198621e2">
+    <link rel="stylesheet" href="/font/iconfont.css?v=3cab2af4f9">
+    <style>
+        #wrapper {
+            background: #50a3a2;
+            background: -webkit-linear-gradient(top left, #a6926c 0%, #F2AB55 100%);
+            background: linear-gradient(to bottom right, #a6926c 0%, #F2AB55 100%);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 200;
+        }
+        .bg-bubbles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .bg-bubbles li {
+            position: absolute;
+            list-style: none;
+            display: block;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.15);
+            bottom: -160px;
+            -webkit-animation: square 35s infinite;
+            animation: square 35s infinite;
+            -webkit-transition-timing-function: linear;
+            transition-timing-function: linear;
+        }
+
+        /*正方形*/
+        .bg-bubbles li:nth-child(1) {
+            left: 10%;
+        }
+
+        /*三角形*/
+        .bg-bubbles li:nth-child(2) {
+            left: 20%;
+            width: 0;
+            background-color: transparent;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid rgba(255, 255, 255, 0.15);
+            -webkit-animation-delay: 2s;
+            animation-delay: 2s;
+            -webkit-animation-duration: 17s;
+            animation-duration: 17s;
+        }
+
+        /*圆形*/
+        .bg-bubbles li:nth-child(3) {
+            left: 30%;
+            width: 100px;
+            height: 100px;
+            -webkit-animation-delay: 4s;
+            animation-delay: 4s;
+            -webkit-border-radius: 50%;
+            border-radius: 50%;
+        }
+
+        /*扇形*/
+        .bg-bubbles li:nth-child(4) {
+            left: 40%;
+            border-radius: 50%;
+            -webkit-animation-duration: 15s;
+            animation-duration: 15s;
+            background-color: transparent;
+            height:0;
+            width:100px;
+            border-bottom:100px solid rgba(255, 255, 255, 0.15);
+            border-left:60px solid transparent;
+            border-right:60px solid transparent;
+        }
+
+        /*直角梯形*/
+        .bg-bubbles li:nth-child(5) {
+            left: 50%;
+            height:0;
+            width:100px;
+            border-bottom: 100px solid rgba(255, 255, 255, 0.15);
+            border-left: 60px solid rgba(255, 255, 255, 0.15);
+            border-right: 60px solid transparent;
+            background: transparent;
+            -webkit-animation-duration: 22s;
+            animation-duration: 22s;
+        }
+
+        /*半圆*/
+        .bg-bubbles li:nth-child(6) {
+            left: 60%;
+            height:25px;
+            width:50px;
+            -moz-border-radius:50px 50px 0 0;
+            -webkit-border-radius:50px 50px 0 0;
+            border-radius:50px 50px 0 0;
+            -webkit-animation-delay: 7s;
+            animation-delay: 7s;
+        }
+
+        /*彩带图形*/
+        .bg-bubbles li:nth-child(7) {
+            left: 70%;
+            width:0;
+            height:100px;
+            border-left:50px solid rgba(255, 255, 255, 0.15);
+            border-right:50px solid rgba(255, 255, 255, 0.15);
+            border-bottom:35px solid transparent;
+            -webkit-animation-delay: 18s;
+            animation-delay: 18s;
+            -webkit-animation-duration: 40s;
+            animation-duration: 40s;
+            background-color: transparent;
+        }
+
+        /*椭圆*/
+        .bg-bubbles li:nth-child(8) {
+            left: 80%;
+            background: rgba(255, 255, 255, 0.15);
+            height:80px;
+            width:40px;
+            -moz-border-radius:20px/40px;
+            -webkit-border-radius:20px/40px;
+            border-radius:20px/40px;
+            -webkit-animation-delay: 11s;
+            animation-delay: 11s;
+        }
+        @keyframes square{
+            0% {
+                -webkit-tranform:  translateY(0);
+                transform: translateY(0);
+            }
+            100% {
+                -webkit-transform:  translateY(-1080px) rotate(600deg);
+                transform:  translateY(-1080px) rotate(600deg);
+            }
+
+        }
+    </style>
 </head>
 <body>
+<div id="wrapper" style="display: block;">
+    <ul class="bg-bubbles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
 <header>
 
 </header>
@@ -33,7 +189,7 @@
                 <form action="/register" method="post" class="login-form">
                     <div class="username-wrap">
                         <i class="iconfont icon-username"></i>
-                        <input type="text" name="user" autocomplete="off"  class="user" placeholder="用户名" />
+                        <input type="text" name="user" autocomplete="off"  class="user" placeholder="用户名/邮箱" />
                     </div>
                     <div class="password-wrap">
                         <i class="iconfont icon-unlock"></i>
@@ -49,7 +205,7 @@
                         </div>
                     </div>
                 </form>
-                <p class="no-account">还没有账号？点此立即
+                <p class="no-account clearfix">还没有账号？点此立即
                     <span class="register-link-wrap">
                         <a class="register-link js_register_link" href="javascript:void(0);" id="registerLink">注册</a>
                     </span>
@@ -57,7 +213,7 @@
             </div>
             <!--登录 end-->
             <!--注册 begin-->
-            <div id="register" class="register-wrap">
+            <div id="register" class="register-wrap clearfix">
                 <form action="" method="post" class="register-form">
                     <ul>
                         <li>
@@ -89,7 +245,7 @@
 
                     </ul>
                 </form>
-                <p class="no-account">已有账号？点此立即
+                <p class="no-account clearfix">已有账号？点此立即
                     <span class="register-link-wrap">
                         <a class="register-link js_register_link" href="javascript:void(0);" id="loginLink">登录</a>
                     </span>
@@ -99,9 +255,9 @@
         </div>
     </div>
 </main>
-<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jquery.min.js?v=dd07e83ec0"></script>
 <script type="text/javascript" src="/js/plugin/layer/layer.js"></script>
-<script type="text/javascript" src="/js/comm.js"></script>
+<script type="text/javascript" src="/js/comm.js?v=1d97920d4f"></script>
 <script>
 
     $(init);
@@ -120,7 +276,7 @@
             if(Number(RegExp.$1)===1){
                 $('#login').show();
                 $('#title').text('登录');
-                $('.main-content-wrap').height(302);
+                $('.main-content-wrap').height(312);
 
                 //给登录按钮绑定enter事件
                 bindEnterEvent(1);
@@ -186,7 +342,6 @@
                     },
                     success: function(data){
                         if(data.success === 1){
-                            console.log('登录之前的地址：' + data.originalUrl);
                             comm.layer.msg('登陆成功,正在跳转...');
                             setTimeout(function(){
                                 if(data.originalUrl){
@@ -257,7 +412,6 @@
                         },
                         error: function(err){
                             code.getNewCode();
-                            console.log(err);
                         }
                     });
                 }

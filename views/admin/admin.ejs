@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>管理后台</title>
-    <link rel="stylesheet" href="/css/reset.css">
-    <link rel="stylesheet" href="/font/iconfont.css" />
+    <link rel="stylesheet" href="/css/reset.css?v=ec4610b89a">
+    <link rel="stylesheet" href="/font/iconfont.css?v=3cab2af4f9" />
     <link rel="stylesheet" href="/js/plugin/emoji/css/jquery.mCustomScrollbar.min.css">
     <link rel="stylesheet" href="/js/plugin/emoji/css/jquery.emoji.css">
     <link rel="stylesheet" href="/ueditor/third-party/webuploader/webuploader.css">
-    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/admin.css?v=9465fbec59">
 </head>
 <body>
 <div class="main article-admin ">
@@ -47,8 +47,8 @@
     </div>
 </div>
 <script src="/js/plugin/ejs.min.js"></script>
-<script src="/js/loadStaticFile.js"></script>
-<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script src="/js/loadStaticFile.js?v=23f6455508"></script>
+<script type="text/javascript" src="/js/jquery.min.js?v=dd07e83ec0"></script>
 <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
 <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.min.js"> </script>
 <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"> </script>
@@ -57,7 +57,7 @@
 <script type="text/javascript" src="/js/plugin/emoji/js/jquery.emoji.min.js"></script>
 <script type="text/javascript" src="/ueditor/third-party/webuploader/webuploader.min.js"></script>
 <script type="text/javascript" src="/js/plugin/layer/layer.js"></script>
-<script type="text/javascript" src="/js/comm.js"></script>
+<script type="text/javascript" src="/js/comm.js?v=1d97920d4f"></script>
 <script type="text/template" id="userTmpl"></script>
 <script type="text/template" id="articleTmpl"></script>
 <script type="text/template" id="sayTmpl">
@@ -209,8 +209,6 @@
             //如果不需要请求数据
             if(!!action){
                 getData(action,function(data){
-                    debugger;
-                    console.log(data);
                     $target.data("ajaxData",data);
                     eval(callback + '("' + tmplId + '",(' + JSON.stringify(data) +'),"' + target +'")');
                 });

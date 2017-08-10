@@ -1,5 +1,5 @@
 <%include header.ejs%>
-<link href="/css/index.css" rel="stylesheet" type="text/css">
+<link href="/css/index.css?v=44222178fe" rel="stylesheet" type="text/css">
 <main>
     <div class="main clearfix">
         <div class="article-list-wrap js_list" id="articles">
@@ -73,7 +73,7 @@
 </script>
 <script type="text/template" id="articleTmpl">
     <$if(data.pageData.length > 0){$>
-    <h2 class="article-recommend h-style"><$-data.tl$></h2>
+    <h2 class="article-recommend" style="position: relative;padding: 10px;border-bottom: 1px solid #bbb;font-size: 16px;background: #fff;"><$-data.tl$></h2>
     <$} else {$>
       <p class="nodata">暂无数据</p>
     <$}$>
@@ -175,7 +175,7 @@
             dataId: 'articles',
             postData: {
                 currentPage: 1,
-                showPageNum: 5,
+                showPageNum: 10,
                 topicid: parseInt($('#topicid').val()),
                 topicname: $('#topicname').val()
             }

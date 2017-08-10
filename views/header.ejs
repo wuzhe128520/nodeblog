@@ -16,10 +16,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="format-detection" content="telephone=no">
-    <title>无畏滴青春的博客</title>
+    <title><%=locals.title%></title>
     <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="stylesheet" href="/css/reset.css" />
-    <link rel="stylesheet" href="/font/iconfont.css" />
+    <!-- build:css styles/main.min.css -->
+    <link rel="stylesheet" href="/css/reset.css?v=ec4610b89a" />
+    <link rel="stylesheet" href="/font/iconfont.css?v=3cab2af4f9" />
+    <!-- endbuild -->
 </head>
 <body>
 <div class="container-top-wrap">
@@ -27,14 +29,16 @@
         <div class="head clearfix">
             <span class="welcome">欢迎光临无畏滴青春个人网站!</span>
             <div class="login-reg-wrap">
+                <a  href="javascript:void(0);">
                 <% if(locals.login) {%>
                 欢迎：
                 <% if(locals.admin){%>
                 管理员
                 <%}%>
-                <%=locals.login%>&nbsp;
+                </a>
+                <a class="login-name ellipsis" href="javascript:void(0);"><%=locals.login%></a>&nbsp;
                 <% if(locals.admin){%>
-                <a href="/admin" style="marign-left: 15px;color: #eee;">进入后台</a>
+                <a href="/admin" class="admin-manage">后台管理</a>
                 <%}%>
                 <a href="/logout" class="logout">退出</a>
                 <%}else {%>
