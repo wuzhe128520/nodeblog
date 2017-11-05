@@ -9,7 +9,7 @@ module.exports = function(sql,param,callback){
             host: "localhost",
             //数据库
             user: "root",
-            password: "fc128610",
+            password: "root",
             port: "3306",
             database: "nodeblog"
         });

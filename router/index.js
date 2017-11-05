@@ -16,6 +16,7 @@
         indexQuery = utils.indexQuery,
         queryMostComment = utils.queryMostComment,
         page = utils.page,
+        dateformat = utils.dateFormat,
         commentsAndReplys = utils.commentsAndReplys;
 
         //查询评论数最多的前10条文章
@@ -451,7 +452,7 @@
                    content = req.body.content,
                     userid = req.cookies['login'].id,
                       dicid = req.body.dicid,
-                      time = new Date().toLocaleString();
+                      time = dateformat(new Date(),'YYYY-MM-DD HH:mm:ss');
             /**
              * form_uid: 评论人id
              *    dicid: 评论类型(1代表文章的评论)
@@ -463,8 +464,13 @@
                     status: 0,
                     des: '内容不能超过500字！'
                 });
-                return;
             }
+            if(content.length < 1) {
+                res.json({
+                    status: 0,
+                    des: '内容不能为空！'
+                });
+            };
             if(userid){
                 sql('insert into comments (from_uid,dicid,topic_id,content,comm_time) values (?,?,?,?,?)',[userid,dicid,commentid, content,time],(err)=>{
 
@@ -499,14 +505,19 @@
                  touid = parseInt(data.touid),
                  fromuid = req.cookies['login'].id,
                  dicid = parseInt(data.dicid),
-                 time = new Date().toLocaleString();
+                 time = dateformat(new Date(),'YYYY-MM-DD HH:mm:ss');
                  if(content.length > 500){
                         res.json({
                             status: 0,
                             des: '内容不能超过500字！'
                         });
-                        return;
-                 }
+                 };
+               if(content.length < 1) {
+                   res.json({
+                       status: 0,
+                       des: '内容不能为空！'
+                   });
+               };
                  sql('insert into reply(comment_id,reply_id,reply_type,reply_content,rp_from_uid,to_uid,dicid,reply_time) values (?,?,?,?,?,?,?,?)',[commid,replyid,replytype,content,fromuid,touid,dicid,time],(err) => {
                      debugger;
                      if(err) {
@@ -520,7 +531,6 @@
                                  let sendContent = '';
                                  //回复文章
                                  if(dicid === 1){
-                                     console.l
                                      let replyUser = req.cookies['login'].name;
                                      sendContent = replyUser + '回复了你：<a href="' + req.protocol + '://' + req.hostname + '/article-detail/' + commid +'.html'+ '">' + content + '</a>';
                                      sql('select email from user where id = ?',[parseInt(touid)],function(err,eml){
@@ -547,13 +557,7 @@
                                          });
                                      });
                                      //回复成功后，给被回复人和对应的这条评论下相关回复人发送邮件通知
-                                 } else if(dicid === 2){
-                                     //说说
-                                 } else if(dicid === 3){
-                                     //留言
                                  }
-
-
                         }
                  });
         });

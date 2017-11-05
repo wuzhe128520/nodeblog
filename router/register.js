@@ -6,6 +6,8 @@ const express = require('express'),
        crypto = require('crypto'),
        uuidV1 = require('uuid/v1'),
        sendMail = require('../module/sendEmail'),
+       utils = require('../module/utils'),
+       dateformat = utils.dateFormat,
        router = express.Router();
 
 //注册get请求
@@ -31,7 +33,7 @@ router.post('/',(req, res) => {
                    sql('select * from user where email = ?', [email], (err, emailData) => {
                        if(emailData.length < 1){
                            const uuid = uuidV1(),
-                               time = new Date().toLocaleString();
+                               time = dateformat(new Date(),'YYYY-MM-DD HH:mm:ss');
 
                            //使用md5加密
                            let newpass = md5.update(pass).digest('hex');
@@ -119,7 +121,7 @@ router.get('/validate/:uuid.html',(req,res) => {
                             }
                         });
                         pm.then(function(){
-                            let time = new Date().toLocaleString();
+                            let time = dateformat(new Date(),'YYYY-MM-DD HH:mm:ss');
                             sql('update user set createtime = ?,code=? where id=?',[time,uuid,data[0].id],(err, data) => {
                                 if(err){
                                     res.send('数据查询失败！');
@@ -152,7 +154,6 @@ router.get('/validate/:uuid.html',(req,res) => {
             }
         }
     });
-
 });
 
 //重发验证码，需要修改数据库验证码的时间和验证码

@@ -5,12 +5,14 @@ html,body {
   overflow: hidden;
 }
 body {
+  background: url(../image/bg1.jpg) no-repeat 62% 90%;
+  background-size: cover;
+  text-align: center;
   font-family: 'Josefin Sans', sans-serif;
 }
 /*=====登录 begin*/
 .login-title {
-  margin: 22px 0 22px;
-  text-align: center;
+  margin: 0 0 32px;
   h1 {
     font-size: 30px;
     color: #fff;
@@ -19,6 +21,7 @@ body {
   }
 }
 .main-content-wrap {
+
   height: 500px;
   width: 442px;
   position: absolute;
@@ -27,8 +30,6 @@ body {
   left: 0;
   right: 0;
   margin: auto;
-  z-index: 9999;
-  background: rgba(0,0,0,.15);
 }
 .no-account {
       float: left;
@@ -36,6 +37,9 @@ body {
       color: rgba(255,255,255,0.5);
       padding: 5px 0;
       line-height: 25px;
+      .register-link-wrap {
+        font-size: 0;
+      }
       .register-link {
         color: #fff;
         border-bottom: 1px solid #fff;
@@ -68,13 +72,12 @@ body {
 input[type='text'],
 input[type='password'] {
   font-size: 16px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  padding: 16px 0;
   border: none;
   margin-bottom: 5px;
   background: none;
   border-bottom: 1px solid #eee;
-  width: 100%;
+  width: 87%;
   font-weight: 400;
   letter-spacing: 1px;
   color: #fff;
@@ -82,8 +85,7 @@ input[type='password'] {
 .login-btn,
 .register-btn {
   color: #fff;
-  border: 1px solid #E3A355;
-  background-color: #F7AF57;
+  background: #d20962;
   padding: 8px 31px;
   font-size: 16px;
   cursor: pointer;
@@ -108,38 +110,24 @@ input[type='password'] {
   font-weight: 400;
 }
 /*=====注册 begin=====*/
+.register-form {
+  color: rgba(255,255,255,0.6);
+}
 .register-btn {
-  width: 100%;
+  width: 87%;
   margin: 15px 0;
 }
 .auth-wrap {
   display: block;
   margin: 10px 0 0 0;
   &>.img {
-    width: 100%;
+    width: 87%;
   }
 }
 /*=====注册 end=====*/
 .login-wrap,
 .register-wrap {
   display: none;
-}
-.login-wrap {
-  input[type='text'],
-  input[type='password'] {
-    width: 87%;
-  }
-}
-input::-webkit-input-placeholder,
-input::-moz-placeholder,
-input:-ms-input-placeholder{
-color: red;
-}
-.login-register-wrap {
-  width: 87%;
-}
-.login-register-wrap {
-  margin: 0 auto;
 }
 
 

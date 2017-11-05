@@ -2,11 +2,14 @@
  * Created by Administrator on 2017/3/18.
  */
 const express = require('express'),
-        sql = require('../module/mysql'),
+       sql = require('../module/mysql'),
+       utils = require('../module/utils'),
        router = express.Router(),
-        //上传文件模块
-        upload = require('../module/upload'),
-        fs = require('fs');
+
+       //上传文件模块
+       upload = require('../module/upload'),
+       dateformat = utils.dateFormat,
+       fs = require('fs');
 
 //get post 任何形式的访问都会走这一条路由
 router.use((req,res,next)=>{
@@ -149,7 +152,7 @@ router.post('/article',(req,res)=>{
         //img = '/image/' + req.file.filename,
         img = req.body.imgSrc,
         summery =  summeryContent.length>200?summeryContent.substr(0,200) + '...':summeryContent,
-        time = new Date().toLocaleString();
+        time = dateformat(new Date(),'YYYY-MM-DD HH:mm:ss');
 
         if(!!newTags) {
             let tagsAry = newTags.split(','),
@@ -228,7 +231,7 @@ router.post('/writesay',(req, res) => {
     let userid = req.cookies['login'].id,
         content = req.body.content,
         imgs = req.body.imgs,
-        time = new Date().toLocaleString();
+        time = dateformat(new Date(),'YYYY-MM-DD HH:mm:ss');
     sql('insert into say(userid,content,time,dicid,imgs) values (?,?,?,?,?)',[userid,content,time,2,imgs],(err) => {
         if(err){
             res.json({
