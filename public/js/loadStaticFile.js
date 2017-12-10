@@ -1,1 +1,55 @@
-function loadStaticFile(e){function t(e){var t=/(\.css|\.js)$/gi,o=null;t.test(e),o=RegExp.$1,-1!=o.indexOf("js")?(a=document.createElement("script"),a.type="text/javascript",a.src=e,a.charset="utf-8",a.onload=a.onreadystatechange=function(){this.readyState&&"loaded"!=this.readyState&&"complete"!=this.readyState,this.onload=this.onreadystatechange=null},a.onerror=function(){console.log("加载js出错")}):-1!=o.lastIndexOf("css")&&(a=document.createElement("link"),a.href=e,a.rel="stylesheet",a.type="text/css"),n.appendChild(a)}var a,n=document.createDocumentFragment();if("[object array]"===Object.prototype.toString.call(e).toLowerCase())for(var o=0,s=e.length;o<s;o++)t(e[o]);else"string"==typeof e&&t(e);document.getElementsByTagName("head")[0].appendChild(n)}
+/**
+ * Created by Administrator on 2017/5/8.
+ */
+function loadStaticFile (fileSrcs){
+    var element,
+        //创建文档碎片
+        fragment = document.createDocumentFragment();
+    if(Object.prototype.toString.call(fileSrcs).toLowerCase() === '[object array]'){
+
+        var i = 0,
+            length = fileSrcs.length;
+        for(;i < length; i++){
+            create(fileSrcs[i]);
+        }
+    }
+    else if(typeof fileSrcs === 'string'){
+        create(fileSrcs);
+    }
+    function create(fileSrc){
+
+        //匹配以.css或.js结尾的文件名
+        var regexp = /(\.css|\.js)$/gi,
+            extension = null;
+
+        regexp.test(fileSrc);
+        extension = RegExp.$1;
+
+        if(extension.indexOf('js') != -1){
+            element = document.createElement('script');
+            element.type = "text/javascript";
+            element.src = fileSrc;
+            element.charset = "utf-8";
+            element.onload = element.onreadystatechange = function(){
+                if(!this.readyState||this.readyState == 'loaded'||this.readyState == 'complete'){
+                    console.log(fileSrc + '加载成功');
+                }
+                console.log(this);
+                this.onload = this.onreadystatechange = null;
+            };
+            element.onerror = function(){
+                console.log('加载js出错');
+            }
+        }
+        else if(extension.lastIndexOf('css') != -1) {
+            element = document.createElement('link');
+            element.href= fileSrc;
+            element.rel = 'stylesheet';
+            element.type='text/css';
+        }
+        fragment.appendChild(element);
+    }
+    document.getElementsByTagName('head')[0].appendChild(fragment);
+}
+
+

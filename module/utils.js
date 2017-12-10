@@ -143,7 +143,6 @@ let utils = {
 
     //使用Promise让上面的异步操作都执行完之后再渲染页面
     Promise.all([p2,p3,p4,p5,p6,p7,p8]).then(function(data) {
-        console.log(data);
         let showPageNum = 10;
         res.render('index.ejs',{
             data: data[0],
